@@ -133,7 +133,7 @@ importers:
         specifier: ^3.0.0
         version: 3.1.4(@types/node@20.17.57)(@vitest/ui@3.1.4)(jiti@2.4.2)(jsdom@22.1.0)(terser@5.40.0)(yaml@2.8.0)
 
-  apps/web-extension-accessibility-frontend-nx: {}
+  widget: {}
 
 packages:
 
