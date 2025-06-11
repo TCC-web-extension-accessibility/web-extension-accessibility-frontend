@@ -140,8 +140,6 @@ importers:
 
   apps/widget: {}
 
-  widget: {}
-
 packages:
 
   '@alloc/quick-lru@5.2.0':
