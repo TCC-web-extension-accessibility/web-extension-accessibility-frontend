@@ -1,6 +1,6 @@
 import { PersonArmsSpreadIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
-import { Widget } from './widget';
+import { Widget } from './components/widget';
 
 export function App() {
   const [isWidgetOpen, setIsWidgetOpen] = useState(false);
