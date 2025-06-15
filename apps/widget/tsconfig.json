@@ -7,9 +7,6 @@
     },
     {
       "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "../../libs/design-system/tsconfig.json"
     }
   ],
   "extends": "../../tsconfig.base.json"
