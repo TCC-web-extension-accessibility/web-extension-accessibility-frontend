@@ -1,3 +1,4 @@
+import { PersonArmsSpreadIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Widget } from './widget';
 
@@ -7,10 +8,10 @@ export function App() {
   return (
     <div>
       <button
-        className="bg-black text-white rounded-full p-5 absolute bottom-10 right-10"
+        className="bg-[#595F72] text-white rounded-full p-5 absolute cursor-pointer bottom-10 right-10"
         onClick={() => setIsWidgetOpen(!isWidgetOpen)}
       >
-        Test
+        <PersonArmsSpreadIcon size={24} />
       </button>
       <Widget
         isOpen={isWidgetOpen}

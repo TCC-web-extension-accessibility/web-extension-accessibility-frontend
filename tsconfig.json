@@ -8,6 +8,9 @@
     },
     {
       "path": "./apps/admin"
+    },
+    {
+      "path": "./libs/design-system"
     }
   ]
 }
