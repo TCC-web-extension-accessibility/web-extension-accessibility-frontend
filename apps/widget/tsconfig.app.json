@@ -40,5 +40,9 @@
     "../../libs/design-system/src/**/*.ts",
     "../../libs/design-system/src/**/*.tsx"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../../libs/design-system/tsconfig.lib.json"
+    }
+  ]
 }
