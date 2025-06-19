@@ -19,7 +19,7 @@
     "target": "es2022",
     "customConditions": ["development"],
     "paths": {
-      "@design-system": ["./libs/design-system/disc/index.js"]
+      "@design-system": ["./libs/design-system/src/index.ts"]
     }
   }
 }

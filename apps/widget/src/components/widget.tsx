@@ -1,3 +1,4 @@
+import { Button } from '@design-system';
 import { GearIcon, XIcon } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 
@@ -38,15 +39,15 @@ export function Widget({ isOpen, onClose }: WidgetProps) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Menu acessibilidade</h2>
         <div className="flex items-center gap-2">
-          <button className="cursor-pointer hover:bg-gray-100 p-2 rounded-full">
+          <Button className="cursor-pointer hover:bg-gray-100 p-2 rounded-full">
             <GearIcon size={24} />
-          </button>
-          <button
+          </Button>
+          <Button
             className="cursor-pointer bg-black text-white p-2 rounded-full"
             onClick={onClose}
           >
             <XIcon size={24} />
-          </button>
+          </Button>
         </div>
       </div>
 
