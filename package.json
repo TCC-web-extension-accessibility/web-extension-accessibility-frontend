@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev:widget": "pnpm --filter @web-extension-accessibility-frontend/widget dev",
-    "build:widget": "NODE_ENV=development pnpm --filter @web-extension-accessibility-frontend/widget build",
-    "build:widget:prod": "NODE_ENV=production pnpm --filter @web-extension-accessibility-frontend/widget build",
+    "dev:widget": "pnpm --filter widget dev",
+    "build:widget": "NODE_ENV=development pnpm --filter widget build",
+    "build:widget:prod": "NODE_ENV=production pnpm --filter widget build",
+    "dev:admin": "pnpm --filter admin dev",
+    "build:admin": "pnpm --filter admin build",
     "serve:test-html": "npx browser-sync start --server ./ --files=\"test*\" --files=\"dist/widget/**\" --port 8081 --index test/index.html",
     "lint": "eslint .",
     "test": "vitest"
