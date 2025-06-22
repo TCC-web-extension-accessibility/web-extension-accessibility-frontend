@@ -1,10 +1,10 @@
 {
-    "name": "@web-extension-accessibility-frontend/widget",
+    "name": "widget",
     "version": "0.0.1",
     "private": true,
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "tsc -b && vite build"
     }
 }
