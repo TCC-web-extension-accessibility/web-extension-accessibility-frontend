@@ -1,26 +1,10 @@
-import { Button } from '@design-system';
-import { PersonArmsSpreadIcon } from '@phosphor-icons/react';
-import { useState } from 'react';
-import { Widget } from './components/widget';
+import { WidgetContainer } from './widget/components/widget-container.tsx';
 
-export function App() {
-  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
-
+function App() {
   return (
-    <div>
-      <Button
-        className="bg-[#595F72] text-white rounded-full p-5 absolute cursor-pointer bottom-10 right-10"
-        onClick={() => setIsWidgetOpen(!isWidgetOpen)}
-      >
-        <PersonArmsSpreadIcon size={24} />
-      </Button>
-      <Widget
-        isOpen={isWidgetOpen}
-        onClose={() => {
-          setIsWidgetOpen(false);
-        }}
-      />
-    </div>
+    <>
+      <WidgetContainer />
+    </>
   );
 }
 

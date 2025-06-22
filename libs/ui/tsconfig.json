@@ -2,10 +2,10 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
+    "jsx": "react-jsx",
+    "declaration": true,
     "types": ["vitest/globals"],
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
-    "jsx": "react-jsx"
+    "esModuleInterop": true
   },
   "files": [],
   "include": [

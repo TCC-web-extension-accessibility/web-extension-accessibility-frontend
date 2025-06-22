@@ -1,16 +1,21 @@
 {
   "extends": "./tsconfig.base.json",
-  "compileOnSave": false,
-  "files": [],
-  "references": [
-    {
-      "path": "./apps/widget"
-    },
-    {
-      "path": "./apps/admin"
-    },
-    {
-      "path": "./libs/design-system"
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "paths": {
+      "@web-extension-accessibility-frontend/ui": ["./libs/ui/src/index.ts"]
     }
-  ]
+  },
+  "include": ["apps", "libs"]
 }

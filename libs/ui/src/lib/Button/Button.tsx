@@ -1,7 +1,5 @@
-'use client';
-
 import clsx from 'clsx';
-import React from 'react';
+import { JSX } from 'react';
 import { tv, VariantProps } from 'tailwind-variants';
 
 const variants = tv({
@@ -115,11 +113,10 @@ const Loading = ({ variant }: { variant?: LoadingVariant }) => (
 type ButtonVariant = VariantProps<typeof variants>['variant'];
 type ButtonSize = VariantProps<typeof variants>['size'];
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = JSX.IntrinsicElements['button'] & {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  ref?: React.Ref<HTMLButtonElement>;
 };
 
 const Button = ({
@@ -128,14 +125,9 @@ const Button = ({
   variant,
   size,
   loading,
-  ref,
   ...rest
 }: ButtonProps) => (
-  <button
-    ref={ref}
-    className={variants({ variant, size, className })}
-    {...rest}
-  >
+  <button className={variants({ variant, size, className })} {...rest}>
     {loading && <Loading variant={variant} />}
     <span
       className={clsx('transition', {

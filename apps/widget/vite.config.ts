@@ -1,71 +1,53 @@
-/// <reference types='vitest' />
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import react from '@vitejs/plugin-react';
-import path from 'path'; // Import 'path' module
+import { config } from 'dotenv';
 import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
-export default defineConfig(() => ({
-  root: __dirname,
-  // Adjust cacheDir to be relative to the new project root 'widget'
-  cacheDir: '../../node_modules/.vite/apps/widget', // Assuming you renamed the app to 'widget'
+// Load environment variables from .env files
+const envFile =
+  process.env.NODE_ENV === 'production'
+    ? './.env.production'
+    : './.env.development';
+const loadedEnv = config({ path: envFile }).parsed || {};
 
-  // Remove server and preview configs, as these are for development of a standalone app.
-  // Your widget won't have its own server.
-  // If you still need a local dev server for a demo page, that would be in a *separate* Vite config or app.
-  // server: {
-  //   port: 4200,
-  //   host: 'localhost',
-  // },
-  // preview: {
-  //   port: 4300,
-  //   host: 'localhost',
-  // },
+const processEnvDefine: { [key: string]: string } = {};
+for (const key in loadedEnv) {
+  processEnvDefine[`process.env.${key}`] = JSON.stringify(loadedEnv[key]);
+}
 
-  plugins: [react(), nxViteTsPaths()],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ], // If you use nxViteTsPaths, make sure to import it
-  // },
+console.log(process.env.NODE_ENV);
 
+processEnvDefine['process.env.NODE_ENV'] = JSON.stringify(
+  process.env.NODE_ENV || 'development'
+);
+
+export default defineConfig({
+  plugins: [react(), tsconfigPaths()],
+  define: {
+    process: JSON.stringify({ env: {} }),
+    global: 'window',
+    ...processEnvDefine,
+  },
   build: {
-    // Crucial: Set outDir relative to the monorepo root for consistent output
-    outDir: '../../dist/apps/widget', // Or choose a shared 'dist/widget' if preferred
+    lib: {
+      entry: './src/widget/index.tsx',
+      name: 'widget',
+      formats: ['iife'],
+    },
+    minify: false,
+    cssCodeSplit: false,
+    outDir: '../../dist/widget',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
       transformMixedEsModules: true,
-    },
-    // ** THIS IS THE KEY PART: Configure as a library **
-    lib: {
-      // The entry point for your widget. This should be the file that initializes your React app.
-      entry: path.resolve(__dirname, 'src/main.tsx'), // Assuming main.tsx is your entry
-      name: 'YourAccessibilityWidget', // This will be the global variable name (e.g., window.YourAccessibilityWidget)
-      fileName: (format) => `accessibility-widget.${format}.js`, // Output filename pattern
-      formats: ['umd'], // UMD format is best for script tag embedding (Universal Module Definition)
+      include: [/node_modules/],
     },
     rollupOptions: {
-      // Externalize React and ReactDOM ONLY if you expect the host page to *already* provide them.
-      // For a self-contained widget that works on *any* site, remove these from external.
-      // If you leave them external, your bundle will be smaller, but the host site MUST load React.
       output: {
-        // These are global variables that the external dependencies will be mapped to.
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'ReactJSXRuntime',
-        },
+        entryFileNames: 'widget.js',
+        inlineDynamicImports: true,
       },
     },
   },
-  test: {
-    watch: false,
-    globals: true,
-    environment: 'jsdom',
-    include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    reporters: ['default'],
-    coverage: {
-      reportsDirectory: './test-output/vitest/coverage',
-      provider: 'v8' as const,
-    },
-  },
-}));
+});
