@@ -2,6 +2,17 @@
 
 Interface frontend para o widget de acessibilidade
 
+### Tecnologias relevantes
+
+- React 19
+- TailwindCSS
+- Vite
+- PNPM
+- PostCSS
+- Vitest
+- Prettier
+- ESlint
+
 ## Setup
 
 Este projeto utiliza [pnpm](https://pnpm.io/) como gerenciador de pacotes
