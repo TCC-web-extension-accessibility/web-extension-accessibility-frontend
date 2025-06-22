@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev:widget": "pnpm --filter @web-extension-accessibility-frontend/widget dev",
-    "build:widget:dev": "NODE_ENV=development pnpm --filter @web-extension-accessibility-frontend/widget build",
+    "build:widget": "NODE_ENV=development pnpm --filter @web-extension-accessibility-frontend/widget build",
     "build:widget:prod": "NODE_ENV=production pnpm --filter @web-extension-accessibility-frontend/widget build",
     "serve:test-html": "npx browser-sync start --server ./ --files=\"test*\" --files=\"dist/widget/**\" --port 8081 --index test/index.html",
     "lint": "eslint .",

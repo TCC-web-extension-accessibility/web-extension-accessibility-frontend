@@ -4,7 +4,7 @@ Interface frontend para o widget de acessibilidade
 
 ## Setup
 
-Este projeto utiliza [pnpm](https://pnpm.io/) como gerenciador de pacotes e [Nx](https://nx.dev/) para gerenciar o monorepo.
+Este projeto utiliza [pnpm](https://pnpm.io/) como gerenciador de pacotes
 
 ### Instalação de Dependências
 
@@ -19,7 +19,7 @@ pnpm install
 Para iniciar o servidor de desenvolvimento do widget:
 
 ```bash
-pnpm nx serve widget
+pnpm dev:widget
 ```
 
 Acesse o widget em: [http://localhost:5173/](http://localhost:5173/)
@@ -29,23 +29,21 @@ Acesse o widget em: [http://localhost:5173/](http://localhost:5173/)
 Para construir a versão de produção do widget:
 
 ```bash
-pnpm nx build widget
+pnpm build:widget
 ```
 
-### Rodando o Admin
+### Testar o widget em uma página HTML
 
-Para iniciar o servidor de desenvolvimento do painel administrativo:
+O nosso widget em produção é incluido através da tag \<script>, para fazer o teste desse cenário:
+
+Faça o build do widget com --watch
 
 ```bash
-pnpm nx serve admin
+pnpm build:widget --watch
 ```
 
-Acesse o painel administrativo em: [http://localhost:4200/](http://localhost:4200/)
-
-### Buildando o Admin
-
-Para construir a versão de produção do painel administrativo:
+Inicie o servidor para rodar o index.html
 
 ```bash
-pnpm nx build admin
+pnpm serve:test-html
 ```
