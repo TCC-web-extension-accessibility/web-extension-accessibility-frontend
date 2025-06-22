@@ -34,7 +34,6 @@ export default defineConfig({
       name: 'widget',
       formats: ['iife'],
     },
-    minify: false,
     cssCodeSplit: false,
     outDir: '../../dist/widget',
     emptyOutDir: true,
