@@ -35,7 +35,7 @@ export default defineConfig({
       formats: ['iife'],
     },
     cssCodeSplit: false,
-    outDir: '../../dist/widget',
+    outDir: './dist/widget',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
