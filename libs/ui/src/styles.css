@@ -1,0 +1,148 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  --tracking: 0em;
+  letter-spacing: var(--tracking);
+  --leading: 1.5;
+  line-height: var(--leading);
+  code,
+  pre,
+  .no-tracking {
+    letter-spacing: normal;
+    line-height: normal;
+  }
+  .leading-normal {
+    line-height: var(--leading) !important;
+  }
+  color: var(--color-foreground);
+  font-family: var(--font-lato);
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-ubuntu);
+  }
+}
+
+@theme {
+  /* Colors */
+  --color-background: #fffdf8;
+  --color-foreground: #1e1e1e;
+  --color-disabled-input-background: #ffffff;
+  --color-disabled-input-foreground: #000000;
+
+  --color-disabled-textarea-background: #ffffff;
+  --color-disabled-textarea-foreground: #000000;
+
+  --color-primary: #595f72;
+  --color-primary-100: #9b9faa;
+  --color-primary-200: #8b8f9c;
+  --color-primary-300: #7a7f8e;
+  --color-primary-400: #6a6f80;
+  --color-primary-500: #595f72;
+  --color-primary-600: #505667;
+  --color-primary-700: #474c5b;
+  --color-primary-800: #3e4350;
+  --color-primary-900: #353944;
+  --color-primary-foreground: #121317;
+
+  --color-grey-100: #f5f5f5;
+  --color-grey-200: #eaeaea;
+  --color-grey-300: #cfcfcf;
+  --color-grey-400: #aeaeae;
+  --color-grey-500: #737373;
+  --color-grey-600: #5c5c5c;
+  --color-grey-700: #454545;
+  --color-grey-800: #303030;
+  --color-grey-900: #191919;
+
+  --color-danger: #fc4042;
+  --color-danger-foreground: #ffffff;
+  --color-danger-100: #ffe6e7;
+  --color-danger-200: #fecfd0;
+  --color-danger-500: #fc4042;
+  --color-danger-600: #fb1014;
+
+  --color-success: #68b517;
+  --color-success-foreground: #ffffff;
+  --color-success-100: #e4f9ce;
+  --color-success-500: #68b517;
+
+  --color-warn: #e5a000;
+  --color-warn-foreground: #ffffff;
+  --color-warn-100: #fffbeb;
+  --color-warn-200: #fff1c2;
+  --color-warn-300: #f7e450;
+  --color-warn-500: #e5a000;
+
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  /* Fonts */
+  --font-lato: 'Lato', sans-serif;
+  --font-ubuntu: 'Ubuntu', sans-serif;
+
+  /* Animations */
+  @keyframes accordion-slide-down {
+    from {
+      height: 0px;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-slide-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0px;
+    }
+  }
+
+  --animate-accordion-slide-down: accordion-slide-down 300ms ease-in;
+  --animate-accordion-slide-up: accordion-slide-up 300ms ease-out;
+}
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant highcontrast (&:where(.highcontrast, .highcontrast *));
+
+/* Dark Mode */
+.dark {
+  --color-background: #181c23;
+  --color-foreground: #f4f4f4;
+  --color-disabled-input-background: #000000;
+  --color-disabled-input-foreground: #ffffff;
+
+  --color-primary-100: #353944;
+  --color-primary-200: #3e4350;
+  --color-primary-300: #474c5b;
+  --color-primary-400: #505667;
+  --color-primary-500: #595f72;
+  --color-primary-600: #6a6f80;
+  --color-primary-700: #7a7f8e;
+  --color-primary-800: #8b8f9c;
+  --color-primary-900: #9b9faa;
+
+  --color-grey-100: #232934;
+  --color-grey-200: #2e3745;
+  --color-grey-300: #aeaeae;
+  --color-grey-400: #cfcfcf;
+  --color-grey-500: #eaeaea;
+  --color-grey-600: #f5f5f5;
+}
+
+/* High Contrast Mode */
+.highcontrast {
+  --color-background: #000000;
+  --color-foreground: #ffff00;
+  --color-primary-500: #595f72;
+  --color-success-500: #00ffff;
+  --color-danger-500: #ff0000;
+  --color-warn-500: #ffff00;
+  --color-grey-500: #ffffff;
+}

@@ -16,14 +16,15 @@ const variants = tv({
     'rounded-full',
     'outline-none',
     'focus:scale-[0.98]',
+    'font-ubuntu',
   ],
   variants: {
     variant: {
       primary: [
         'font-semibold',
-        'bg-indigo-500',
-        'hover:bg-indigo-600',
-        'text-white',
+        'bg-primary',
+        'hover:bg-primary-200',
+        'text-background',
         'shadow',
         'hover:shadow-md',
         'disabled:bg-indigo-500/50',
@@ -31,19 +32,6 @@ const variants = tv({
         'ring-offset-2',
         'focus-visible:ring-2',
         'ring-indigo-500/70',
-      ],
-      secondary: [
-        'font-normal',
-        'bg-gray-50',
-        'hover:bg-gray-100',
-        'disabled:bg-gray-50',
-        'text-gray-950',
-        'shadow',
-        'border',
-        'border-neutral-200/50',
-        'ring-offset-2',
-        'focus-visible:ring-2',
-        'ring-gray-200',
       ],
       destructive: [
         'font-semibold',
