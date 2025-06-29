@@ -56,5 +56,5 @@ pnpm build:widget --watch
 Inicie o servidor para rodar o index.html
 
 ```bash
-pnpm serve:test-html
+pnpm serve:widget:test-html
 ```
