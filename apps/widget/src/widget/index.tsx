@@ -1,6 +1,6 @@
 import { hydrateRoot } from 'react-dom/client';
 import '../styles.css';
-import { WidgetContainer } from './components/widget-container';
+import { WidgetContainer } from './components/WidgetContainer';
 
 function initializeWidget() {
   if (document.readyState !== 'loading') {

@@ -1,4 +1,4 @@
-import { WidgetContainer } from './widget/components/widget-container.tsx';
+import { WidgetContainer } from './widget/components/WidgetContainer.tsx';
 
 function App() {
   return (
