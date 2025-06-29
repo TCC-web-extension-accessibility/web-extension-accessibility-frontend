@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { WidgetContext } from '../lib/context';
-import { Widget } from './widget';
+import { Widget } from './Widget';
 
 export function WidgetContainer() {
   const [mounted, setMounted] = useState(false);

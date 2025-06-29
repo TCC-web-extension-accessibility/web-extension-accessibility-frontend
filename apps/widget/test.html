@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessibility Widget Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        padding: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+
+      header {
+        background: #0077cc;
+        color: white;
+        padding: 20px;
+      }
+
+      nav a {
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+      }
+
+      main {
+        background: white;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 8px;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        background-color: #0077cc;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      footer {
+        margin-top: 30px;
+        font-size: 0.9em;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Sample Website for Accessibility Testing</h1>
+      <nav>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section>
+        <h2>Welcome</h2>
+        <p>
+          This is a simple website created to test the functionality of an
+          accessibility widget.
+        </p>
+        <p>
+          Try navigating using the keyboard, screen readers, or adjusting
+          contrast and font size.
+        </p>
+      </section>
+
+      <section>
+        <h2>Image Example</h2>
+        <img
+          src="https://placehold.co/600x400"
+          alt="Placeholder image for testing"
+        />
+      </section>
+
+      <section>
+        <h2>Form Example</h2>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" />
+        <br />
+        <button type="button">Subscribe</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Sample Website. All rights reserved.</p>
+    </footer>
+    <script src="http://127.0.0.1:8081/dist/widget/widget.js" defer></script>
+  </body>
+</html>

@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsc -b && vite build"
+        "build": "tsc -b && vite build",
+        "serve:test-html": "npx browser-sync start --server ./ --files=\"test.html\" --files=\"dist/**\" --port 8081 --index test.html"
     }
 }
