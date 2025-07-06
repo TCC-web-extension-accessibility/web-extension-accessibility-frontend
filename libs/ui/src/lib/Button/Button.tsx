@@ -1,92 +1,20 @@
 import clsx from 'clsx';
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
-const variants = tv({
-  base: [
-    'inline-flex',
-    'items-center',
-    'justify-center',
-    'relative',
-    'cursor-pointer',
-    'disabled:cursor-not-allowed',
-    'tracking-wide',
-    'transition',
-    'rounded-full',
-    'outline-none',
-    'focus:scale-[0.98]',
-    'font-ubuntu',
-  ],
-  variants: {
-    variant: {
-      primary: [
-        'font-semibold',
-        'bg-primary',
-        'hover:bg-primary-200',
-        'text-background',
-        'shadow',
-        'hover:shadow-md',
-        'disabled:bg-indigo-500/50',
-        'disabled:shadow',
-        'ring-offset-2',
-        'focus-visible:ring-2',
-        'ring-indigo-500/70',
-      ],
-      destructive: [
-        'font-semibold',
-        'bg-red-500',
-        'hover:bg-red-600',
-        'text-white',
-        'rounded-full',
-        'shadow',
-        'hover:shadow-md',
-        'disabled:bg-red-500/50',
-        'disabled:shadow',
-        'ring-offset-2',
-        'focus-visible:ring-2',
-        'ring-red-500',
-      ],
-      ghost: [
-        'font-light',
-        'text-gray-950',
-        'hover:text-gray-600',
-        'disabled:text-gray-950',
-        'ring-gray-300',
-        'focus-visible:ring-1',
-      ],
-      link: [
-        'font-light',
-        'text-indigo-500',
-        'hover:text-indigo-600',
-        'disabled:text-indigo-500/50',
-        'disabled:no-underline',
-        'hover:underline',
-        'ring-indigo-300',
-        'focus-visible:ring-1',
-      ],
-    },
-    size: {
-      small: ['text-sm', 'py-1', 'px-4'],
-      default: ['text-base', 'py-2', 'px-8'],
-      large: ['text-lg', 'py-3', 'px-12'],
-    },
-  },
-  defaultVariants: {
-    variant: 'primary',
-    size: 'default',
-  },
-});
-
 const loading = tv({
-  base: ['absolute', 'inline-flex', 'items-center'],
+  base: ['absolute', 'flex', 'items-center '],
   variants: {
     variant: {
       primary: ['border-white'],
       secondary: ['border-gray-950'],
       destructive: ['border-white'],
-      ghost: ['border-gray-950'],
-      link: ['border-indigo-500'],
+      disabled: ['border-gray-300'],
+      'grey-400': ['border-gray-400'],
+      'grey-300': ['border-gray-300'],
+      'grey-600': ['border-gray-600'],
+      'grey-200': ['border-gray-200'],
     },
   },
 });
@@ -99,31 +27,117 @@ const Loading = ({ variant }: { variant?: LoadingVariant }) => (
   </div>
 );
 
+const variants = tv({
+  base: [
+    'flex items-center justify-center rounded-lg cursor-pointer transition-all outline-none  focus-visible:ring-4 font-ubuntu gap-1 ring-(--bg-color)/50 hover:[--bg-color:var(--hover-color)]',
+  ],
+  variants: {
+    disabled: {
+      true: '!bg-grey-200 !text-grey-300 pointer-events-none cursor-not-allowed',
+    },
+    color: {
+      primary: [
+        '[--bg-color:var(--color-primary-500)]',
+        '[--fg-color:var(--color-primary-foreground)]',
+        '[--hover-color:var(--color-primary-200)]',
+        '[--hover-text-color:var(--color-primary-foreground)]',
+      ],
+      'grey-400': [
+        '[--bg-color:var(--color-grey-400)]',
+        '[--fg-color:var(--color-primary-foreground)]',
+        '[--hover-color:var(--color-grey-300)]',
+        '[--hover-text-color:var(--color-primary-foreground)]',
+      ],
+      'grey-300': [
+        '[--bg-color:var(--color-grey-300)]',
+        '[--fg-color:var(--color-primary-foreground)]',
+        '[--hover-color:var(--color-grey-200)]',
+        '[--hover-text-color:var(--color-primary-foreground)]',
+      ],
+      'grey-600': [
+        '[--bg-color:var(--color-grey-600)]',
+        '[--fg-color:var(--color-background)]',
+        '[--hover-color:var(--color-grey-500)]',
+        '[--hover-text-color:var(--color-background)]',
+      ],
+      'grey-200': [
+        '[--bg-color:var(--color-grey-200)]',
+        '[--fg-color:var(--color-foreground)]',
+        '[--hover-color:var(--color-grey-100)]',
+        '[--hover-text-color:var(--color-foreground)]',
+      ],
+    },
+    variant: {
+      default:
+        'bg-(--bg-color) text-(--fg-color) hover:text-(--hover-text-color)',
+      outline: 'bg-transparent border border-(--bg-color) text-(--bg-color)',
+      simple:
+        'bg-transparent !px-0 !py-0 !h-auto !min-h-auto text-(--bg-color)',
+    },
+    size: {
+      small: ['text-sm', 'min-h-8', 'px-2'],
+      default: ['text-base', 'min-h-10', 'px-4'],
+      large: ['text-lg', 'min-h-12', 'px-6'],
+    },
+    iconPosition: {
+      before: ['flex-row'],
+      after: ['flex-row-reverse'],
+    },
+  },
+  defaultVariants: {
+    color: 'primary',
+    variant: 'default',
+    size: 'default',
+    iconPosition: 'before',
+    disabled: false,
+  },
+});
+
+type ButtonColor = VariantProps<typeof variants>['color'];
 type ButtonVariant = VariantProps<typeof variants>['variant'];
 type ButtonSize = VariantProps<typeof variants>['size'];
 
 type ButtonProps = JSX.IntrinsicElements['button'] & {
   variant?: ButtonVariant;
+  color?: ButtonColor;
   size?: ButtonSize;
   loading?: boolean;
+  icon?: ReactNode;
+  iconPosition?: 'before' | 'after';
 };
 
 const Button = ({
+  variant,
+  color,
+  size,
+  icon,
+  iconPosition,
   className,
   children,
-  variant,
-  size,
   loading,
+  disabled,
   ...rest
 }: ButtonProps) => (
-  <button className={variants({ variant, size, className })} {...rest}>
-    {loading && <Loading variant={variant} />}
+  <button
+    className={variants({
+      variant,
+      color,
+      size,
+      iconPosition,
+      disabled,
+      className,
+    })}
+    disabled={disabled}
+    {...rest}
+  >
+    {loading && <Loading variant={color} />}
     <span
       className={clsx('transition', {
         'opacity-0': loading,
         'opacity-100': !loading,
       })}
     >
+      {icon}
       {children}
     </span>
   </button>

@@ -2,11 +2,13 @@ import {
   GearIcon,
   PersonArmsSpreadIcon,
   TextAaIcon,
+  TextTIcon,
   XIcon,
 } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useContext, useEffect, useState } from 'react';
 import { WidgetContext } from '../lib/context';
+import { useFontFamily } from '../lib/hooks/use-font-family';
 import { useFontSize } from '../lib/hooks/use-font-size';
 import { WidgetButton } from './WidgetButton';
 
@@ -15,7 +17,16 @@ export function Widget() {
   const [isVisible, setIsVisible] = useState(isOpen);
   const [animateIn, setAnimateIn] = useState(false);
 
-  const increaseFontSize = useFontSize();
+  const {
+    increaseFontSize,
+    currentStep: currentFontSizeStep,
+    maxFontStep: maxFontSizeStep,
+  } = useFontSize();
+  const {
+    changeFontFamily,
+    currentStep: currentFontFamilyStep,
+    maxFontStep: maxFontFamilyStep,
+  } = useFontFamily();
 
   useEffect(() => {
     if (isOpen) {
@@ -32,11 +43,10 @@ export function Widget() {
   if (!isVisible) {
     return (
       <Button
-        className=" rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
+        className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
+        icon={<PersonArmsSpreadIcon size={24} />}
         onClick={() => setIsOpen(true)}
-      >
-        <PersonArmsSpreadIcon size={24} />
-      </Button>
+      />
     );
   }
   const drawerClasses = `
@@ -51,15 +61,16 @@ export function Widget() {
       <div className="flex justify-between items-center ">
         <h2 className="text-xl font-bold">Menu acessibilidade</h2>
         <div className="flex items-center gap-2">
-          <Button className="hover:bg-gray-100 text-black bg-transparent p-2 rounded-full">
-            <GearIcon size={24} />
-          </Button>
           <Button
-            className="bg-black p-2 rounded-full"
+            className="rounded-full p-2 text-2xl"
+            variant="simple"
+            icon={<GearIcon />}
+          />
+          <Button
+            className="p-2 rounded-full text-2xl"
             onClick={() => setIsOpen(false)}
-          >
-            <XIcon size={24} weight="bold" />
-          </Button>
+            icon={<XIcon weight="bold" />}
+          />
         </div>
       </div>
 
@@ -68,8 +79,17 @@ export function Widget() {
       <div className="flex gap-2.5 flex-wrap">
         <WidgetButton
           text="Tamanho do texto"
-          icon={<TextAaIcon weight="bold" size={28} />}
+          icon={<TextAaIcon weight="bold" />}
+          step={currentFontSizeStep}
+          maxSteps={maxFontSizeStep}
           onClick={increaseFontSize}
+        />
+        <WidgetButton
+          text="Estilo de fonte"
+          icon={<TextTIcon weight="fill" />}
+          step={currentFontFamilyStep}
+          maxSteps={maxFontFamilyStep}
+          onClick={changeFontFamily}
         />
       </div>
     </div>

@@ -6,6 +6,7 @@ export const useFontSize = () => {
   const FONT_STEP = 12.5;
   const MIN_FONT_PERCENT = 50;
   const MAX_FONT_PERCENT = 200;
+  const MAX_FONT_STEP = (MAX_FONT_PERCENT - BASE_FONT_PERCENT) / FONT_STEP;
 
   const clamp = (value: number, min: number, max: number) =>
     Math.min(max, Math.max(min, value));
@@ -23,7 +24,7 @@ export const useFontSize = () => {
     if (MAX_FONT_PERCENT === clamped) {
       clamped = clamp(BASE_FONT_PERCENT, MIN_FONT_PERCENT, MAX_FONT_PERCENT);
     }
-    document.documentElement.style.fontSize = `${clamped}%`;
+    document.body.style.fontSize = `${clamped}%`;
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(FONT_SIZE_STORAGE_KEY, clamped.toString());
@@ -32,10 +33,13 @@ export const useFontSize = () => {
     setFontPercent(clamped);
   };
 
+  const currentStep =
+    MAX_FONT_STEP - (MAX_FONT_PERCENT - fontPercent) / FONT_STEP;
+
   useLayoutEffect(() => {
     applyFontSize(fontPercent);
   }, []);
 
   const increaseFontSize = () => applyFontSize(fontPercent + FONT_STEP);
-  return increaseFontSize;
+  return { increaseFontSize, currentStep, maxFontStep: MAX_FONT_STEP - 1 };
 };

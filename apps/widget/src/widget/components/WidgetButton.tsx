@@ -1,19 +1,58 @@
 import { Button } from '@web-extension-accessibility-frontend/ui';
+import clsx from 'clsx';
 type WidgetButtonProps = {
   icon: React.ReactNode;
   text: string;
+  step?: number;
+  maxSteps?: number;
   onClick?: () => void;
 };
 
-export function WidgetButton({ icon, text, onClick }: WidgetButtonProps) {
+export function WidgetButton({
+  icon,
+  text,
+  onClick,
+  step,
+  maxSteps,
+}: WidgetButtonProps) {
+  const active = step && step > 0;
+
   return (
     <Button
+      color="grey-200"
       onClick={onClick}
-      className="p-2.5 h-[90px] min-w-[150px] max-w-full rounded-lg flex flex-col !justify-center !items-center hover:bg-grey-100 bg-grey-200 text-sm text-foreground !border-none !shadow-none"
+      className={clsx(
+        'p-2.5 min-h-[90px] min-w-[150px] h-auto max-w-full text-sm',
+        {
+          'border-3 border-primary shadow-primary ring-4 ring-primary-200':
+            active,
+        }
+      )}
+      aria-label={`${text} ${active ? 'active' : 'inactive'}`}
     >
-      <div className="flex flex-col items-center gap-1 ">
-        {icon}
-        {text}
+      <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-1 ">
+          <span className="text-2xl">{icon}</span>
+          {text}
+        </div>
+        {step && step > 0 && maxSteps ? (
+          <div className="flex gap-1 justify-center w-full">
+            {Array.from({ length: step }, (_, i) => (
+              <span
+                key={i}
+                className={`inline-block w-full h-1 rounded-lg bg-primary`}
+              />
+            ))}
+            {Array.from({ length: maxSteps - step }, (_, i) => (
+              <span
+                key={i}
+                className={`inline-block w-full h-1 rounded-lg bg-primary-200`}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="h-1" />
+        )}
       </div>
     </Button>
   );
