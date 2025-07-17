@@ -93,5 +93,14 @@ export const useFontFamily = () => {
     applyFontFamily(FONT_KEYS[nextStep]);
   }, [currentStep, FONT_KEYS, applyFontFamily]);
 
-  return { changeFontFamily, currentStep, maxFontStep: MAX_FONT_STEP };
+  const resetFontFamily = () => {
+    applyFontFamily(FONTS.default.name);
+  };
+
+  return {
+    changeFontFamily,
+    currentStep,
+    maxFontStep: MAX_FONT_STEP,
+    resetFontFamily,
+  };
 };

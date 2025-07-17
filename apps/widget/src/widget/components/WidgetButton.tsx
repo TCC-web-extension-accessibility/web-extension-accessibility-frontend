@@ -22,7 +22,7 @@ export function WidgetButton({
       color="grey-200"
       onClick={onClick}
       className={clsx(
-        'p-2.5 min-h-[90px] min-w-[150px] h-auto max-w-full text-sm',
+        'p-2.5 min-h-[90px] min-w-[150px] h-auto max-w-full text-sm duration-100',
         {
           'border-3 border-primary shadow-primary ring-4 ring-primary-200':
             active,

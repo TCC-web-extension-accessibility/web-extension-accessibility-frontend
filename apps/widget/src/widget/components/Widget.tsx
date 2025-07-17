@@ -1,32 +1,19 @@
-import {
-  GearIcon,
-  PersonArmsSpreadIcon,
-  TextAaIcon,
-  TextTIcon,
-  XIcon,
-} from '@phosphor-icons/react';
+import { GearIcon, PersonArmsSpreadIcon, XIcon } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useContext, useEffect, useState } from 'react';
 import { WidgetContext } from '../lib/context';
 import { useFontFamily } from '../lib/hooks/use-font-family';
 import { useFontSize } from '../lib/hooks/use-font-size';
-import { WidgetButton } from './WidgetButton';
+import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
+import { WidgetControls } from './WidgetControls';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
   const [isVisible, setIsVisible] = useState(isOpen);
   const [animateIn, setAnimateIn] = useState(false);
 
-  const {
-    increaseFontSize,
-    currentStep: currentFontSizeStep,
-    maxFontStep: maxFontSizeStep,
-  } = useFontSize();
-  const {
-    changeFontFamily,
-    currentStep: currentFontFamilyStep,
-    maxFontStep: maxFontFamilyStep,
-  } = useFontFamily();
+  const fontSize = useFontSize();
+  const fontFamily = useFontFamily();
 
   useEffect(() => {
     if (isOpen) {
@@ -76,22 +63,20 @@ export function Widget() {
 
       <div className="border-t border-gray-300 mx-5" />
 
-      <div className="flex gap-2.5 flex-wrap">
-        <WidgetButton
-          text="Tamanho do texto"
-          icon={<TextAaIcon weight="bold" />}
-          step={currentFontSizeStep}
-          maxSteps={maxFontSizeStep}
-          onClick={increaseFontSize}
-        />
-        <WidgetButton
-          text="Estilo de fonte"
-          icon={<TextTIcon weight="fill" />}
-          step={currentFontFamilyStep}
-          maxSteps={maxFontFamilyStep}
-          onClick={changeFontFamily}
-        />
-      </div>
+      <AccessibilityProfilesAccordion
+        increaseFontSize={fontSize.increaseFontSize}
+        resetFontSize={fontSize.resetFontSize}
+        resetFontFamily={fontFamily.resetFontFamily}
+      />
+
+      <WidgetControls
+        increaseFontSize={fontSize.increaseFontSize}
+        changeFontFamily={fontFamily.changeFontFamily}
+        currentFontSizeStep={fontSize.currentStep}
+        maxFontSizeStep={fontSize.maxFontStep}
+        currentFontFamilyStep={fontFamily.currentStep}
+        maxFontFamilyStep={fontFamily.maxFontStep}
+      />
     </div>
   );
 }
