@@ -74,7 +74,6 @@ export function Widget() {
       <AccessibilityProfilesAccordion
         increaseFontSize={fontSize.increaseFontSize}
         resetFontSize={fontSize.resetFontSize}
-        resetFontFamily={fontFamily.resetFontFamily}
         toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
         changeFontFamily={fontFamily.changeFontFamily}
       />
