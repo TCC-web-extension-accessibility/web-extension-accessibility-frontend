@@ -88,19 +88,21 @@ export const useFontFamily = () => {
 
   const currentStep = FONT_KEYS.indexOf(currentFontName);
 
-  const changeFontFamily = useCallback(() => {
-    const nextStep = (currentStep + 1) % FONT_KEYS.length;
-    applyFontFamily(FONT_KEYS[nextStep]);
-  }, [currentStep, FONT_KEYS, applyFontFamily]);
-
-  const resetFontFamily = () => {
-    applyFontFamily(FONTS.default.name);
-  };
+  const changeFontFamily = useCallback(
+    (fontName?: string) => {
+      if (fontName) {
+        applyFontFamily(fontName);
+      } else {
+        const nextStep = (currentStep + 1) % FONT_KEYS.length;
+        applyFontFamily(FONT_KEYS[nextStep]);
+      }
+    },
+    [currentStep, FONT_KEYS, applyFontFamily]
+  );
 
   return {
     changeFontFamily,
     currentStep,
     maxFontStep: MAX_FONT_STEP,
-    resetFontFamily,
   };
 };

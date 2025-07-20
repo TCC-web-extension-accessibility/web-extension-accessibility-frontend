@@ -6,6 +6,7 @@ type WidgetButtonProps = {
   step?: number;
   maxSteps?: number;
   onClick?: () => void;
+  checked?: boolean;
 };
 
 export function WidgetButton({
@@ -14,15 +15,16 @@ export function WidgetButton({
   onClick,
   step,
   maxSteps,
+  checked,
 }: WidgetButtonProps) {
-  const active = step && step > 0;
+  const active = (step && step > 0) || checked;
 
   return (
     <Button
       color="grey-200"
       onClick={onClick}
       className={clsx(
-        'p-2.5 min-h-[90px] min-w-[150px] h-auto max-w-full text-sm duration-100',
+        'p-2.5 min-h-[90px] min-w-[150px] h-auto text-sm duration-100',
         {
           'border-3 border-primary shadow-primary ring-4 ring-primary-200':
             active,
@@ -33,7 +35,7 @@ export function WidgetButton({
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-col items-center gap-1 ">
           <span className="text-2xl">{icon}</span>
-          {text}
+          <p className="text-wrap">{text}</p>
         </div>
         {step && step > 0 && maxSteps ? (
           <div className="flex gap-1 justify-center w-full">

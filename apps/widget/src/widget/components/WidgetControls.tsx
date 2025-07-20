@@ -1,13 +1,30 @@
-import { TextAaIcon, TextTIcon } from '@phosphor-icons/react';
+import {
+  ArrowsInLineHorizontalIcon,
+  ArrowsOutLineVerticalIcon,
+  ImageIcon,
+  PauseCircleIcon,
+  TextAaIcon,
+  TextTIcon,
+} from '@phosphor-icons/react';
 import { WidgetButton } from './WidgetButton';
 
 type WidgetControlsProps = {
   increaseFontSize: () => void;
-  changeFontFamily: () => void;
   currentFontSizeStep: number;
   maxFontSizeStep: number;
+  changeFontFamily: () => void;
   currentFontFamilyStep: number;
   maxFontFamilyStep: number;
+  increaseLineHeight: () => void;
+  currentLineHeightStep: number;
+  maxLineHeightStep: number;
+  increaseLetterSpacing: () => void;
+  currentLetterSpacingStep: number;
+  maxLetterSpacingStep: number;
+  disabledAnimations: boolean;
+  toggleDisabledAnimations: () => void;
+  hideImages: boolean;
+  toggleHideImages: () => void;
 };
 
 export function WidgetControls({
@@ -17,23 +34,61 @@ export function WidgetControls({
   maxFontSizeStep,
   currentFontFamilyStep,
   maxFontFamilyStep,
+  increaseLineHeight,
+  currentLineHeightStep,
+  maxLineHeightStep,
+  increaseLetterSpacing,
+  currentLetterSpacingStep,
+  maxLetterSpacingStep,
+  disabledAnimations,
+  toggleDisabledAnimations,
+  hideImages,
+  toggleHideImages,
 }: WidgetControlsProps) {
   return (
-    <div className="flex gap-2.5 flex-wrap">
-      <WidgetButton
-        text="Tamanho do texto"
-        icon={<TextAaIcon weight="bold" />}
-        step={currentFontSizeStep}
-        maxSteps={maxFontSizeStep}
-        onClick={() => increaseFontSize()}
-      />
-      <WidgetButton
-        text="Estilo de fonte"
-        icon={<TextTIcon weight="fill" />}
-        step={currentFontFamilyStep}
-        maxSteps={maxFontFamilyStep}
-        onClick={changeFontFamily}
-      />
+    <div className="@container">
+      <div className="grid grid-cols-2 gap-2.5 @[470px]:grid-cols-3">
+        <WidgetButton
+          text="Tamanho do texto"
+          icon={<TextAaIcon weight="bold" />}
+          step={currentFontSizeStep}
+          maxSteps={maxFontSizeStep}
+          onClick={() => increaseFontSize()}
+        />
+        <WidgetButton
+          text="Estilo de fonte"
+          icon={<TextTIcon weight="fill" />}
+          step={currentFontFamilyStep}
+          maxSteps={maxFontFamilyStep}
+          onClick={() => changeFontFamily()}
+        />
+        <WidgetButton
+          text="Altura da linha"
+          icon={<ArrowsOutLineVerticalIcon weight="fill" />}
+          step={currentLineHeightStep}
+          maxSteps={maxLineHeightStep}
+          onClick={() => increaseLineHeight()}
+        />
+        <WidgetButton
+          text="Espaçamento letras"
+          icon={<ArrowsInLineHorizontalIcon weight="fill" />}
+          step={currentLetterSpacingStep}
+          maxSteps={maxLetterSpacingStep}
+          onClick={() => increaseLetterSpacing()}
+        />
+        <WidgetButton
+          text="Pausar animações"
+          icon={<PauseCircleIcon />}
+          onClick={() => toggleDisabledAnimations()}
+          checked={disabledAnimations}
+        />
+        <WidgetButton
+          text="Esconder imagens"
+          icon={<ImageIcon weight="fill" />}
+          checked={hideImages}
+          onClick={() => toggleHideImages()}
+        />
+      </div>
     </div>
   );
 }

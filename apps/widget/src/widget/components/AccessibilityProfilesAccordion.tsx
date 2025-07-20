@@ -4,7 +4,11 @@ import {
   EyeIcon,
   PuzzlePieceIcon,
 } from '@phosphor-icons/react';
-import { Accordion, Radio } from '@web-extension-accessibility-frontend/ui';
+import {
+  Accordion,
+  ToggleGroup,
+  ToggleGroupItem,
+} from '@web-extension-accessibility-frontend/ui';
 
 type AccessibilityProfileButtonProps = {
   onClick?: () => void;
@@ -31,69 +35,87 @@ function AccessibilityProfileLabel({
 type AccessibilityProfilesAccordionProps = {
   increaseFontSize: (size?: number) => void;
   resetFontSize: () => void;
-  resetFontFamily: () => void;
+  changeFontFamily: (fontName: string) => void;
+  toggleDisabledAnimations: (disabled: boolean) => void;
 };
 
 export function AccessibilityProfilesAccordion({
   increaseFontSize,
   resetFontSize,
-  resetFontFamily,
+  toggleDisabledAnimations,
+  changeFontFamily,
 }: AccessibilityProfilesAccordionProps) {
   const handleProfileClick = (action: () => void) => {
     resetFontSize();
-    resetFontFamily();
+    changeFontFamily('default');
+    toggleDisabledAnimations(false);
     action();
   };
 
   return (
     <Accordion
       children={
-        <div className="grid grid-cols-2 gap-2 py-3">
-          <Radio
-            name="accessibility-profiles"
-            variant="button"
-            label={
-              <AccessibilityProfileLabel
-                name="Daltônico"
-                icon={<DropHalfIcon size={20} />}
-              />
+        <ToggleGroup
+          type="single"
+          defaultValue="center"
+          aria-label="Text alignment"
+          className="grid grid-cols-2 gap-2 py-2 px-1"
+          onValueChange={(value) => {
+            if (value === '') {
+              handleProfileClick(() => {});
             }
+          }}
+        >
+          <ToggleGroupItem
+            value="Daltônico"
+            aria-label="Daltônico"
             onClick={() => handleProfileClick(() => {})}
-          />
-          <Radio
-            name="accessibility-profiles"
-            variant="button"
-            label={
-              <AccessibilityProfileLabel
-                name="Baixa visão"
-                icon={<EyeIcon size={20} />}
-              />
-            }
+          >
+            <AccessibilityProfileLabel
+              name="Daltônico"
+              icon={<DropHalfIcon size={20} />}
+            />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="Baixa visão"
+            aria-label="Baixa visão"
             onClick={() => handleProfileClick(() => increaseFontSize(150))}
-          />
-          <Radio
-            name="accessibility-profiles"
-            variant="button"
-            label={
-              <AccessibilityProfileLabel
-                name="TDAH"
-                icon={<PuzzlePieceIcon size={20} />}
-              />
+          >
+            <AccessibilityProfileLabel
+              name="Baixa visão"
+              icon={<EyeIcon size={20} />}
+            />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="TDAH"
+            aria-label="TDAH"
+            onClick={() =>
+              handleProfileClick(() => {
+                toggleDisabledAnimations(true);
+              })
             }
-            onClick={() => handleProfileClick(() => {})}
-          />
-          <Radio
-            name="accessibility-profiles"
-            variant="button"
-            label={
-              <AccessibilityProfileLabel
-                name="Epilepsia"
-                icon={<BrainIcon size={20} />}
-              />
+          >
+            <AccessibilityProfileLabel
+              name="TDAH"
+              icon={<PuzzlePieceIcon size={20} />}
+            />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="Epilepsia"
+            aria-label="Epilepsia"
+            onClick={() =>
+              handleProfileClick(() => {
+                changeFontFamily('dyslexic');
+                toggleDisabledAnimations(true);
+              })
             }
-            onClick={() => handleProfileClick(() => {})}
-          />
-        </div>
+          >
+            <AccessibilityProfileLabel
+              name="Epilepsia"
+              icon={<BrainIcon size={20} />}
+            />
+          </ToggleGroupItem>
+        </ToggleGroup>
       }
       title="Perfis de acessibilidade"
     />

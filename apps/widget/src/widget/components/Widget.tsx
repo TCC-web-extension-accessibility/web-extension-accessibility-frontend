@@ -2,8 +2,12 @@ import { GearIcon, PersonArmsSpreadIcon, XIcon } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useContext, useEffect, useState } from 'react';
 import { WidgetContext } from '../lib/context';
+import { useDisableAnimations } from '../lib/hooks/use-disable-animations';
 import { useFontFamily } from '../lib/hooks/use-font-family';
 import { useFontSize } from '../lib/hooks/use-font-size';
+import { useHideImages } from '../lib/hooks/use-hide-images';
+import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
+import { useLineHeight } from '../lib/hooks/use-line-height';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
 import { WidgetControls } from './WidgetControls';
 
@@ -14,6 +18,10 @@ export function Widget() {
 
   const fontSize = useFontSize();
   const fontFamily = useFontFamily();
+  const lineHeight = useLineHeight();
+  const letterSpacing = useLetterSpacing();
+  const disableAnimations = useDisableAnimations();
+  const hideImages = useHideImages();
 
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +75,8 @@ export function Widget() {
         increaseFontSize={fontSize.increaseFontSize}
         resetFontSize={fontSize.resetFontSize}
         resetFontFamily={fontFamily.resetFontFamily}
+        toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
+        changeFontFamily={fontFamily.changeFontFamily}
       />
 
       <WidgetControls
@@ -76,6 +86,16 @@ export function Widget() {
         maxFontSizeStep={fontSize.maxFontStep}
         currentFontFamilyStep={fontFamily.currentStep}
         maxFontFamilyStep={fontFamily.maxFontStep}
+        increaseLineHeight={lineHeight.increaseLineHeight}
+        currentLineHeightStep={lineHeight.currentStep}
+        maxLineHeightStep={lineHeight.maxLineHeightStep}
+        increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
+        currentLetterSpacingStep={letterSpacing.currentStep}
+        maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
+        toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
+        disabledAnimations={disableAnimations.disabledAnimations}
+        hideImages={hideImages.hideImages}
+        toggleHideImages={hideImages.toggleHideImages}
       />
     </div>
   );
