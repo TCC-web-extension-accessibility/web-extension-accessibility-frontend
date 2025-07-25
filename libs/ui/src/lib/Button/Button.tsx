@@ -8,6 +8,7 @@ const loading = tv({
   variants: {
     variant: {
       primary: ['border-white'],
+      'primary-900': ['border-white'],
       secondary: ['border-gray-950'],
       destructive: ['border-white'],
       disabled: ['border-gray-300'],
@@ -29,7 +30,7 @@ const Loading = ({ variant }: { variant?: LoadingVariant }) => (
 
 const variants = tv({
   base: [
-    'flex items-center justify-center rounded-lg cursor-pointer transition-all outline-none  focus-visible:ring-4 font-ubuntu gap-1 ring-(--bg-color)/50 hover:[--bg-color:var(--hover-color)]',
+    'flex items-center justify-center rounded-lg cursor-pointer transition-all outline-none focus-visible:ring-4 font-ubuntu gap-1 ring-(--bg-color)/50 hover:[--bg-color:var(--hover-color)]',
   ],
   variants: {
     disabled: {
@@ -40,6 +41,12 @@ const variants = tv({
         '[--bg-color:var(--color-primary-500)]',
         '[--fg-color:var(--color-primary-foreground)]',
         '[--hover-color:var(--color-primary-200)]',
+        '[--hover-text-color:var(--color-primary-foreground)]',
+      ],
+      'primary-900': [
+        '[--bg-color:var(--color-primary-900)]',
+        '[--fg-color:var(--color-primary-foreground)]',
+        '[--hover-color:var(--color-primary)]',
         '[--hover-text-color:var(--color-primary-foreground)]',
       ],
       'grey-400': [
@@ -132,7 +139,7 @@ const Button = ({
   >
     {loading && <Loading variant={color} />}
     <span
-      className={clsx('transition', {
+      className={clsx('transition flex items-center justify-center gap-1', {
         'opacity-0': loading,
         'opacity-100': !loading,
       })}

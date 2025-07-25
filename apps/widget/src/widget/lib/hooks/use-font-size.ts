@@ -40,6 +40,17 @@ export const useFontSize = () => {
     applyFontSize(fontPercent);
   }, []);
 
-  const increaseFontSize = () => applyFontSize(fontPercent + FONT_STEP);
-  return { increaseFontSize, currentStep, maxFontStep: MAX_FONT_STEP - 1 };
+  const increaseFontSize = (size?: number) => {
+    size ? applyFontSize(size) : applyFontSize(fontPercent + FONT_STEP);
+  };
+  const resetFontSize = () => {
+    applyFontSize(BASE_FONT_PERCENT);
+  };
+
+  return {
+    increaseFontSize,
+    currentStep,
+    maxFontStep: MAX_FONT_STEP - 1,
+    resetFontSize,
+  };
 };
