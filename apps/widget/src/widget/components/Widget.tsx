@@ -8,6 +8,7 @@ import { useFontSize } from '../lib/hooks/use-font-size';
 import { useHideImages } from '../lib/hooks/use-hide-images';
 import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
+import { useReadingGuide } from '../lib/hooks/use-reading-guide';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
 import { WidgetControls } from './WidgetControls';
 
@@ -22,6 +23,7 @@ export function Widget() {
   const letterSpacing = useLetterSpacing();
   const disableAnimations = useDisableAnimations();
   const hideImages = useHideImages();
+  const readingGuide = useReadingGuide();
 
   useEffect(() => {
     if (isOpen) {
@@ -95,6 +97,10 @@ export function Widget() {
         disabledAnimations={disableAnimations.disabledAnimations}
         hideImages={hideImages.hideImages}
         toggleHideImages={hideImages.toggleHideImages}
+        readingGuideMode={readingGuide.readingGuideMode}
+        changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+        maxReadingGuideMode={readingGuide.maxReadingGuideMode}
+        currentReadingGuideModeStep={readingGuide.currentStep}
       />
     </div>
   );

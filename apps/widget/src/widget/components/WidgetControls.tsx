@@ -3,9 +3,11 @@ import {
   ArrowsOutLineVerticalIcon,
   ImageIcon,
   PauseCircleIcon,
+  SquareSplitVerticalIcon,
   TextAaIcon,
   TextTIcon,
 } from '@phosphor-icons/react';
+import { READING_GUIDE_MODES } from '../lib/hooks/use-reading-guide';
 import { WidgetButton } from './WidgetButton';
 
 type WidgetControlsProps = {
@@ -25,6 +27,10 @@ type WidgetControlsProps = {
   toggleDisabledAnimations: () => void;
   hideImages: boolean;
   toggleHideImages: () => void;
+  readingGuideMode: (typeof READING_GUIDE_MODES)[keyof typeof READING_GUIDE_MODES];
+  changeReadingGuideMode: () => void;
+  maxReadingGuideMode: number;
+  currentReadingGuideModeStep: number;
 };
 
 export function WidgetControls({
@@ -44,6 +50,10 @@ export function WidgetControls({
   toggleDisabledAnimations,
   hideImages,
   toggleHideImages,
+  readingGuideMode,
+  changeReadingGuideMode,
+  maxReadingGuideMode,
+  currentReadingGuideModeStep,
 }: WidgetControlsProps) {
   return (
     <div className="@container">
@@ -87,6 +97,14 @@ export function WidgetControls({
           icon={<ImageIcon weight="fill" />}
           checked={hideImages}
           onClick={() => toggleHideImages()}
+        />
+        <WidgetButton
+          text="Guia de leitura"
+          icon={<SquareSplitVerticalIcon />}
+          onClick={() => changeReadingGuideMode()}
+          checked={readingGuideMode !== READING_GUIDE_MODES.OFF}
+          maxSteps={maxReadingGuideMode}
+          step={currentReadingGuideModeStep}
         />
       </div>
     </div>
