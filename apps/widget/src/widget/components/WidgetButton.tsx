@@ -7,6 +7,7 @@ type WidgetButtonProps = {
   maxSteps?: number;
   onClick?: () => void;
   checked?: boolean;
+  disabled?: boolean;
 };
 
 export function WidgetButton({
@@ -16,6 +17,7 @@ export function WidgetButton({
   step,
   maxSteps,
   checked,
+  disabled = false,
 }: WidgetButtonProps) {
   const active = (step && step > 0) || checked;
 
@@ -31,6 +33,7 @@ export function WidgetButton({
         }
       )}
       aria-label={`${text} ${active ? 'active' : 'inactive'}`}
+      disabled={disabled}
     >
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-col items-center gap-1 ">

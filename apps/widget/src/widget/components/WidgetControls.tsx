@@ -1,8 +1,11 @@
 import {
   ArrowsInLineHorizontalIcon,
   ArrowsOutLineVerticalIcon,
+  CircleHalfIcon,
   ImageIcon,
+  LinkSimpleHorizontalIcon,
   PauseCircleIcon,
+  SpeakerHighIcon,
   SquareSplitVerticalIcon,
   TextAaIcon,
   TextTIcon,
@@ -59,6 +62,21 @@ export function WidgetControls({
     <div className="@container">
       <div className="grid grid-cols-2 gap-2.5 @[470px]:grid-cols-3">
         <WidgetButton
+          text="Contraste"
+          icon={<CircleHalfIcon weight="fill" />}
+          onClick={() => {
+            alert('Contraste feature not implemented yet');
+          }}
+        />
+        <WidgetButton
+          text="Leitor"
+          icon={<SpeakerHighIcon weight="fill" />}
+          onClick={() => {
+            alert('Reader feature not implemented yet');
+          }}
+          disabled={true}
+        />
+        <WidgetButton
           text="Tamanho do texto"
           icon={<TextAaIcon weight="bold" />}
           step={currentFontSizeStep}
@@ -105,6 +123,14 @@ export function WidgetControls({
           checked={readingGuideMode !== READING_GUIDE_MODES.OFF}
           maxSteps={maxReadingGuideMode}
           step={currentReadingGuideModeStep}
+        />
+        <WidgetButton
+          text="Destacar links"
+          icon={<LinkSimpleHorizontalIcon />}
+          onClick={() => {
+            alert('Highlight links feature not implemented yet');
+          }}
+          disabled={true}
         />
       </div>
     </div>
