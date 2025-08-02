@@ -78,6 +78,7 @@ export function Widget() {
         resetFontSize={fontSize.resetFontSize}
         toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
         changeFontFamily={fontFamily.changeFontFamily}
+        changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
       />
 
       <WidgetControls

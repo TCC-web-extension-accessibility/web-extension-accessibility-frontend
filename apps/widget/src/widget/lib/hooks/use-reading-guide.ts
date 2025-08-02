@@ -135,7 +135,14 @@ export const useReadingGuide = () => {
     };
   }, [applyMode]);
 
-  const cycleReadingGuideMode = () => {
+  const cycleReadingGuideMode = (mode?: string) => {
+    if (mode) {
+      localStorage.setItem(READING_GUIDE_STORAGE_KEY, mode);
+      setMode(mode as ReadingGuideMode);
+      applyMode(mode as ReadingGuideMode);
+      return;
+    }
+
     const nextIndex = (currentIndex + 1) % modes.length;
     const nextMode = modes[nextIndex];
     localStorage.setItem(READING_GUIDE_STORAGE_KEY, nextMode);

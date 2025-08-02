@@ -37,6 +37,7 @@ type AccessibilityProfilesAccordionProps = {
   resetFontSize: () => void;
   changeFontFamily: (fontName: string) => void;
   toggleDisabledAnimations: (disabled: boolean) => void;
+  changeReadingGuideMode: (mode?: string) => void;
 };
 
 export function AccessibilityProfilesAccordion({
@@ -44,11 +45,13 @@ export function AccessibilityProfilesAccordion({
   resetFontSize,
   toggleDisabledAnimations,
   changeFontFamily,
+  changeReadingGuideMode,
 }: AccessibilityProfilesAccordionProps) {
   const handleProfileClick = (action: () => void) => {
     resetFontSize();
     changeFontFamily('default');
     toggleDisabledAnimations(false);
+    changeReadingGuideMode('off');
     action();
   };
 
@@ -92,6 +95,7 @@ export function AccessibilityProfilesAccordion({
             onClick={() =>
               handleProfileClick(() => {
                 toggleDisabledAnimations(true);
+                changeReadingGuideMode('mask');
               })
             }
           >
