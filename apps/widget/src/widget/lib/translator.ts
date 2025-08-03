@@ -24,6 +24,7 @@ function revertToOriginals() {
 }
 
 function translate(language: string) {
+  // TODO: Replace mock translation with backend API call
   const translationMap = translations[language.toLowerCase()];
   if (!translationMap) {
     return;
