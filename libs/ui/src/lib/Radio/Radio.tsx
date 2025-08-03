@@ -1,6 +1,6 @@
 import { CircleIcon } from '@phosphor-icons/react';
 import clsx from 'clsx';
-import { JSX, ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { tv } from 'tailwind-variants';
 
 type RadioVariant = 'default' | 'button';
