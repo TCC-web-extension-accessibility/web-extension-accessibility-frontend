@@ -44,7 +44,7 @@ export function LanguageSelector({
       languages.filter((lang) =>
         lang.name.toLowerCase().includes(searchTerm.toLowerCase())
       ),
-    [searchTerm]
+    [searchTerm, languages]
   );
 
   const {
