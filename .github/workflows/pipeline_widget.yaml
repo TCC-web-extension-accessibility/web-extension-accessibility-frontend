@@ -1,45 +1,45 @@
-name: Build and Deploy React IIFE App
+# name: Build and Deploy React IIFE App
 
-on:
-  push:
-    branches:
-      - main # Trigger the workflow on pushes to the main branch
+# on:
+#   push:
+#     branches:
+#       - main # Trigger the workflow on pushes to the main branch
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'pnpm' # Changed cache to pnpm
-          # If your pnpm version is specific, you might add:
-          # pnpm-version: 'latest' # Or a specific version like '8.x'
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '18'
+#           cache: 'pnpm' # Changed cache to pnpm
+#           # If your pnpm version is specific, you might add:
+#           # pnpm-version: 'latest' # Or a specific version like '8.x'
 
-      - name: Install dependencies (with pnpm)
-        run: pnpm install --frozen-lockfile # Use pnpm install for workspaces
-        # --frozen-lockfile is recommended in CI environments for reproducibility
+#       - name: Install dependencies (with pnpm)
+#         run: pnpm install --frozen-lockfile # Use pnpm install for workspaces
+#         # --frozen-lockfile is recommended in CI environments for reproducibility
 
-      - name: Build React App (with Vite and pnpm)
-        # Assumes 'pnpm run build' triggers Vite build in your workspace
-        run: pnpm run build
+#       - name: Build React App (with Vite and pnpm)
+#         # Assumes 'pnpm run build' triggers Vite build in your workspace
+#         run: pnpm run build
 
-      - name: Upload build artifacts (optional)
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: dist/ # Vite's default output directory
-          retention-days: 5
+#       - name: Upload build artifacts (optional)
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: build-artifacts
+#           path: dist/ # Vite's default output directory
+#           retention-days: 5
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist # Vite's default output directory
-          # Optional: Specify the branch to publish to. Defaults to 'gh-pages'
-          # publish_branch: gh-pages
+#       - name: Deploy to GitHub Pages
+#         uses: peaceiris/actions-gh-pages@v3
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           publish_dir: ./dist # Vite's default output directory
+#           # Optional: Specify the branch to publish to. Defaults to 'gh-pages'
+#           # publish_branch: gh-pages
