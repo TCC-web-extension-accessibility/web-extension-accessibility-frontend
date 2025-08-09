@@ -10,6 +10,7 @@ import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
+import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { WidgetControls } from './WidgetControls';
 
 export function Widget() {
@@ -72,6 +73,8 @@ export function Widget() {
       </div>
 
       <div className="border-t border-gray-300 mx-5" />
+
+      <LanguageSelectorAccordion />
 
       <AccessibilityProfilesAccordion
         increaseFontSize={fontSize.increaseFontSize}
