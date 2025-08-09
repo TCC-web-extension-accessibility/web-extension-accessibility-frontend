@@ -1,0 +1,19 @@
+@import '../../../../libs/ui/src/styles.css';
+
+@source "../src/**/*.{ts,tsx}";
+@source "../../../../libs/ui/src/**/*.{ts,tsx}";
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-in-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
