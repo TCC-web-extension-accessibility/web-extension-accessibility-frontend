@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import 'tailwindcss';
 
 html {
@@ -15,15 +16,7 @@ html {
     line-height: var(--leading) !important;
   }
   color: var(--color-foreground);
-  font-family: var(--font-lato);
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-ubuntu);
-  }
+  font-family: var(--font-inter);
 }
 
 @theme {
@@ -90,8 +83,7 @@ html {
   --color-warn-500: #e5a000;
 
   /* Fonts */
-  --font-lato: 'Lato', sans-serif;
-  --font-ubuntu: 'Ubuntu', sans-serif;
+  --font-inter: 'Inter', sans-serif;
 
   /* Animations */
   @keyframes accordion-slide-down {
