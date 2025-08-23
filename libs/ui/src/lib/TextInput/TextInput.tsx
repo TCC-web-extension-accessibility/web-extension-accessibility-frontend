@@ -1,8 +1,10 @@
 import clsx from 'clsx';
-import { ChangeEvent, JSX, useEffect, useState } from 'react';
+import type { ChangeEvent, JSX } from 'react';
+import { useEffect, useState } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { tv } from 'tailwind-variants';
-import { Button, ButtonProps } from '../Button/Button';
+import type { ButtonProps } from '../Button/Button';
+import { Button } from '../Button/Button';
 
 export type TextInputCustomProps = {
   disabled?: boolean;
