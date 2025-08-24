@@ -37,7 +37,7 @@ const textInput = tv({
       'flex w-full h-full max-h-10 rounded-lg border-solid border-1 border-grey-500 group has-[input:focus]:border-foreground has-[input:focus]:ring-2 has-[input:focus]:ring-foreground/50 flex-1 gap-2 py-[9.5px] px-4 items-center',
 
     input:
-      'w-full border-none h-4.75 bg-transparent m-0 outline-none shadow-none appearance-none text-foreground placeholder-shown:text-grey-500 leading-[1.1875]',
+      'w-full border-none h-4.75 bg-transparent m-0 outline-none appearance-none text-foreground placeholder-shown:text-grey-500 leading-[1.1875]',
     icon: 'group-has-[input:focus]:text-foreground text-grey-500',
     button:
       'mr-[-0.75rem] my-[-0.5rem] aspect-square flex items-center justify-center',

@@ -1,13 +1,10 @@
 import { MagnifyingGlassIcon } from '@phosphor-icons/react';
+import { TextInput } from '@web-extension-accessibility-frontend/ui';
 import { useMemo, useRef, useState } from 'react';
 import { tv } from 'tailwind-variants';
 
 const languageSelectorVariants = tv({
   slots: {
-    searchInputContainer: 'relative p-4',
-    searchInput:
-      'w-full p-2 pl-5 pr-10 border border-grey-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none',
-    searchIcon: 'absolute right-6 top-1/2 -translate-y-1/2 text-grey-500',
     languageList: 'divide-y divide-grey-200',
     languageItem:
       'flex items-center p-3 cursor-pointer hover:bg-grey-100 focus:bg-grey-200 outline-none',
@@ -47,15 +44,8 @@ export function LanguageSelector({
     [searchTerm, languages]
   );
 
-  const {
-    searchInputContainer,
-    searchInput,
-    searchIcon,
-    languageList,
-    languageItem,
-    languageAvatar,
-    languageName,
-  } = languageSelectorVariants();
+  const { languageList, languageItem, languageAvatar, languageName } =
+    languageSelectorVariants();
 
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLDivElement>,
@@ -77,15 +67,14 @@ export function LanguageSelector({
 
   return (
     <div>
-      <div className={searchInputContainer()}>
-        <input
-          type="text"
-          placeholder="Pesquise o idioma"
-          className={searchInput()}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <MagnifyingGlassIcon size={20} className={searchIcon()} />
-      </div>
+      <TextInput
+        label
+        placeholder="Pesquise o idioma"
+        onChange={(e) => setSearchTerm(e.currentTarget.value)}
+        icon={<MagnifyingGlassIcon />}
+        iconPosition="after"
+        className="p-1 mb-2"
+      />
       <div
         className={languageList()}
         role="radiogroup"

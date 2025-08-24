@@ -1,15 +1,22 @@
 import { Accordion } from '@web-extension-accessibility-frontend/ui';
-import { useSelectLanguage } from '../lib/hooks/use-select-language';
 import { LanguageSelector } from './LanguageSelector';
 
-export function LanguageSelectorAccordion() {
-  const { selectLanguage, selectedLanguage, languages } = useSelectLanguage();
+type LanguageSelectorAccordionProps = {
+  languages: { code: string; name: string }[];
+  selectedLanguage: string;
+  onLanguageChange: (language: string) => void;
+};
 
+export function LanguageSelectorAccordion({
+  languages,
+  selectedLanguage,
+  onLanguageChange,
+}: LanguageSelectorAccordionProps) {
   return (
     <Accordion title="Idioma">
       <LanguageSelector
         languages={languages}
-        onLanguageChange={selectLanguage}
+        onLanguageChange={onLanguageChange}
         selectedLanguage={selectedLanguage}
       />
     </Accordion>
