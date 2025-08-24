@@ -7,11 +7,9 @@
       "default": {
         "generatorName": "typescript-axios",
         "output": "libs/api-client",
-        "inputSpec": "./openapi.json",
+        "inputSpec": "http://0.0.0.0:8000/openapi.json",
         "additionalProperties": {
-          "supportsES6": true,
-          "withInterfaces": true,
-          "useSingleRequestParameter": true
+          "withInterfaces": true
         }
       }
     }

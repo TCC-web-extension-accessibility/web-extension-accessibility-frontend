@@ -196,12 +196,12 @@ export const AIApiFactory = function (configuration?: Configuration, basePath?: 
         /**
          * 
          * @summary Describe Image
-         * @param {AIApiDescribeImageAiDescribeImagePostRequest} requestParameters Request parameters.
+         * @param {File} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        describeImageAiDescribeImagePost(requestParameters: AIApiDescribeImageAiDescribeImagePostRequest, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.describeImageAiDescribeImagePost(requestParameters.file, options).then((request) => request(axios, basePath));
+        describeImageAiDescribeImagePost(file: File, options?: any): AxiosPromise<any> {
+            return localVarFp.describeImageAiDescribeImagePost(file, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -225,20 +225,6 @@ export interface AIApiInterface {
 }
 
 /**
- * Request parameters for describeImageAiDescribeImagePost operation in AIApi.
- * @export
- * @interface AIApiDescribeImageAiDescribeImagePostRequest
- */
-export interface AIApiDescribeImageAiDescribeImagePostRequest {
-    /**
-     * 
-     * @type {File}
-     * @memberof AIApiDescribeImageAiDescribeImagePost
-     */
-    readonly file: File
-}
-
-/**
  * AIApi - object-oriented interface
  * @export
  * @class AIApi
@@ -248,13 +234,13 @@ export class AIApi extends BaseAPI implements AIApiInterface {
     /**
      * 
      * @summary Describe Image
-     * @param {AIApiDescribeImageAiDescribeImagePostRequest} requestParameters Request parameters.
+     * @param {File} file 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AIApi
      */
-    public describeImageAiDescribeImagePost(requestParameters: AIApiDescribeImageAiDescribeImagePostRequest, options?: RawAxiosRequestConfig) {
-        return AIApiFp(this.configuration).describeImageAiDescribeImagePost(requestParameters.file, options).then((request) => request(this.axios, this.basePath));
+    public describeImageAiDescribeImagePost(file: File, options?: RawAxiosRequestConfig) {
+        return AIApiFp(this.configuration).describeImageAiDescribeImagePost(file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -421,12 +407,17 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Login For Access Token
-         * @param {AuthApiLoginForAccessTokenAuthTokenPostRequest} requestParameters Request parameters.
+         * @param {string} username 
+         * @param {string} password 
+         * @param {string | null} [grantType] 
+         * @param {string} [scope] 
+         * @param {string | null} [clientId] 
+         * @param {string | null} [clientSecret] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        loginForAccessTokenAuthTokenPost(requestParameters: AuthApiLoginForAccessTokenAuthTokenPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<Token> {
-            return localVarFp.loginForAccessTokenAuthTokenPost(requestParameters.username, requestParameters.password, requestParameters.grantType, requestParameters.scope, requestParameters.clientId, requestParameters.clientSecret, options).then((request) => request(axios, basePath));
+        loginForAccessTokenAuthTokenPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: any): AxiosPromise<Token> {
+            return localVarFp.loginForAccessTokenAuthTokenPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -434,7 +425,7 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        readUsersMeAuthUsersMeGet(options?: RawAxiosRequestConfig): AxiosPromise<UserSchema> {
+        readUsersMeAuthUsersMeGet(options?: any): AxiosPromise<UserSchema> {
             return localVarFp.readUsersMeAuthUsersMeGet(options).then((request) => request(axios, basePath));
         },
     };
@@ -473,55 +464,6 @@ export interface AuthApiInterface {
 }
 
 /**
- * Request parameters for loginForAccessTokenAuthTokenPost operation in AuthApi.
- * @export
- * @interface AuthApiLoginForAccessTokenAuthTokenPostRequest
- */
-export interface AuthApiLoginForAccessTokenAuthTokenPostRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthApiLoginForAccessTokenAuthTokenPost
-     */
-    readonly username: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthApiLoginForAccessTokenAuthTokenPost
-     */
-    readonly password: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthApiLoginForAccessTokenAuthTokenPost
-     */
-    readonly grantType?: string | null
-
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthApiLoginForAccessTokenAuthTokenPost
-     */
-    readonly scope?: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthApiLoginForAccessTokenAuthTokenPost
-     */
-    readonly clientId?: string | null
-
-    /**
-     * 
-     * @type {string}
-     * @memberof AuthApiLoginForAccessTokenAuthTokenPost
-     */
-    readonly clientSecret?: string | null
-}
-
-/**
  * AuthApi - object-oriented interface
  * @export
  * @class AuthApi
@@ -531,13 +473,18 @@ export class AuthApi extends BaseAPI implements AuthApiInterface {
     /**
      * 
      * @summary Login For Access Token
-     * @param {AuthApiLoginForAccessTokenAuthTokenPostRequest} requestParameters Request parameters.
+     * @param {string} username 
+     * @param {string} password 
+     * @param {string | null} [grantType] 
+     * @param {string} [scope] 
+     * @param {string | null} [clientId] 
+     * @param {string | null} [clientSecret] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthApi
      */
-    public loginForAccessTokenAuthTokenPost(requestParameters: AuthApiLoginForAccessTokenAuthTokenPostRequest, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).loginForAccessTokenAuthTokenPost(requestParameters.username, requestParameters.password, requestParameters.grantType, requestParameters.scope, requestParameters.clientId, requestParameters.clientSecret, options).then((request) => request(this.axios, this.basePath));
+    public loginForAccessTokenAuthTokenPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).loginForAccessTokenAuthTokenPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -633,12 +580,12 @@ export const TextToAudioApiFactory = function (configuration?: Configuration, ba
         /**
          * 
          * @summary Convert Audio
-         * @param {TextToAudioApiConvertAudioTtsConvertAudioPostRequest} requestParameters Request parameters.
+         * @param {string} text 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        convertAudioTtsConvertAudioPost(requestParameters: TextToAudioApiConvertAudioTtsConvertAudioPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.convertAudioTtsConvertAudioPost(requestParameters.text, options).then((request) => request(axios, basePath));
+        convertAudioTtsConvertAudioPost(text: string, options?: any): AxiosPromise<void> {
+            return localVarFp.convertAudioTtsConvertAudioPost(text, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -662,20 +609,6 @@ export interface TextToAudioApiInterface {
 }
 
 /**
- * Request parameters for convertAudioTtsConvertAudioPost operation in TextToAudioApi.
- * @export
- * @interface TextToAudioApiConvertAudioTtsConvertAudioPostRequest
- */
-export interface TextToAudioApiConvertAudioTtsConvertAudioPostRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof TextToAudioApiConvertAudioTtsConvertAudioPost
-     */
-    readonly text: string
-}
-
-/**
  * TextToAudioApi - object-oriented interface
  * @export
  * @class TextToAudioApi
@@ -685,13 +618,13 @@ export class TextToAudioApi extends BaseAPI implements TextToAudioApiInterface {
     /**
      * 
      * @summary Convert Audio
-     * @param {TextToAudioApiConvertAudioTtsConvertAudioPostRequest} requestParameters Request parameters.
+     * @param {string} text 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TextToAudioApi
      */
-    public convertAudioTtsConvertAudioPost(requestParameters: TextToAudioApiConvertAudioTtsConvertAudioPostRequest, options?: RawAxiosRequestConfig) {
-        return TextToAudioApiFp(this.configuration).convertAudioTtsConvertAudioPost(requestParameters.text, options).then((request) => request(this.axios, this.basePath));
+    public convertAudioTtsConvertAudioPost(text: string, options?: RawAxiosRequestConfig) {
+        return TextToAudioApiFp(this.configuration).convertAudioTtsConvertAudioPost(text, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

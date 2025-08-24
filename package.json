@@ -11,7 +11,7 @@
     "build:admin": "pnpm --filter admin build",
     "lint": "eslint .",
     "test": "vitest",
-    "generate:api-client": "openapi-generator-cli generate"
+    "generate:api-client": "npx openapi-generator-cli generate"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +25,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@eslint/js": "^9.8.0",
-    "@openapitools/openapi-generator-cli": "^2.23.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/react-query": "^5.85.5",
     "@testing-library/dom": "10.4.0",
