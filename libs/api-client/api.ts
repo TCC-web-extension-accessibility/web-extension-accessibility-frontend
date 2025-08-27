@@ -58,6 +58,31 @@ export interface Token {
 /**
  * 
  * @export
+ * @interface TranslationSchema
+ */
+export interface TranslationSchema {
+    /**
+     * 
+     * @type {string}
+     * @memberof TranslationSchema
+     */
+    'from_language': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof TranslationSchema
+     */
+    'text_list': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof TranslationSchema
+     */
+    'to_language': string;
+}
+/**
+ * 
+ * @export
  * @interface UserSchema
  */
 export interface UserSchema {
@@ -114,11 +139,48 @@ export interface ValidationErrorLocInner {
 }
 
 /**
- * AIApi - axios parameter creator
+ * ApiApi - axios parameter creator
  * @export
  */
-export const AIApiAxiosParamCreator = function (configuration?: Configuration) {
+export const ApiApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @summary Convert Audio
+         * @param {string} text 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        convertAudioApiV1ConvertAudioPost: async (text: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'text' is not null or undefined
+            assertParamExists('convertAudioApiV1ConvertAudioPost', 'text', text)
+            const localVarPath = `/api/v1/convert-audio/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (text !== undefined) {
+                localVarQueryParameter['text'] = text;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary Describe Image
@@ -126,10 +188,10 @@ export const AIApiAxiosParamCreator = function (configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        describeImageAiDescribeImagePost: async (file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        describeImageApiV1DescribeImagePost: async (file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'file' is not null or undefined
-            assertParamExists('describeImageAiDescribeImagePost', 'file', file)
-            const localVarPath = `/ai/describe-image/`;
+            assertParamExists('describeImageApiV1DescribeImagePost', 'file', file)
+            const localVarPath = `/api/v1/describe-image/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -160,16 +222,65 @@ export const AIApiAxiosParamCreator = function (configuration?: Configuration) {
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Translate Text List
+         * @param {TranslationSchema} translationSchema 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        translateTextListApiV1TranslatePost: async (translationSchema: TranslationSchema, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'translationSchema' is not null or undefined
+            assertParamExists('translateTextListApiV1TranslatePost', 'translationSchema', translationSchema)
+            const localVarPath = `/api/v1/translate/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(translationSchema, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
 /**
- * AIApi - functional programming interface
+ * ApiApi - functional programming interface
  * @export
  */
-export const AIApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = AIApiAxiosParamCreator(configuration)
+export const ApiApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ApiApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary Convert Audio
+         * @param {string} text 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.convertAudioApiV1ConvertAudioPost(text, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ApiApi.convertAudioApiV1ConvertAudioPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @summary Describe Image
@@ -177,22 +288,45 @@ export const AIApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async describeImageAiDescribeImagePost(file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.describeImageAiDescribeImagePost(file, options);
+        async describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.describeImageApiV1DescribeImagePost(file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AIApi.describeImageAiDescribeImagePost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ApiApi.describeImageApiV1DescribeImagePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Translate Text List
+         * @param {TranslationSchema} translationSchema 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async translateTextListApiV1TranslatePost(translationSchema: TranslationSchema, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.translateTextListApiV1TranslatePost(translationSchema, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ApiApi.translateTextListApiV1TranslatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * AIApi - factory interface
+ * ApiApi - factory interface
  * @export
  */
-export const AIApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = AIApiFp(configuration)
+export const ApiApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ApiApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Convert Audio
+         * @param {string} text 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        convertAudioApiV1ConvertAudioPost(text: string, options?: any): AxiosPromise<void> {
+            return localVarFp.convertAudioApiV1ConvertAudioPost(text, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary Describe Image
@@ -200,47 +334,101 @@ export const AIApiFactory = function (configuration?: Configuration, basePath?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        describeImageAiDescribeImagePost(file: File, options?: any): AxiosPromise<any> {
-            return localVarFp.describeImageAiDescribeImagePost(file, options).then((request) => request(axios, basePath));
+        describeImageApiV1DescribeImagePost(file: File, options?: any): AxiosPromise<any> {
+            return localVarFp.describeImageApiV1DescribeImagePost(file, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Translate Text List
+         * @param {TranslationSchema} translationSchema 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        translateTextListApiV1TranslatePost(translationSchema: TranslationSchema, options?: any): AxiosPromise<any> {
+            return localVarFp.translateTextListApiV1TranslatePost(translationSchema, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * AIApi - interface
+ * ApiApi - interface
  * @export
- * @interface AIApi
+ * @interface ApiApi
  */
-export interface AIApiInterface {
+export interface ApiApiInterface {
+    /**
+     * 
+     * @summary Convert Audio
+     * @param {string} text 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApiInterface
+     */
+    convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+
     /**
      * 
      * @summary Describe Image
      * @param {File} file 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AIApiInterface
+     * @memberof ApiApiInterface
      */
-    describeImageAiDescribeImagePost(file: File, options?: RawAxiosRequestConfig): AxiosPromise<any>;
+    describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Translate Text List
+     * @param {TranslationSchema} translationSchema 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApiInterface
+     */
+    translateTextListApiV1TranslatePost(translationSchema: TranslationSchema, options?: RawAxiosRequestConfig): AxiosPromise<any>;
 
 }
 
 /**
- * AIApi - object-oriented interface
+ * ApiApi - object-oriented interface
  * @export
- * @class AIApi
+ * @class ApiApi
  * @extends {BaseAPI}
  */
-export class AIApi extends BaseAPI implements AIApiInterface {
+export class ApiApi extends BaseAPI implements ApiApiInterface {
+    /**
+     * 
+     * @summary Convert Audio
+     * @param {string} text 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApi
+     */
+    public convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).convertAudioApiV1ConvertAudioPost(text, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Describe Image
      * @param {File} file 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof AIApi
+     * @memberof ApiApi
      */
-    public describeImageAiDescribeImagePost(file: File, options?: RawAxiosRequestConfig) {
-        return AIApiFp(this.configuration).describeImageAiDescribeImagePost(file, options).then((request) => request(this.axios, this.basePath));
+    public describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).describeImageApiV1DescribeImagePost(file, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Translate Text List
+     * @param {TranslationSchema} translationSchema 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApi
+     */
+    public translateTextListApiV1TranslatePost(translationSchema: TranslationSchema, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).translateTextListApiV1TranslatePost(translationSchema, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -496,135 +684,6 @@ export class AuthApi extends BaseAPI implements AuthApiInterface {
      */
     public readUsersMeAuthUsersMeGet(options?: RawAxiosRequestConfig) {
         return AuthApiFp(this.configuration).readUsersMeAuthUsersMeGet(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * TextToAudioApi - axios parameter creator
- * @export
- */
-export const TextToAudioApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Convert Audio
-         * @param {string} text 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        convertAudioTtsConvertAudioPost: async (text: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'text' is not null or undefined
-            assertParamExists('convertAudioTtsConvertAudioPost', 'text', text)
-            const localVarPath = `/tts/convert-audio`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (text !== undefined) {
-                localVarQueryParameter['text'] = text;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * TextToAudioApi - functional programming interface
- * @export
- */
-export const TextToAudioApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = TextToAudioApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Convert Audio
-         * @param {string} text 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async convertAudioTtsConvertAudioPost(text: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.convertAudioTtsConvertAudioPost(text, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TextToAudioApi.convertAudioTtsConvertAudioPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * TextToAudioApi - factory interface
- * @export
- */
-export const TextToAudioApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = TextToAudioApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Convert Audio
-         * @param {string} text 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        convertAudioTtsConvertAudioPost(text: string, options?: any): AxiosPromise<void> {
-            return localVarFp.convertAudioTtsConvertAudioPost(text, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * TextToAudioApi - interface
- * @export
- * @interface TextToAudioApi
- */
-export interface TextToAudioApiInterface {
-    /**
-     * 
-     * @summary Convert Audio
-     * @param {string} text 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TextToAudioApiInterface
-     */
-    convertAudioTtsConvertAudioPost(text: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
-
-}
-
-/**
- * TextToAudioApi - object-oriented interface
- * @export
- * @class TextToAudioApi
- * @extends {BaseAPI}
- */
-export class TextToAudioApi extends BaseAPI implements TextToAudioApiInterface {
-    /**
-     * 
-     * @summary Convert Audio
-     * @param {string} text 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TextToAudioApi
-     */
-    public convertAudioTtsConvertAudioPost(text: string, options?: RawAxiosRequestConfig) {
-        return TextToAudioApiFp(this.configuration).convertAudioTtsConvertAudioPost(text, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
