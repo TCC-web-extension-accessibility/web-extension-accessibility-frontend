@@ -120,3 +120,85 @@ html {
   --color-warn-500: #ffff00;
   --color-grey-500: #ffffff;
 }
+
+/* React Toastify Custom Styles */
+.Toastify__toast-container {
+  font-family: var(--font-inter);
+}
+
+.Toastify__toast {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-grey-300);
+  font-family: var(--font-inter);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 64px;
+}
+
+.Toastify__toast--success {
+  border-left: 4px solid var(--color-success-500);
+}
+
+.Toastify__toast--error {
+  border-left: 4px solid var(--color-danger-500);
+}
+
+.Toastify__toast--warning {
+  border-left: 4px solid var(--color-warn-500);
+}
+
+.Toastify__toast--info {
+  border-left: 4px solid var(--color-primary-500);
+}
+
+.Toastify__close-button {
+  color: var(--color-grey-600);
+  opacity: 1;
+  transition: color 0.2s ease;
+}
+
+.Toastify__close-button:hover {
+  color: var(--color-foreground);
+}
+
+.Toastify__progress-bar--success {
+  background-color: var(--color-success-500);
+}
+
+.Toastify__progress-bar--error {
+  background-color: var(--color-danger-500);
+}
+
+.Toastify__progress-bar--warning {
+  background-color: var(--color-warn-500);
+}
+
+.Toastify__progress-bar--info {
+  background-color: var(--color-primary-500);
+}
+
+/* High contrast mode toast overrides */
+.highcontrast .Toastify__toast {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  border-color: var(--color-grey-500);
+}
+
+.highcontrast .Toastify__toast--success {
+  border-left-color: var(--color-success-500);
+}
+
+.highcontrast .Toastify__toast--error {
+  border-left-color: var(--color-danger-500);
+}
+
+.highcontrast .Toastify__toast--warning {
+  border-left-color: var(--color-warn-500);
+}
+
+.highcontrast .Toastify__close-button {
+  color: var(--color-foreground);
+}

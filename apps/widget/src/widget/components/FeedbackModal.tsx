@@ -2,6 +2,7 @@ import { XIcon } from '@phosphor-icons/react';
 import { useMutation } from '@tanstack/react-query';
 import { Button, TextInput } from '@web-extension-accessibility-frontend/ui';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { getClientApi } from '../../lib/api-client';
 
 type FeedbackModalProps = {
@@ -21,7 +22,6 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     reset,
     formState: { errors, isValid },
   } = useForm<FeedbackFormData>({
-    mode: 'onChange',
     defaultValues: {
       title: '',
       message: '',
@@ -39,11 +39,13 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       return 'success';
     },
     onSuccess: () => {
+      toast.success('Feedback enviado com sucesso!');
       reset();
       onClose();
     },
-    onError: (error) => {
-      console.error('Failed to submit feedback:', error);
+    onError: () => {
+      toast.error('Erro ao enviar feedback!');
+      handleClose();
     },
   });
 
