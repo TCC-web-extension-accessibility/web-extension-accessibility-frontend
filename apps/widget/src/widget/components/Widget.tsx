@@ -18,6 +18,8 @@ import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
+import { VoiceNavigationControl } from './VoiceNavigationControl';
+import { VoiceNavigationOverlay } from './VoiceNavigationOverlay';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
@@ -115,51 +117,56 @@ export function Widget() {
 
         <div className="border-t border-gray-300 mx-5" />
 
-        <LanguageSelectorAccordion
-          languages={language.languages}
-          selectedLanguage={language.selectedLanguage}
-          onLanguageChange={language.selectLanguage}
-          isLoading={language.isLoading}
-        />
+        {/* Conteúdo scrollável do Widget */}
+        <div className="flex-1 min-h-0 overflow-y-auto pr-3 mb-4 space-y-4">
+          <LanguageSelectorAccordion
+            languages={language.languages}
+            selectedLanguage={language.selectedLanguage}
+            onLanguageChange={language.selectLanguage}
+            isLoading={language.isLoading}
+          />
 
-        <AccessibilityProfilesAccordion
-          resetAllSettings={resetAllSettings}
-          increaseFontSize={fontSize.increaseFontSize}
-          toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
-          changeFontFamily={fontFamily.changeFontFamily}
-          changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
-        />
+          <AccessibilityProfilesAccordion
+            resetAllSettings={resetAllSettings}
+            increaseFontSize={fontSize.increaseFontSize}
+            toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
+            changeFontFamily={fontFamily.changeFontFamily}
+            changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+          />
 
-        <WidgetControls
-          increaseFontSize={fontSize.increaseFontSize}
-          changeFontFamily={fontFamily.changeFontFamily}
-          currentFontSizeStep={fontSize.currentStep}
-          maxFontSizeStep={fontSize.maxFontStep}
-          currentFontFamilyStep={fontFamily.currentStep}
-          maxFontFamilyStep={fontFamily.maxFontStep}
-          increaseLineHeight={lineHeight.increaseLineHeight}
-          currentLineHeightStep={lineHeight.currentStep}
-          maxLineHeightStep={lineHeight.maxLineHeightStep}
-          increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
-          currentLetterSpacingStep={letterSpacing.currentStep}
-          maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
-          toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
-          disabledAnimations={disableAnimations.disabledAnimations}
-          hideImages={hideImages.hideImages}
-          toggleHideImages={hideImages.toggleHideImages}
-          highlightLinks={highlightLinks.highlightLinks}
-          toggleHighlightLinks={highlightLinks.toggleHighlightLinks}
-          readingGuideMode={readingGuide.readingGuideMode}
-          changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
-          maxReadingGuideMode={readingGuide.maxReadingGuideMode}
-          currentReadingGuideModeStep={readingGuide.currentStep}
-          increaseContrast={contrast.increaseContrast}
-          currentContrastStep={contrast.currentStep}
-          maxContrastStep={contrast.maxContrastStep}
-          increaseSaturation={saturation.increaseSaturation}
-          currentSaturationStep={saturation.currentStep}
-          maxSaturationStep={saturation.maxSaturationStep}
-        />
+          <VoiceNavigationControl />
+
+          <WidgetControls
+            increaseFontSize={fontSize.increaseFontSize}
+            changeFontFamily={fontFamily.changeFontFamily}
+            currentFontSizeStep={fontSize.currentStep}
+            maxFontSizeStep={fontSize.maxFontStep}
+            currentFontFamilyStep={fontFamily.currentStep}
+            maxFontFamilyStep={fontFamily.maxFontStep}
+            increaseLineHeight={lineHeight.increaseLineHeight}
+            currentLineHeightStep={lineHeight.currentStep}
+            maxLineHeightStep={lineHeight.maxLineHeightStep}
+            increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
+            currentLetterSpacingStep={letterSpacing.currentStep}
+            maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
+            toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
+            disabledAnimations={disableAnimations.disabledAnimations}
+            hideImages={hideImages.hideImages}
+            toggleHideImages={hideImages.toggleHideImages}
+            highlightLinks={highlightLinks.highlightLinks}
+            toggleHighlightLinks={highlightLinks.toggleHighlightLinks}
+            readingGuideMode={readingGuide.readingGuideMode}
+            changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+            maxReadingGuideMode={readingGuide.maxReadingGuideMode}
+            currentReadingGuideModeStep={readingGuide.currentStep}
+            increaseContrast={contrast.increaseContrast}
+            currentContrastStep={contrast.currentStep}
+            maxContrastStep={contrast.maxContrastStep}
+            increaseSaturation={saturation.increaseSaturation}
+            currentSaturationStep={saturation.currentStep}
+            maxSaturationStep={saturation.maxSaturationStep}
+          />
+        </div>
       </div>
 
       <WidgetSettings
@@ -171,6 +178,8 @@ export function Widget() {
         onBack={() => setShowSettings(false)}
         onResetSettings={resetAllSettings}
       />
+
+      <VoiceNavigationOverlay />
     </>
   );
 }

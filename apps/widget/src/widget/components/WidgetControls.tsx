@@ -142,6 +142,18 @@ export function WidgetControls({
           step={currentReadingGuideModeStep}
         />
         <WidgetButton
+          text="Navegação por voz"
+          icon={<SpeakerHighIcon weight="fill" />}
+          onClick={() => {
+            // Abre o painel de navegação por voz
+            const voicePanel = document.querySelector('.voice-navigation-control');
+            if (voicePanel) {
+              voicePanel.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          disabled={false}
+        />
+        <WidgetButton
           text="Destacar links"
           icon={<LinkSimpleHorizontalIcon />}
           onClick={() => toggleHighlightLinks()}
