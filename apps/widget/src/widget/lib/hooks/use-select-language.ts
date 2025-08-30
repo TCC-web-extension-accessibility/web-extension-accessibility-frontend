@@ -11,7 +11,7 @@ export const useSelectLanguage = () => {
 
   const LANGUAGES: Record<string, Language> = {
     enUS: { code: 'en', name: 'English (USA)' },
-    ptBR: { code: 'br', name: 'Português (Brazil)' },
+    ptBR: { code: 'pt', name: 'Português (Brazil)' },
     esES: { code: 'es', name: 'Español (Spanish)' },
   };
 

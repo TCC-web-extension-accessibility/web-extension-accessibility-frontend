@@ -79,6 +79,7 @@ export function LanguageSelector({
         className={languageList()}
         role="radiogroup"
         aria-labelledby="language-selector-label"
+        data-no-translate="true"
       >
         {filteredLanguages.map((lang, index) => (
           <div
