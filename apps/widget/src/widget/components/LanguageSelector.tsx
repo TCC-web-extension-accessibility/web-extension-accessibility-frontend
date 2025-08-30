@@ -2,10 +2,12 @@ import { MagnifyingGlassIcon } from '@phosphor-icons/react';
 import { TextInput } from '@web-extension-accessibility-frontend/ui';
 import { useMemo, useRef, useState } from 'react';
 import { tv } from 'tailwind-variants';
+import { type Language } from '../lib/languages';
 
 const languageSelectorVariants = tv({
   slots: {
-    languageList: 'divide-y divide-grey-200',
+    languageList:
+      'divide-y divide-grey-200 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100',
     languageItem:
       'flex items-center p-3 cursor-pointer hover:bg-grey-100 focus:bg-grey-200 outline-none',
     languageAvatar:
@@ -23,7 +25,7 @@ const languageSelectorVariants = tv({
 });
 
 type LanguageSelectorProps = {
-  languages: { code: string; name: string }[];
+  languages: Language[];
   selectedLanguage?: string;
   onLanguageChange: (language: string) => void;
 };
@@ -101,7 +103,7 @@ export function LanguageSelector({
                 isSelected: selectedLanguage === lang.code,
               })}
             >
-              {lang.code}
+              {lang.icon}
             </div>
             <span className={languageName()}>{lang.name}</span>
           </div>

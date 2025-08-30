@@ -3,8 +3,7 @@ import type { ChangeEvent, JSX } from 'react';
 import { useEffect, useState } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { tv } from 'tailwind-variants';
-import type { ButtonProps } from '../Button/Button';
-import { Button } from '../Button/Button';
+import { type ButtonProps, Button } from '../Button/Button';
 
 export type TextInputCustomProps = {
   disabled?: boolean;

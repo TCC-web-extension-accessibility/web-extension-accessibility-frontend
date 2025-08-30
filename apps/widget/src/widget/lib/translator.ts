@@ -177,16 +177,16 @@ export const translatePage = (language: string) => {
 };
 
 export const translateWidgetIfNeeded = async () => {
-  if (process.env.NODE_ENV === 'development') {
-    storeOriginals(document.body);
-  }
-
   if (!currentLanguage || currentLanguage.toLowerCase() === documentLanguage) {
     return;
   }
 
   if (areWidgetTranslated) {
     return;
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    storeOriginals(document.body);
   }
 
   const shadowRoots = findAllShadowRoots();

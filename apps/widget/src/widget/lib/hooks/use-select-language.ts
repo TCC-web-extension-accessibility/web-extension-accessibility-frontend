@@ -1,19 +1,9 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
+import { LANGUAGES } from '../languages';
 import { translatePage } from '../translator';
-
-type Language = {
-  code: string;
-  name: string;
-};
 
 export const useSelectLanguage = () => {
   const LANGUAGE_STORAGE_KEY = 'accessibility-language';
-
-  const LANGUAGES: Record<string, Language> = {
-    enUS: { code: 'en', name: 'English (USA)' },
-    ptBR: { code: 'pt', name: 'Português (Brazil)' },
-    esES: { code: 'es', name: 'Español (Spanish)' },
-  };
 
   const LANGUAGE_KEYS = Object.keys(LANGUAGES);
 

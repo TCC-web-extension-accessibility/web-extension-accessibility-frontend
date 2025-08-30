@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import type { JSX, ReactNode } from 'react';
-import type { VariantProps } from 'tailwind-variants';
-import { tv } from 'tailwind-variants';
+import { type VariantProps, tv } from 'tailwind-variants';
 
 const loading = tv({
   base: ['absolute', 'flex', 'items-center '],
