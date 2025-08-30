@@ -26,7 +26,7 @@ const languageSelectorVariants = tv({
 
 type LanguageSelectorProps = {
   languages: Language[];
-  selectedLanguage?: string;
+  selectedLanguage?: string | null;
   onLanguageChange: (language: string) => void;
 };
 

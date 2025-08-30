@@ -1,9 +1,10 @@
 import { Accordion } from '@web-extension-accessibility-frontend/ui';
+import type { Language } from '../lib/languages';
 import { LanguageSelector } from './LanguageSelector';
 
 type LanguageSelectorAccordionProps = {
-  languages: { code: string; name: string }[];
-  selectedLanguage: string;
+  languages: Language[];
+  selectedLanguage: string | null;
   onLanguageChange: (language: string) => void;
 };
 

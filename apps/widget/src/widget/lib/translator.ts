@@ -172,8 +172,6 @@ export const translatePage = (language: string) => {
   if (language.toLowerCase() !== documentLanguage) {
     translate(language);
   }
-
-  areWidgetTranslated = false;
 };
 
 export const translateWidgetIfNeeded = async () => {
@@ -183,10 +181,6 @@ export const translateWidgetIfNeeded = async () => {
 
   if (areWidgetTranslated) {
     return;
-  }
-
-  if (process.env.NODE_ENV === 'development') {
-    storeOriginals(document.body);
   }
 
   const shadowRoots = findAllShadowRoots();
@@ -201,5 +195,4 @@ export const translateWidgetIfNeeded = async () => {
   }
 
   await translate(currentLanguage);
-  areWidgetTranslated = true;
 };
