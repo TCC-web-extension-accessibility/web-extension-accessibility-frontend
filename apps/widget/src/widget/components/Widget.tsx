@@ -6,6 +6,7 @@ import { useDisableAnimations } from '../lib/hooks/use-disable-animations';
 import { useFontFamily } from '../lib/hooks/use-font-family';
 import { useFontSize } from '../lib/hooks/use-font-size';
 import { useHideImages } from '../lib/hooks/use-hide-images';
+import { useHighlightLinks } from '../lib/hooks/use-highlight-links';
 import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
@@ -28,6 +29,7 @@ export function Widget() {
   const letterSpacing = useLetterSpacing();
   const disableAnimations = useDisableAnimations();
   const hideImages = useHideImages();
+  const highlightLinks = useHighlightLinks();
   const readingGuide = useReadingGuide();
   const language = useSelectLanguage();
 
@@ -40,6 +42,9 @@ export function Widget() {
     disableAnimations.toggleDisabledAnimations(false);
     if (hideImages.hideImages) {
       hideImages.toggleHideImages();
+    }
+    if (highlightLinks.highlightLinks) {
+      highlightLinks.toggleHighlightLinks();
     }
     readingGuide.cycleReadingGuideMode('off');
     language.selectLanguage('en');
@@ -135,6 +140,8 @@ export function Widget() {
           disabledAnimations={disableAnimations.disabledAnimations}
           hideImages={hideImages.hideImages}
           toggleHideImages={hideImages.toggleHideImages}
+          highlightLinks={highlightLinks.highlightLinks}
+          toggleHighlightLinks={highlightLinks.toggleHighlightLinks}
           readingGuideMode={readingGuide.readingGuideMode}
           changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
           maxReadingGuideMode={readingGuide.maxReadingGuideMode}

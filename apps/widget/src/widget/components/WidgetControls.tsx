@@ -30,6 +30,8 @@ type WidgetControlsProps = {
   toggleDisabledAnimations: () => void;
   hideImages: boolean;
   toggleHideImages: () => void;
+  highlightLinks: boolean;
+  toggleHighlightLinks: () => void;
   readingGuideMode: (typeof READING_GUIDE_MODES)[keyof typeof READING_GUIDE_MODES];
   changeReadingGuideMode: () => void;
   maxReadingGuideMode: number;
@@ -53,6 +55,8 @@ export function WidgetControls({
   toggleDisabledAnimations,
   hideImages,
   toggleHideImages,
+  highlightLinks,
+  toggleHighlightLinks,
   readingGuideMode,
   changeReadingGuideMode,
   maxReadingGuideMode,
@@ -127,10 +131,8 @@ export function WidgetControls({
         <WidgetButton
           text="Destacar links"
           icon={<LinkSimpleHorizontalIcon />}
-          onClick={() => {
-            alert('Highlight links feature not implemented yet');
-          }}
-          disabled={true}
+          onClick={() => toggleHighlightLinks()}
+          checked={highlightLinks}
         />
       </div>
     </div>
