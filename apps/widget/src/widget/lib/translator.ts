@@ -4,13 +4,21 @@ import { getClientApi } from '../../lib/api-client';
 const originalTexts = new Map<Element, string>();
 const originalPlaceholders = new Map<Element, string>();
 let areOriginalsStored = false;
+let areWidgetTranslated = false;
+let currentLanguage: string | null = null;
 const documentLanguage = document.documentElement.lang;
 
 function storeOriginals(rootElement: HTMLElement) {
+  processElementsRecursively(rootElement);
+  areOriginalsStored = true;
+}
+
+function processElementsRecursively(rootElement: HTMLElement | ShadowRoot) {
   const walker = document.createTreeWalker(
     rootElement,
     NodeFilter.SHOW_ELEMENT
   );
+
   while (walker.nextNode()) {
     const element = walker.currentNode as Element;
 
@@ -31,8 +39,11 @@ function storeOriginals(rootElement: HTMLElement) {
         originalPlaceholders.set(element, placeholder);
       }
     }
+
+    if (element.shadowRoot) {
+      processElementsRecursively(element.shadowRoot);
+    }
   }
-  areOriginalsStored = true;
 }
 
 function shouldSkipElement(element: Element): boolean {
@@ -91,32 +102,69 @@ async function translate(language: string) {
 
   // Apply translations to text content
   for (const [element, originalText] of originalTexts.entries()) {
-    const key = originalText.trim().replace(/\s+/g, ' ');
-    if (translationMap[key]) {
-      element.textContent = translationMap[key];
+    // Try exact match first (preserves formatting)
+    if (translationMap[originalText]) {
+      element.textContent = translationMap[originalText];
+    } else {
+      // Fallback to normalized key match
+      const normalizedKey = originalText.trim().replace(/\s+/g, ' ');
+      if (translationMap[normalizedKey]) {
+        element.textContent = translationMap[normalizedKey];
+      }
     }
   }
 
   // Apply translations to placeholder attributes
   for (const [element, originalPlaceholder] of originalPlaceholders.entries()) {
-    const key = originalPlaceholder.trim().replace(/\s+/g, ' ');
-    if (
-      translationMap[key] &&
-      (element instanceof HTMLInputElement ||
-        element instanceof HTMLTextAreaElement)
-    ) {
-      element.placeholder = translationMap[key];
+    // Try exact match first
+    if (translationMap[originalPlaceholder]) {
+      if (
+        element instanceof HTMLInputElement ||
+        element instanceof HTMLTextAreaElement
+      ) {
+        element.placeholder = translationMap[originalPlaceholder];
+      }
+    } else {
+      // Fallback to normalized key match
+      const normalizedKey = originalPlaceholder.trim().replace(/\s+/g, ' ');
+      if (
+        translationMap[normalizedKey] &&
+        (element instanceof HTMLInputElement ||
+          element instanceof HTMLTextAreaElement)
+      ) {
+        element.placeholder = translationMap[normalizedKey];
+      }
     }
   }
 }
 
-export const translatePage = (language: string) => {
-  if (document.readyState !== 'complete') {
-    return;
+function findAllShadowRoots(): ShadowRoot[] {
+  const shadowRoots: ShadowRoot[] = [];
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_ELEMENT
+  );
+
+  while (walker.nextNode()) {
+    const element = walker.currentNode as Element;
+    if (element.shadowRoot) {
+      shadowRoots.push(element.shadowRoot);
+    }
   }
+
+  return shadowRoots;
+}
+
+export const translatePage = (language: string) => {
+  currentLanguage = language;
 
   if (!areOriginalsStored) {
     storeOriginals(document.body);
+
+    const shadowRoots = findAllShadowRoots();
+    shadowRoots.forEach((shadowRoot) => {
+      processElementsRecursively(shadowRoot);
+    });
   }
 
   revertToOriginals();
@@ -124,4 +172,34 @@ export const translatePage = (language: string) => {
   if (language.toLowerCase() !== documentLanguage) {
     translate(language);
   }
+
+  areWidgetTranslated = false;
+};
+
+export const translateWidgetIfNeeded = async () => {
+  if (process.env.NODE_ENV === 'development') {
+    storeOriginals(document.body);
+  }
+
+  if (!currentLanguage || currentLanguage.toLowerCase() === documentLanguage) {
+    return;
+  }
+
+  if (areWidgetTranslated) {
+    return;
+  }
+
+  const shadowRoots = findAllShadowRoots();
+  const widgetShadowRoots = shadowRoots.filter(
+    (shadowRoot) => shadowRoot.getElementById('widget-root') !== null
+  );
+
+  if (widgetShadowRoots.length !== 0) {
+    widgetShadowRoots.forEach((shadowRoot) => {
+      processElementsRecursively(shadowRoot);
+    });
+  }
+
+  await translate(currentLanguage);
+  areWidgetTranslated = true;
 };

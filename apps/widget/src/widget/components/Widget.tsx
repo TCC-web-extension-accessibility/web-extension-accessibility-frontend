@@ -10,6 +10,7 @@ import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
 import { useSelectLanguage } from '../lib/hooks/use-select-language';
+import { translateWidgetIfNeeded } from '../lib/translator';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { WidgetControls } from './WidgetControls';
@@ -55,6 +56,15 @@ export function Widget() {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        translateWidgetIfNeeded();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible]);
 
   if (!isVisible) {
     return (
