@@ -7,7 +7,7 @@ type Font = {
 
 const FONTS_PATH = import.meta.env.PROD
   ? `${import.meta.env.VITE_DIST_URL}/fonts`
-  : '/public/fonts';
+  : '/fonts';
 
 export const useFontFamily = () => {
   const FONT_FAMILY_STORAGE_KEY = 'accessibility-font-family';
