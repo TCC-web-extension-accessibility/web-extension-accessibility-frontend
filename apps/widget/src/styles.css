@@ -1,4 +1,5 @@
 @import '../../../libs/ui/src/styles.css';
+@import 'react-toastify/dist/ReactToastify.css';
 
 @source "../src/**/*.{ts,tsx}";
 @source "../../../libs/ui/src/**/*.{ts,tsx}";
