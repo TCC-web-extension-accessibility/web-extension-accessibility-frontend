@@ -17,6 +17,7 @@ function onReady() {
     const shadow = element.attachShadow({ mode: 'open' });
     const shadowRoot = document.createElement('div');
 
+    element.id = 'shadow-host';
     shadowRoot.id = 'widget-root';
 
     const component = <WidgetContainer />;

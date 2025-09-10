@@ -43,6 +43,8 @@ type WidgetControlsProps = {
   increaseSaturation: () => void;
   currentSaturationStep: number;
   maxSaturationStep: number;
+  onActivateVoiceNavigation?: () => void;
+  onCloseVoiceNavigation?: () => void;
 };
 
 export function WidgetControls({
@@ -74,6 +76,7 @@ export function WidgetControls({
   increaseSaturation,
   currentSaturationStep,
   maxSaturationStep,
+  onActivateVoiceNavigation,
 }: WidgetControlsProps) {
   return (
     <div className="@container">
@@ -144,14 +147,7 @@ export function WidgetControls({
         <WidgetButton
           text="Navegação por voz"
           icon={<SpeakerHighIcon weight="fill" />}
-          onClick={() => {
-            // Abre o painel de navegação por voz
-            const voicePanel = document.querySelector('.voice-navigation-control');
-            if (voicePanel) {
-              voicePanel.scrollIntoView({ behavior: 'smooth' });
-            }
-          }}
-          disabled={false}
+          onClick={onActivateVoiceNavigation}
         />
         <WidgetButton
           text="Destacar links"

@@ -10,25 +10,12 @@
   position: relative;
 }
 
-/* Estilos para navegação por voz */
+/* Estilos para navegação por voz dentro do widget*/
 .voice-highlight {
-  outline: 3px solid #3b82f6 !important;
+  outline: 3px solid #c52509 !important;
   outline-offset: 2px !important;
   transition: outline 0.2s ease-in-out;
   position: relative;
-}
-
-.voice-highlight::after {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  background: rgba(59, 130, 0.1);
-  border-radius: 4px;
-  pointer-events: none;
-  z-index: 9998;
 }
 
 .voice-navigation-overlay {
@@ -46,12 +33,13 @@
 }
 
 @keyframes voice-highlight-appear {
-  0% { 
-    transform: scale(0.8); 
-    opacity: 0; 
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
   }
-  100% { 
-    transform: scale(1); 
-    opacity: 1; 
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

@@ -4,14 +4,14 @@ import type {
   SpeechRecognition
 } from '../../../vite-env';
 
-interface VoiceCommand {
+type VoiceCommand = {
   intent: string;
   action: string;
   target?: string;
   confidence: number;
 }
 
-interface VoiceNavigationState {
+type VoiceNavigationState = {
   isListening: boolean;
   isConnected: boolean;
   isSupported: boolean;
@@ -21,7 +21,7 @@ interface VoiceNavigationState {
   status: 'idle' | 'listening' | 'processing' | 'error';
 }
 
-interface VoiceNavigationActions {
+type VoiceNavigationActions = {
   startListening: () => Promise<void>;
   stopListening: () => void;
   sendTextCommand: (text: string) => Promise<void>;
@@ -29,7 +29,11 @@ interface VoiceNavigationActions {
   reset: () => void;
 }
 
-export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActions] {
+type UseVoiceNavigationProps = {
+  selectedLanguage?: string;
+}
+
+export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavigationState, VoiceNavigationActions] {
   const [state, setState] = useState<VoiceNavigationState>({
     isListening: false,
     isConnected: false,
@@ -38,15 +42,53 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
   });
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const websocketRef = useRef<WebSocket | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
+
+  // Estado para controlar o último elemento focado pela navegação por voz
+  const lastVoiceNavIndexRef = useRef<number | null>(null);
+
+  // Base URL do backend
+  const API_BASE_URL = 'http://localhost:8000/api/v1';
 
   // Verifica suporte à Web Speech API
   useEffect(() => {
     const isSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     setState(prev => ({ ...prev, isSupported }));
   }, []);
+
+  // Processa comando via API REST
+  const processCommandWithAPI = useCallback(async (text: string): Promise<VoiceCommand | null> => {
+    try {
+      // Atualiza estado de conexão baseado na tentativa de comunicação
+      setState(prev => ({ ...prev, isConnected: true }));
+
+      const response = await fetch(`${API_BASE_URL}/voice-navigation/command`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: text,
+          language: props?.selectedLanguage || 'auto'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const command = await response.json();
+      return command;
+    } catch (error) {
+      console.error('Erro ao processar comando via API:', error);
+      setState(prev => ({
+        ...prev,
+        error: 'Erro ao processar comando no servidor',
+        status: 'error',
+        isConnected: false
+      }));
+      return null;
+    }
+  }, [props?.selectedLanguage]);
 
   // Executa comando de voz
   const executeCommand = useCallback(async (command: VoiceCommand) => {
@@ -57,19 +99,19 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
       switch (command.action) {
         case 'scroll_down':
           window.scrollBy(0, 300);
-          speakFeedback('Rolando para baixo');
+          speakFeedback('Rolando para baixo', props?.selectedLanguage);
           break;
         case 'scroll_up':
           window.scrollBy(0, -300);
-          speakFeedback('Rolando para cima');
+          speakFeedback('Rolando para cima', props?.selectedLanguage);
           break;
         case 'scroll_left':
           window.scrollBy(-300, 0);
-          speakFeedback('Rolando para esquerda');
+          speakFeedback('Rolando para esquerda', props?.selectedLanguage);
           break;
         case 'scroll_right':
           window.scrollBy(300, 0);
-          speakFeedback('Rolando para direita');
+          speakFeedback('Rolando para direita', props?.selectedLanguage);
           break;
         case 'navigate_next':
           navigateToNextElement();
@@ -83,7 +125,6 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
           }
           break;
         case 'read':
-          console.log(command.target);
           if (command.target && command.target !== 'página') {
             readElement(command.target);
           } else {
@@ -95,18 +136,18 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
           break;
         case 'go_back':
           window.history.back();
-          speakFeedback('Voltando para página anterior');
+          speakFeedback('Voltando para página anterior', props?.selectedLanguage);
           break;
         case 'zoom_in':
           document.body.style.zoom = (parseFloat(document.body.style.zoom || '1') + 0.1).toString();
-          speakFeedback('Zoom aumentado');
+          speakFeedback('Zoom aumentado', props?.selectedLanguage);
           break;
         case 'zoom_out':
           document.body.style.zoom = (parseFloat(document.body.style.zoom || '1') - 0.1).toString();
-          speakFeedback('Zoom diminuído');
+          speakFeedback('Zoom diminuído', props?.selectedLanguage);
           break;
         default:
-          speakFeedback(`Comando não reconhecido: ${command.action}`);
+          speakFeedback(`Comando não reconhecido: ${command.action}`, props?.selectedLanguage);
       }
 
       setState(prev => ({ ...prev, status: 'idle' }));
@@ -118,94 +159,25 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
       }));
     }
     return Promise.resolve();
-  }, []);
+  }, [props?.selectedLanguage]);
 
-  // Processa mensagens do WebSocket
-  const handleWebSocketMessage = useCallback((data: any) => {
-    switch (data.type) {
-      case 'connection_status':
-        setState(prev => ({
-          ...prev,
-          isConnected: data.status === 'connected',
-          error: undefined
-        }));
-        break;
-      case 'transcription_result':
-        setState(prev => ({
-          ...prev,
-          lastTranscription: data.transcription.text,
-          lastCommand: data.command,
-          status: 'idle'
-        }));
-        void executeCommand(data.command);
-        break;
-      case 'command_result':
-        setState(prev => ({
-          ...prev,
-          lastCommand: data.command,
-          status: 'idle'
-        }));
-        void executeCommand(data.command);
-        break;
-      case 'error':
-        setState(prev => ({
-          ...prev,
-          error: data.message,
-          status: 'error'
-        }));
-        break;
-    }
-  }, [executeCommand]);
+  // Envia comando de texto para o backend
+  const sendTextCommand = useCallback(async (text: string) => {
+    setState(prev => ({ ...prev, status: 'processing' }));
 
-  // Inicializa WebSocket
-  const initializeWebSocket = useCallback(() => {
-    if (websocketRef.current?.readyState === WebSocket.OPEN) {
-      return;
-    }
-
-    const ws = new WebSocket("ws://localhost:8000/api/v1/voice-navigation/");
-    console.log(ws);
-
-    ws.onopen = () => {
-      setState(prev => ({ ...prev, isConnected: true, error: undefined }));
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        handleWebSocketMessage(data);
-      } catch (error) {
-        console.error('Erro ao processar mensagem WebSocket:', error);
-      }
-    };
-
-    ws.onerror = () => {
+    const command = await processCommandWithAPI(text);
+    if (command) {
       setState(prev => ({
         ...prev,
-        isConnected: false,
-        error: 'Erro na conexão WebSocket',
-        status: 'error'
+        lastCommand: command,
+        status: 'idle'
       }));
-    };
-
-    ws.onclose = () => {
-      setState(prev => ({ ...prev, isConnected: false }));
-    };
-
-    websocketRef.current = ws;
-  }, [handleWebSocketMessage]);
-
-  // Inicializa reconhecimento de fala
-  const sendTextCommand = useCallback(async (text: string) => {
-    if (websocketRef.current?.readyState === WebSocket.OPEN) {
-      websocketRef.current.send(JSON.stringify({
-        type: 'text_command',
-        text: text
-      }));
+      await executeCommand(command);
     }
     return Promise.resolve();
-  }, []);
+  }, [processCommandWithAPI, executeCommand]);
 
+  // Inicializa reconhecimento de fala
   const initializeSpeechRecognition = useCallback(() => {
     if (!state.isSupported) return;
 
@@ -213,7 +185,7 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
       try {
         recognitionRef.current.abort?.();
         recognitionRef.current.stop?.();
-      } catch {}
+      } catch { }
       recognitionRef.current = null;
     }
 
@@ -222,7 +194,7 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
 
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = 'pt-BR';
+    recognition.lang = getRecognitionLanguage(props?.selectedLanguage);
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
@@ -270,70 +242,23 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
     };
 
     recognitionRef.current = recognition as any;
-  }, [state.isSupported, sendTextCommand]);
+  }, [state.isSupported, sendTextCommand, props?.selectedLanguage]);
 
-  // Inicializa gravação de áudio para fallback
-  const initializeMediaRecorder = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
-      });
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        audioChunksRef.current = [];
-
-        // Converte para base64 e envia via WebSocket
-        const reader = new FileReader();
-        reader.onload = () => {
-          const base64Audio = (reader.result as string).split(',')[1];
-          if (websocketRef.current?.readyState === WebSocket.OPEN) {
-            websocketRef.current.send(JSON.stringify({
-              type: 'audio_data',
-              audio_data: base64Audio,
-              sample_rate: 16000
-            }));
-          }
-        };
-        reader.readAsDataURL(audioBlob);
-      };
-
-      mediaRecorderRef.current = mediaRecorder;
-    } catch (error) {
-      console.error('Erro ao inicializar gravação de áudio:', error);
-    }
-  }, []);
 
   // Inicia escuta
   const startListening = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, status: 'listening', error: undefined }));
 
-      // Inicializa WebSocket se necessário
-      if (!websocketRef.current || websocketRef.current.readyState !== WebSocket.OPEN) {
-        initializeWebSocket();
-      }
-
-      // Tenta usar Web Speech API primeiro
+      // Usa Web Speech API
       if (state.isSupported && recognitionRef.current) {
         recognitionRef.current.start();
       } else {
-        // Fallback para gravação de áudio
-        if (!mediaRecorderRef.current) {
-          await initializeMediaRecorder();
-        }
-
-        if (mediaRecorderRef.current) {
-          mediaRecorderRef.current.start();
-          setState(prev => ({ ...prev, isListening: true }));
-        }
+        setState(prev => ({
+          ...prev,
+          error: 'Web Speech API não suportada neste navegador',
+          status: 'error'
+        }));
       }
     } catch (error) {
       setState(prev => ({
@@ -342,7 +267,7 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
         status: 'error'
       }));
     }
-  }, [state.isSupported, initializeWebSocket, initializeMediaRecorder]);
+  }, [state.isSupported]);
 
   // Para escuta
   const stopListening = useCallback(() => {
@@ -350,56 +275,108 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
       recognitionRef.current.stop();
     }
 
-    if (mediaRecorderRef.current && state.isListening) {
-      mediaRecorderRef.current.stop();
-    }
 
     setState(prev => ({ ...prev, isListening: false, status: 'idle' }));
   }, [state.isListening]);
 
   // Funções auxiliares
-  const speakFeedback = (text: string) => {
+  const speakFeedback = (text: string, language?: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
+      utterance.lang = getSpeechLanguage(language);
       utterance.rate = 0.9;
       speechSynthesis.speak(utterance);
     }
   };
 
+  // Mapeia códigos de idioma para reconhecimento de fala
+  const getRecognitionLanguage = (languageCode?: string): string => {
+    const languageMap: Record<string, string> = {
+      'en': 'en-US',
+      'pt': 'pt-BR',
+      'es': 'es-ES',
+      'fr': 'fr-FR',
+      'de': 'de-DE',
+      'it': 'it-IT'
+    };
+    return languageMap[languageCode || 'pt'] || 'pt-BR';
+  };
+
+  // Mapeia códigos de idioma para síntese de fala
+  const getSpeechLanguage = (languageCode?: string): string => {
+    const languageMap: Record<string, string> = {
+      'en': 'en-US',
+      'pt': 'pt-BR',
+      'es': 'es-ES',
+      'fr': 'fr-FR',
+      'de': 'de-DE',
+      'it': 'it-IT'
+    };
+    return languageMap[languageCode || 'pt'] || 'pt-BR';
+  };
+
   const navigateToNextElement = () => {
     const focusableElements = getFocusableElements();
-    const currentIndex = focusableElements.findIndex(el => el === document.activeElement);
-    const nextIndex = (currentIndex + 1) % focusableElements.length;
+    let activeElement: Element | null = document.activeElement;
+    let currentIndex = focusableElements.findIndex(el => el === activeElement);
+
+    // Se for a primeira navegação, sempre foca o primeiro elemento
+    if (lastVoiceNavIndexRef.current === null) {
+      const firstEl = focusableElements[0] as HTMLElement;
+      if (firstEl) {
+        firstEl.focus();
+        highlightElement(firstEl);
+        speakFeedback(`Foco em ${getElementDescription(firstEl)}`, props?.selectedLanguage);
+        lastVoiceNavIndexRef.current = 0;
+      }
+      return;
+    }
+
+    // Se o foco não está em nenhum elemento válido, usa o último index salvo
+    if (currentIndex === -1 && lastVoiceNavIndexRef.current !== null) {
+      currentIndex = lastVoiceNavIndexRef.current;
+    }
+
+    let nextIndex = (currentIndex + 1) % focusableElements.length;
+    if (currentIndex === -1) nextIndex = 0; // Se nada está focado, começa do primeiro
 
     const nextEl = focusableElements[nextIndex] as HTMLElement;
+    console.log("nextEl: ", nextEl);
     if (nextEl) {
       nextEl.focus();
       highlightElement(nextEl);
-      speakFeedback(`Foco em ${getElementDescription(nextEl)}`);
+      speakFeedback(`Foco em ${getElementDescription(nextEl)}`, props?.selectedLanguage);
+      lastVoiceNavIndexRef.current = nextIndex;
     }
   };
 
   const navigateToPreviousElement = () => {
     const focusableElements = getFocusableElements();
-    const currentIndex = focusableElements.findIndex(el => el === document.activeElement);
-    const prevIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+    let activeElement: Element | null = document.activeElement;
+    let currentIndex = focusableElements.findIndex(el => el === activeElement);
 
+    if (currentIndex === -1 && lastVoiceNavIndexRef.current !== null) {
+      currentIndex = lastVoiceNavIndexRef.current;
+    }
+
+    let prevIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
     const prevEl = focusableElements[prevIndex] as HTMLElement;
     if (prevEl) {
       prevEl.focus();
       highlightElement(prevEl);
-      speakFeedback(`Foco em ${getElementDescription(prevEl)}`);
+      speakFeedback(`Foco em ${getElementDescription(prevEl)}`, props?.selectedLanguage);
+      lastVoiceNavIndexRef.current = prevIndex;
     }
   };
 
   const clickElement = (target: string) => {
     const element = findElementByTarget(target) as HTMLElement | null;
+    console.log(element);
     if (element) {
       element.click();
-      speakFeedback(`Clicado em ${getElementDescription(element)}`);
+      speakFeedback(`Clicado em ${getElementDescription(element)}`, props?.selectedLanguage);
     } else {
-      speakFeedback(`Elemento ${target} não encontrado`);
+      speakFeedback(`Elemento ${target} não encontrado`, props?.selectedLanguage);
     }
   };
 
@@ -408,9 +385,9 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
     console.log(target);
     if (element) {
       const text = element.textContent || element.getAttribute('aria-label') || 'Elemento sem texto';
-      speakFeedback(text);
+      speakFeedback(text, props?.selectedLanguage);
     } else {
-      speakFeedback(`Elemento ${target} não encontrado`);
+      speakFeedback(`Elemento ${target} não encontrado`, props?.selectedLanguage);
     }
   };
 
@@ -419,7 +396,9 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
     console.log(mainContent);
     const text = mainContent.textContent || '';
     const truncatedText = text.substring(0, 500) + (text.length > 500 ? '...' : '');
-    speakFeedback(truncatedText);
+    console.log("Tamanho do texto: " + text.length);
+    console.log(truncatedText);
+    speakFeedback(truncatedText, props?.selectedLanguage);
   };
 
   const showVoiceCommandsHelp = () => {
@@ -430,12 +409,16 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
       - Leitura: "ler [elemento]", "ler página"
       - Sistema: "ajuda", "voltar", "aumentar zoom"
     `;
-    speakFeedback(helpText);
+    speakFeedback(helpText, props?.selectedLanguage);
   };
 
   const findElementByTarget = (target: string): Element | null => {
     // Procura por aria-label
-    let element = document.querySelector(`[aria-label*="${target}" i]`);
+    let element =
+      document.querySelector(`[aria-label*="${target}" i]`) ||
+      document.querySelector("#shadow-host")?.shadowRoot?.
+        querySelector("#widget-root")?.querySelector(`[aria-label*="${target}" i]`);
+    console.log("element: " + element);
     if (element) return element;
 
     // Procura por texto (busca manual)
@@ -462,32 +445,49 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
       '[tabindex]:not([tabindex="-1"]):not([disabled])', '[role="button"]', '[role="link"]'
     ];
 
-    return Array.from(document.querySelectorAll(focusableSelectors.join(',')))
-      .filter(el => {
-        const htmlEl = el as HTMLElement;
+    const ElementsAll = [
+      ...Array.from(document.querySelectorAll(focusableSelectors.join(','))),
+      ...Array.from(
+      document.querySelector("#shadow-host")?.shadowRoot
+        ?.querySelector("#widget-root")
+        ?.querySelectorAll(focusableSelectors.join(',')) || []
+      ),
+    ];
+
+    return ElementsAll.filter(el => {
+      const htmlEl = el as HTMLElement;
         return !htmlEl.hasAttribute('disabled') && htmlEl.offsetParent !== null;
       }) as HTMLElement[];
   };
 
   const getElementDescription = (element: Element): string => {
     return element.getAttribute('aria-label') ||
-           element.textContent?.trim() ||
-           element.tagName.toLowerCase();
+      element.textContent?.trim() ||
+      element.tagName.toLowerCase();
   };
 
   const highlightElement = (element: Element) => {
-    // Remove highlight anterior
-    document.querySelectorAll('.voice-highlight').forEach(el => {
-      el.classList.remove('voice-highlight');
-    });
+    // Helper para remover highlights de um root
+    const removeHighlights = (root: ParentNode | ShadowRoot | Document) => {
+      root.querySelectorAll('.voice-highlight').forEach(el => {
+        el.classList.remove('voice-highlight');
+      });
+    };
+
+    // Remove highlights do documento principal e do shadow-root (se existir)
+    removeHighlights(document);
+    const shadowRoot = document.querySelector('#shadow-host')?.shadowRoot;
+    console.log("shadowRoot: ", shadowRoot);
+    if (shadowRoot) removeHighlights(shadowRoot);
 
     // Adiciona highlight
     element.classList.add('voice-highlight');
 
-    // Remove após 2 segundos
+    // Remove após 10 segundos
     setTimeout(() => {
       element.classList.remove('voice-highlight');
-    }, 2000);
+      if (shadowRoot) removeHighlights(shadowRoot);
+    }, 10000);
   };
 
   const reset = useCallback(() => {
@@ -507,18 +507,32 @@ export function useVoiceNavigation(): [VoiceNavigationState, VoiceNavigationActi
     }
 
     return () => {
-      if (websocketRef.current) {
-        websocketRef.current.close();
-      }
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort?.();
           recognitionRef.current.stop?.();
-        } catch {}
+        } catch { }
         recognitionRef.current = null;
       }
     };
   }, [state.isSupported, initializeSpeechRecognition]);
+
+  useEffect(() => {
+    // Só injeta se ainda não existir
+    if (!document.getElementById('voice-highlight-style')) {
+      const style = document.createElement('style');
+      style.id = 'voice-highlight-style';
+      style.textContent = `
+        .voice-highlight {
+          outline: 3px solid #c52509 !important;
+          outline-offset: 2px !important;
+          transition: outline 0.2s ease-in-out;
+          position: relative;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
 
   const actions: VoiceNavigationActions = {
     startListening,

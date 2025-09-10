@@ -1,9 +1,50 @@
-import { MicrophoneIcon, MicrophoneSlashIcon, SpeakerHighIcon } from '@phosphor-icons/react';
+import {
+  MicrophoneIcon,
+  MicrophoneSlashIcon,
+  SpeakerHighIcon,
+  CloudIcon,
+  CloudSlashIcon,
+} from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useVoiceNavigation } from '../lib/hooks/use-voice-navigation';
+import { useEffect, useState } from 'react';
 
-export function VoiceNavigationControl() {
-  const [state, actions] = useVoiceNavigation();
+type VoiceNavigationControlProps = {
+  selectedLanguage?: string;
+}
+
+export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationControlProps) {
+  const [state, actions] = useVoiceNavigation({ selectedLanguage });
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    const handleStart = () => setIsSpeaking(true);
+    const handleEnd = () => setIsSpeaking(false);
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.addEventListener('voiceschanged', handleEnd);
+      window.speechSynthesis.addEventListener('start', handleStart);
+      window.speechSynthesis.addEventListener('end', handleEnd);
+    }
+
+    const interval = setInterval(() => {
+      setIsSpeaking(window.speechSynthesis.speaking);
+    }, 300);
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.removeEventListener('voiceschanged', handleEnd);
+        window.speechSynthesis.removeEventListener('start', handleStart);
+        window.speechSynthesis.removeEventListener('end', handleEnd);
+      }
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleStopVoice = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    }
+  };
 
   const handleToggleListening = async () => {
     if (state.isListening) {
@@ -22,7 +63,7 @@ export function VoiceNavigationControl() {
       case 'error':
         return 'Erro';
       default:
-        return 'Navegação por voz';
+        return `Click no botão Ativar`;
     }
   };
 
@@ -56,9 +97,23 @@ export function VoiceNavigationControl() {
     return 'default';
   };
 
+  const getConnectionIcon = () => {
+    if (state.isConnected) {
+      return (
+        <span title="Conectado ao servidor">
+          <CloudIcon size={16} className="text-green-600" />
+        </span>
+      );
+    }
+    return (
+      <span title="Desconectado do servidor">
+        <CloudSlashIcon size={16} className="text-red-600" />
+      </span>
+    );
+  };
+
   return (
     <div className="space-y-3">
-      {/* Status e Controles */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <SpeakerHighIcon size={20} className="text-blue-600" />
@@ -68,9 +123,7 @@ export function VoiceNavigationControl() {
         </div>
 
         <div className="flex items-center gap-2">
-          {state.isConnected && (
-            <div className="w-2 h-2 bg-green-500 rounded-full" title="Conectado ao servidor" />
-          )}
+          {getConnectionIcon()}
 
           <Button
             size="small"
@@ -84,7 +137,6 @@ export function VoiceNavigationControl() {
         </div>
       </div>
 
-      {/* Mensagens de Status */}
       {state.lastTranscription && (
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
@@ -95,15 +147,23 @@ export function VoiceNavigationControl() {
 
       {state.lastCommand && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-sm text-green-800">
-            <strong>Ação:</strong> {state.lastCommand.action}
-            {state.lastCommand.target && (
-              <span> → {state.lastCommand.target}</span>
-            )}
-          </p>
-          <p className="text-xs text-green-600 mt-1">
-            Confiança: {Math.round(state.lastCommand.confidence * 100)}%
-          </p>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-green-800">
+              <strong>Processado via API:</strong> {state.lastCommand.action}
+              {state.lastCommand.target && (
+                <span> → {state.lastCommand.target}</span>
+              )}
+            </p>
+            <CloudIcon size={16} className="text-green-600" />
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-green-600">
+              Intent: {state.lastCommand.intent}
+            </span>
+            <span className="text-green-600">
+              Confiança: {Math.round(state.lastCommand.confidence * 100)}%
+            </span>
+          </div>
         </div>
       )}
 
@@ -115,39 +175,59 @@ export function VoiceNavigationControl() {
         </div>
       )}
 
-      {/* Informações de Suporte */}
       {!state.isSupported && (
         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
             <strong>Web Speech API não suportada.</strong>
-            Usando fallback via servidor.
           </p>
         </div>
       )}
 
-      {/* Comandos de Ajuda */}
       <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
-        <p className="text-sm font-medium text-gray-800 mb-2">
-          Comandos de voz disponíveis:
-        </p>
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-sm font-medium text-gray-800">
+            Comandos de voz disponíveis:
+          </p>
+          <CloudIcon size={16} className="text-gray-600" />
+        </div>
         <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
-          <div><strong>Navegação:</strong> "ir para [elemento]", "rolar para baixo"</div>
-          <div><strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"</div>
-          <div><strong>Leitura:</strong> "ler [elemento]", "ler página"</div>
-          <div><strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom"</div>
+          <div>
+            <strong>Navegação:</strong> "próximo elemento", "elemento anterior", "rolar para baixo"
+          </div>
+          <div>
+            <strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"
+          </div>
+          <div>
+            <strong>Leitura:</strong> "ler [elemento]", "ler página"
+          </div>
+          <div>
+            <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom", "diminuir zoom"
+          </div>
         </div>
       </div>
 
-      {/* Botão de Reset */}
-      <div className="flex justify-end">
-        <Button
-          size="small"
-          variant={state.status === 'idle' ? "default" : "simple"}
-          onClick={actions.reset}
-          disabled={state.status === 'idle' && !state.error}
-        >
-          Resetar
-        </Button>
+      <div className="flex justify-between items-center">
+        {isSpeaking && (
+          <button
+            className="flex items-center px-3 py-1 rounded bg-red-100 hover:bg-red-200 text-red-700 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
+            onClick={handleStopVoice}
+            aria-label="Parar voz de feedback"
+            type="button"
+          >
+            Parar voz
+          </button>
+        )}
+
+        <div className="flex items-center gap-2 ml-auto">
+          <Button
+            size="small"
+            variant={state.status === 'idle' ? 'default' : 'simple'}
+            onClick={actions.reset}
+            disabled={state.status === 'idle' && !state.error}
+          >
+            Resetar
+          </Button>
+        </div>
       </div>
     </div>
   );

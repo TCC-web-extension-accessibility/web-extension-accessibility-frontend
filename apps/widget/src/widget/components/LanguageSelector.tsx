@@ -78,6 +78,7 @@ export function LanguageSelector({
         icon={<MagnifyingGlassIcon />}
         iconPosition="after"
         className="p-1 mb-2"
+        aria-label="Pesquisar idioma"
       />
       <div
         className={languageList()}
@@ -96,6 +97,7 @@ export function LanguageSelector({
             })}
             role="radio"
             aria-checked={selectedLanguage === lang.code}
+            aria-label={`Idioma ${lang.name}`}
             tabIndex={selectedLanguage === lang.code ? 0 : -1}
             onClick={() => onLanguageChange(lang.code)}
             onKeyDown={(e) => handleKeyDown(e, index)}

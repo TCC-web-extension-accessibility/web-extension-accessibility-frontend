@@ -18,14 +18,14 @@ import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
-import { VoiceNavigationControl } from './VoiceNavigationControl';
-import { VoiceNavigationOverlay } from './VoiceNavigationOverlay';
+import { VoiceNavigationPanel } from './VoiceNavigationPanel';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
   const [isVisible, setIsVisible] = useState(isOpen);
   const [animateIn, setAnimateIn] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showVoiceNavigation, setShowVoiceNavigation] = useState(false);
 
   const fontSize = useFontSize();
   const fontFamily = useFontFamily();
@@ -95,6 +95,11 @@ export function Widget() {
     ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}
   `;
 
+  // Ativa o painel de navegação por voz
+  const handleOpenVoiceNavigation = () => {
+    setShowVoiceNavigation(true);
+  };
+
   return (
     <>
       <div className={drawerClasses}>
@@ -103,12 +108,14 @@ export function Widget() {
           <div className="flex items-center gap-2">
             <Button
               className="rounded-full p-2 text-2xl"
+              aria-label='Abrir configurações'
               variant="simple"
               icon={<GearIcon />}
               onClick={() => setShowSettings(true)}
             />
             <Button
               className="p-2 rounded-full text-2xl"
+              aria-label='Fechar menu'
               onClick={() => setIsOpen(false)}
               icon={<XIcon weight="bold" />}
             />
@@ -117,7 +124,6 @@ export function Widget() {
 
         <div className="border-t border-gray-300 mx-5" />
 
-        {/* Conteúdo scrollável do Widget */}
         <div className="flex-1 min-h-0 overflow-y-auto pr-3 mb-4 space-y-4">
           <LanguageSelectorAccordion
             languages={language.languages}
@@ -133,8 +139,6 @@ export function Widget() {
             changeFontFamily={fontFamily.changeFontFamily}
             changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
           />
-
-          <VoiceNavigationControl />
 
           <WidgetControls
             increaseFontSize={fontSize.increaseFontSize}
@@ -165,8 +169,15 @@ export function Widget() {
             increaseSaturation={saturation.increaseSaturation}
             currentSaturationStep={saturation.currentStep}
             maxSaturationStep={saturation.maxSaturationStep}
+            onActivateVoiceNavigation={handleOpenVoiceNavigation}
           />
         </div>
+
+        <VoiceNavigationPanel
+          isOpen={showVoiceNavigation}
+          onClose={() => setShowVoiceNavigation(false)}
+          selectedLanguage={language.selectedLanguage}
+        />
       </div>
 
       <WidgetSettings
@@ -178,8 +189,6 @@ export function Widget() {
         onBack={() => setShowSettings(false)}
         onResetSettings={resetAllSettings}
       />
-
-      <VoiceNavigationOverlay />
     </>
   );
 }

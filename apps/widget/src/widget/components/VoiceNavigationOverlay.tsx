@@ -14,7 +14,9 @@ export function VoiceNavigationOverlay() {
 
   // Atualiza elementos numerados quando necessário
   useEffect(() => {
-    if (state.isListening || state.status === 'processing') {
+    console.log(state.status);
+    if (state.isSupported || state.status === 'idle') {
+      console.log("Updating numbered elements");
       updateNumberedElements();
       setIsVisible(true);
     } else {
@@ -40,6 +42,7 @@ export function VoiceNavigationOverlay() {
 
   const updateNumberedElements = () => {
     const focusableElements = getFocusableElements();
+    console.log(focusableElements);
     const elementInfos: ElementInfo[] = [];
 
     focusableElements.forEach((element, index) => {

@@ -16,7 +16,7 @@ export function LanguageSelectorAccordion({
   isLoading,
 }: LanguageSelectorAccordionProps) {
   return (
-    <Accordion title="Idioma">
+    <Accordion title="Idioma" aria-label="Selecionar idioma">
       <LanguageSelector
         languages={languages}
         onLanguageChange={onLanguageChange}
