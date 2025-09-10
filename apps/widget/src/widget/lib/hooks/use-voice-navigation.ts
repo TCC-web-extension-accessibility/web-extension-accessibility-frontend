@@ -30,7 +30,7 @@ type VoiceNavigationActions = {
 }
 
 type UseVoiceNavigationProps = {
-  selectedLanguage?: string;
+  selectedLanguage: string | 'en';
 }
 
 export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavigationState, VoiceNavigationActions] {
@@ -139,11 +139,11 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
           speakFeedback('Voltando para página anterior', props?.selectedLanguage);
           break;
         case 'zoom_in':
-          document.body.style.zoom = (parseFloat(document.body.style.zoom || '1') + 0.1).toString();
+          applyPageZoom('in');
           speakFeedback('Zoom aumentado', props?.selectedLanguage);
           break;
         case 'zoom_out':
-          document.body.style.zoom = (parseFloat(document.body.style.zoom || '1') - 0.1).toString();
+          applyPageZoom('out');
           speakFeedback('Zoom diminuído', props?.selectedLanguage);
           break;
         default:
@@ -245,12 +245,11 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   }, [state.isSupported, sendTextCommand, props?.selectedLanguage]);
 
 
-  // Inicia escuta
+  // Start listening to voice
   const startListening = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, status: 'listening', error: undefined }));
 
-      // Usa Web Speech API
       if (state.isSupported && recognitionRef.current) {
         recognitionRef.current.start();
       } else {
@@ -269,23 +268,45 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     }
   }, [state.isSupported]);
 
-  // Para escuta
   const stopListening = useCallback(() => {
     if (recognitionRef.current && state.isListening) {
       recognitionRef.current.stop();
     }
 
-
     setState(prev => ({ ...prev, isListening: false, status: 'idle' }));
   }, [state.isListening]);
 
-  // Funções auxiliares
   const speakFeedback = (text: string, language?: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = getSpeechLanguage(language);
       utterance.rate = 0.9;
       speechSynthesis.speak(utterance);
+    }
+  };
+
+  const applyPageZoom = (direction: 'in' | 'out') => {
+    const currentZoom = parseFloat(document.body.style.zoom || '1');
+    const zoomStep = 0.1;
+    const minZoom = 0.5;
+    const maxZoom = 3.0;
+
+    let newZoom: number;
+    if (direction === 'in') {
+      newZoom = Math.min(currentZoom + zoomStep, maxZoom);
+    } else {
+      newZoom = Math.max(currentZoom - zoomStep, minZoom);
+    }
+
+    document.body.style.zoom = newZoom.toString();
+
+    // Neutralizes the zoom on the widget so that it maintains its original size
+    const widgetHost = document.querySelector('#shadow-host') as HTMLElement;
+    if (widgetHost) {
+      // Applies the inverse zoom on the widget to cancel the effect of the body zoom
+      const inverseZoom = 1 / newZoom;
+      widgetHost.style.zoom = inverseZoom.toString();
+      widgetHost.style.transformOrigin = 'bottom right';
     }
   };
 
@@ -382,7 +403,6 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
 
   const readElement = (target: string) => {
     const element = findElementByTarget(target);
-    console.log(target);
     if (element) {
       const text = element.textContent || element.getAttribute('aria-label') || 'Elemento sem texto';
       speakFeedback(text, props?.selectedLanguage);
@@ -416,9 +436,9 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     // Procura por aria-label
     let element =
       document.querySelector(`[aria-label*="${target}" i]`) ||
-      document.querySelector("#shadow-host")?.shadowRoot?.
+      document.querySelector("#web-extension-accessibility")?.shadowRoot?.
         querySelector("#widget-root")?.querySelector(`[aria-label*="${target}" i]`);
-    console.log("element: " + element);
+
     if (element) return element;
 
     // Procura por texto (busca manual)

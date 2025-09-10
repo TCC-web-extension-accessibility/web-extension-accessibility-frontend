@@ -4,7 +4,7 @@ import { XIcon } from '@phosphor-icons/react';
 type VoiceNavigationPanelProps = {
   isOpen: boolean;
   onClose: () => void;
-  selectedLanguage?: string;
+  selectedLanguage: string | 'en';
 }
 
 export function VoiceNavigationPanel({

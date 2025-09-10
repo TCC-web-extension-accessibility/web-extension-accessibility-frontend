@@ -176,7 +176,7 @@ export function Widget() {
         <VoiceNavigationPanel
           isOpen={showVoiceNavigation}
           onClose={() => setShowVoiceNavigation(false)}
-          selectedLanguage={language.selectedLanguage}
+          selectedLanguage={language.selectedLanguage ?? 'en'}
         />
       </div>
 

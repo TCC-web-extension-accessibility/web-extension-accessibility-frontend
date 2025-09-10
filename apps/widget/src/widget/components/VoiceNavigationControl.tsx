@@ -10,7 +10,7 @@ import { useVoiceNavigation } from '../lib/hooks/use-voice-navigation';
 import { useEffect, useState } from 'react';
 
 type VoiceNavigationControlProps = {
-  selectedLanguage?: string;
+  selectedLanguage: string | 'en';
 }
 
 export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationControlProps) {
