@@ -7,6 +7,7 @@ type LanguageSelectorAccordionProps = {
   selectedLanguage: string | null;
   onLanguageChange: (language: string) => void;
   isLoading: boolean;
+  ariaLabel: string;
 };
 
 export function LanguageSelectorAccordion({
@@ -14,9 +15,10 @@ export function LanguageSelectorAccordion({
   selectedLanguage,
   onLanguageChange,
   isLoading,
+  ariaLabel,
 }: LanguageSelectorAccordionProps) {
   return (
-    <Accordion title="Idioma" aria-label="Selecionar idioma">
+    <Accordion title="Idioma" ariaLabel={ariaLabel}>
       <LanguageSelector
         languages={languages}
         onLanguageChange={onLanguageChange}

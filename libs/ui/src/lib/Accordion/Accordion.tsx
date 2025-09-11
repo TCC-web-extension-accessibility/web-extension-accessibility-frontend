@@ -31,12 +31,14 @@ type AccordionProps = {
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
+  ariaLabel?: string;
 };
 
 const Accordion = ({
   title,
   children,
   defaultOpen = false,
+  ariaLabel = `${title}`,
 }: AccordionProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -55,7 +57,7 @@ const Accordion = ({
     <div
       className={`w-full max-w-2xl mx-auto rounded-lg overflow-hidden bg-white`}
     >
-      <div className={header()} onClick={toggleOpen}>
+      <div className={header()} onClick={toggleOpen} aria-label={ariaLabel}>
         <h3 className={titleClass()}>{title}</h3>
         <CaretDownIcon className={icon()} weight="bold" size={16} />
       </div>

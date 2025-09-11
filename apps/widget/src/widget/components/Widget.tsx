@@ -130,6 +130,7 @@ export function Widget() {
             selectedLanguage={language.selectedLanguage}
             onLanguageChange={language.selectLanguage}
             isLoading={language.isLoading}
+            ariaLabel="Idioma"
           />
 
           <AccessibilityProfilesAccordion
@@ -138,6 +139,7 @@ export function Widget() {
             toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
             changeFontFamily={fontFamily.changeFontFamily}
             changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+            ariaLabel="Perfis de acessibilidade"
           />
 
           <WidgetControls

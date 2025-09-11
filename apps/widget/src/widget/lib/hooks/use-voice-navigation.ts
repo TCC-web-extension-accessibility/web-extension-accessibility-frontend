@@ -34,6 +34,9 @@ type UseVoiceNavigationProps = {
 }
 
 export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavigationState, VoiceNavigationActions] {
+  const HOST = document.querySelector("#web-extension-accessibility") as HTMLElement;
+  const WIDGET = HOST.shadowRoot?.querySelector("#widget-root") as HTMLElement;
+
   const [state, setState] = useState<VoiceNavigationState>({
     isListening: false,
     isConnected: false,
@@ -118,6 +121,13 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
           break;
         case 'navigate_previous':
           navigateToPreviousElement();
+          break;
+        case 'navigate_to':
+          if (command.target) {
+            navigateToElement(command.target);
+          } else {
+            speakFeedback('Nenhum destino especificado para navegação', props?.selectedLanguage);
+          }
           break;
         case 'click':
           if (command.target) {
@@ -301,12 +311,11 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     document.body.style.zoom = newZoom.toString();
 
     // Neutralizes the zoom on the widget so that it maintains its original size
-    const widgetHost = document.querySelector('#shadow-host') as HTMLElement;
-    if (widgetHost) {
+    if (HOST) {
       // Applies the inverse zoom on the widget to cancel the effect of the body zoom
       const inverseZoom = 1 / newZoom;
-      widgetHost.style.zoom = inverseZoom.toString();
-      widgetHost.style.transformOrigin = 'bottom right';
+      HOST.style.zoom = inverseZoom.toString();
+      HOST.style.transformOrigin = 'bottom right';
     }
   };
 
@@ -390,6 +399,17 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     }
   };
 
+  const navigateToElement = (target: string) => {
+    const element = findElementByTarget(target) as HTMLElement | null;
+    if (element) {
+      element.focus();
+      highlightElement(element);
+      speakFeedback(`Foco em ${getElementDescription(element)}`, props?.selectedLanguage);
+    } else {
+      speakFeedback(`Elemento ${target} não encontrado`, props?.selectedLanguage);
+    }
+  };
+
   const clickElement = (target: string) => {
     const element = findElementByTarget(target) as HTMLElement | null;
     console.log(element);
@@ -433,19 +453,157 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   };
 
   const findElementByTarget = (target: string): Element | null => {
-    // Procura por aria-label
-    let element =
-      document.querySelector(`[aria-label*="${target}" i]`) ||
-      document.querySelector("#web-extension-accessibility")?.shadowRoot?.
-        querySelector("#widget-root")?.querySelector(`[aria-label*="${target}" i]`);
+    // Função auxiliar para escapar caracteres especiais em seletores CSS
+    const escapeSelector = (str: string): string => {
+      return str.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, '\\$&');
+    };
 
-    if (element) return element;
+    // Função auxiliar para normalizar texto (remove acentos e caracteres especiais)
+    const normalizeText = (text: string): string => {
+      return text
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[^\w\s]/g, '') // Remove caracteres especiais
+        .toLowerCase()
+        .trim();
+    };
 
-    // Procura por texto (busca manual)
-    const elements = Array.from(document.querySelectorAll('button, a, [role="button"], [role="link"], [aria-label], [tabindex]'));
+    // Procura por ID com escape de caracteres especiais
+    try {
+      const escapedTarget = escapeSelector(target);
+      const idSelector = `#${escapedTarget}`;
+      let element = document.querySelector(idSelector) || WIDGET?.querySelector(idSelector);
+      if (element) return element;
+    } catch (e) {
+      // Se falhar com caracteres especiais, continua
+    }
+
+    // Procura por name com escape de caracteres especiais
+    try {
+      const escapedTarget = escapeSelector(target);
+      const nameSelector = `[name="${escapedTarget}"]`;
+      let element = document.querySelector(nameSelector) || WIDGET?.querySelector(nameSelector);
+      if (element) return element;
+    } catch (e) {
+      // Se falhar com caracteres especiais, continua
+    }
+
+    // Procura por aria-label com escape de caracteres especiais
+    try {
+      const escapedTarget = escapeSelector(target);
+      const ariaLabelSelector = `[aria-label*="${escapedTarget}" i]`;
+      let element = document.querySelector(ariaLabelSelector) || WIDGET?.querySelector(ariaLabelSelector);
+      if (element) return element;
+    } catch (e) {
+      // Se falhar com caracteres especiais, continua para busca manual
+    }
+
+    // Procura por texto (busca manual com normalização)
+    const elements = Array.from(document.querySelectorAll('button, a, [role="button"], [role="link"], [aria-label], [tabindex], input, textarea, select'));
+    const normalizedTarget = normalizeText(target);
+    console.log("Por texto: ", elements);
+
     for (const el of elements) {
-      if (el.textContent && el.textContent.trim().toLowerCase().includes(target.toLowerCase())) {
-        return el;
+      // Verifica ID
+      const elementId = el.getAttribute('id');
+      if (elementId) {
+        const normalizedId = normalizeText(elementId);
+
+        // Busca exata no ID
+        if (elementId.toLowerCase().includes(target.toLowerCase())) {
+          return el;
+        }
+
+        // Busca normalizada no ID
+        if (normalizedId.includes(normalizedTarget)) {
+          return el;
+        }
+      }
+
+      // Verifica name
+      const elementName = el.getAttribute('name');
+      if (elementName) {
+        const normalizedName = normalizeText(elementName);
+
+        // Busca exata no name
+        if (elementName.toLowerCase().includes(target.toLowerCase())) {
+          return el;
+        }
+
+        // Busca normalizada no name
+        if (normalizedName.includes(normalizedTarget)) {
+          return el;
+        }
+      }
+
+      // Verifica placeholder (comum em inputs)
+      const placeholder = el.getAttribute('placeholder');
+      if (placeholder) {
+        const normalizedPlaceholder = normalizeText(placeholder);
+
+        // Busca exata no placeholder
+        if (placeholder.toLowerCase().includes(target.toLowerCase())) {
+          return el;
+        }
+
+        // Busca normalizada no placeholder
+        if (normalizedPlaceholder.includes(normalizedTarget)) {
+          return el;
+        }
+      }
+
+      // Verifica textContent
+      if (el.textContent) {
+        const elementText = el.textContent.trim();
+        const normalizedElementText = normalizeText(elementText);
+
+        // Busca exata (com caracteres especiais)
+        if (elementText.toLowerCase().includes(target.toLowerCase())) {
+          return el;
+        }
+
+        // Busca normalizada (sem acentos e caracteres especiais)
+        if (normalizedElementText.includes(normalizedTarget)) {
+          return el;
+        }
+      }
+
+      // Verifica aria-label
+      const ariaLabel = el.getAttribute('aria-label');
+      if (ariaLabel) {
+        const normalizedAriaLabel = normalizeText(ariaLabel);
+
+        // Busca exata no aria-label
+        if (ariaLabel.toLowerCase().includes(target.toLowerCase())) {
+          return el;
+        }
+
+        // Busca normalizada no aria-label
+        if (normalizedAriaLabel.includes(normalizedTarget)) {
+          return el;
+        }
+      }
+
+      // Verifica label associado (para inputs)
+      if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea' || el.tagName.toLowerCase() === 'select') {
+        const elementId = el.getAttribute('id');
+        if (elementId) {
+          const associatedLabel = document.querySelector(`label[for="${elementId}"]`) || WIDGET?.querySelector(`label[for="${elementId}"]`);
+          if (associatedLabel && associatedLabel.textContent) {
+            const labelText = associatedLabel.textContent.trim();
+            const normalizedLabelText = normalizeText(labelText);
+
+            // Busca exata no label
+            if (labelText.toLowerCase().includes(target.toLowerCase())) {
+              return el;
+            }
+
+            // Busca normalizada no label
+            if (normalizedLabelText.includes(normalizedTarget)) {
+              return el;
+            }
+          }
+        }
       }
     }
 
@@ -467,23 +625,102 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
 
     const ElementsAll = [
       ...Array.from(document.querySelectorAll(focusableSelectors.join(','))),
-      ...Array.from(
-      document.querySelector("#shadow-host")?.shadowRoot
-        ?.querySelector("#widget-root")
-        ?.querySelectorAll(focusableSelectors.join(',')) || []
-      ),
+      ...Array.from(WIDGET.querySelectorAll(focusableSelectors.join(',')) || []),
     ];
 
     return ElementsAll.filter(el => {
       const htmlEl = el as HTMLElement;
-        return !htmlEl.hasAttribute('disabled') && htmlEl.offsetParent !== null;
-      }) as HTMLElement[];
+      return !htmlEl.hasAttribute('disabled') && htmlEl.offsetParent !== null;
+    }) as HTMLElement[];
   };
 
   const getElementDescription = (element: Element): string => {
-    return element.getAttribute('aria-label') ||
-      element.textContent?.trim() ||
-      element.tagName.toLowerCase();
+    // check textContent
+    const textContent = element.textContent?.trim();
+    if (textContent) {
+      return textContent;
+    }
+
+    // check aria-label
+    const ariaLabel = element.getAttribute('aria-label');
+    if (ariaLabel && ariaLabel.trim()) {
+      return ariaLabel.trim();
+    }
+
+    // check aria-labelledby
+    const ariaLabelledBy = element.getAttribute('aria-labelledby');
+    if (ariaLabelledBy) {
+      const labelElement = document.getElementById(ariaLabelledBy) || WIDGET?.querySelector(`#${ariaLabelledBy}`);
+      if (labelElement && labelElement.textContent) {
+        return labelElement.textContent.trim();
+      }
+    }
+
+    // check associated label for inputs
+    const elementId = element.getAttribute('id');
+    if (elementId && (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea' || element.tagName.toLowerCase() === 'select')) {
+      const associatedLabel = document.querySelector(`label[for="${elementId}"]`) || WIDGET?.querySelector(`label[for="${elementId}"]`);
+      if (associatedLabel && associatedLabel.textContent) {
+        return associatedLabel.textContent.trim();
+      }
+    }
+
+    // check if the element is inside a label
+    const parentLabel = element.closest('label');
+    if (parentLabel && parentLabel.textContent) {
+      const labelText = parentLabel.textContent.trim();
+      const elementText = element.textContent?.trim() || '';
+      if (labelText !== elementText && labelText.includes(elementText)) {
+        return labelText.replace(elementText, '').trim();
+      } else if (labelText !== elementText) {
+        return labelText;
+      }
+    }
+
+    // check placeholder for inputs
+    const placeholder = element.getAttribute('placeholder');
+    if (placeholder && placeholder.trim()) {
+      return `Campo: ${placeholder.trim()}`;
+    }
+
+    // check title attribute
+    const title = element.getAttribute('title');
+    if (title && title.trim()) {
+      return title.trim();
+    }
+
+    // check name attribute
+    const name = element.getAttribute('name');
+    if (name && name.trim()) {
+      return `Campo: ${name.trim()}`;
+    }
+
+    // check id attribute
+    const id = element.getAttribute('id');
+    if (id && id.trim()) {
+      return id.trim().replace(/[-_]/g, ' ');
+    }
+
+    // check alt for images
+    if (element.tagName.toLowerCase() === 'img') {
+      const alt = element.getAttribute('alt');
+      if (alt && alt.trim()) {
+        return alt.trim();
+      }
+    }
+
+    // check value for button, submit, reset input types
+    if (element.tagName.toLowerCase() === 'input') {
+      const inputType = element.getAttribute('type')?.toLowerCase();
+      if (['button', 'submit', 'reset'].includes(inputType || '')) {
+        const value = (element as HTMLInputElement).value;
+        if (value && value.trim()) {
+          return value.trim();
+        }
+      }
+    }
+
+    return element.tagName.toLowerCase();
   };
 
   const highlightElement = (element: Element) => {
@@ -496,7 +733,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
 
     // Remove highlights do documento principal e do shadow-root (se existir)
     removeHighlights(document);
-    const shadowRoot = document.querySelector('#shadow-host')?.shadowRoot;
+    const shadowRoot = HOST.shadowRoot;
     console.log("shadowRoot: ", shadowRoot);
     if (shadowRoot) removeHighlights(shadowRoot);
 
