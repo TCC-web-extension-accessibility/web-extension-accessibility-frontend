@@ -1,15 +1,10 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import axios from 'axios';
+import { getClientApi } from '../../../lib/api-client';
+import type { VoiceCommandRequest } from '@web-extension-accessibility-frontend/api-client';
 
 import type {
   SpeechRecognition
 } from '../../../vite-env';
-
-// Voice Navigation API Types - seguindo padrões do api-client
-interface VoiceNavigationCommandRequest {
-  text: string;
-  language: string;
-}
 
 interface VoiceCommand {
   intent: string;
@@ -60,52 +55,42 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Usa sessionStorage para persistir entre montagens/desmontagens do componente
+  // Uses sessionStorage to persist the navigation index between component mounts/unmounts
   const getInitialNavIndex = () => {
     const stored = sessionStorage.getItem('voice-nav-index');
     return stored ? parseInt(stored, 10) : null;
   };
 
-  // Estado para controlar o último elemento focado pela navegação por voz
+  // Ref to store the index of the last element focused by voice navigation
   const lastVoiceNavIndexRef = useRef<number | null>(getInitialNavIndex());
 
-  // Cria uma instância do axios reutilizável configurada com a mesma base URL do api-client
-  const axiosInstanceRef = useRef(
-    axios.create({
-      baseURL: process.env.VITE_API_BASE_URL || 'http://localhost:8000',
-      timeout: 10000, // 10 segundos de timeout
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  );
+  // Auto-generated API client instance
+  const apiClient = useMemo(() => getClientApi(), []);
 
-  // Verifica suporte à Web Speech API
+  // Checks for Web Speech API support
   useEffect(() => {
     const isSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     setState(prev => ({ ...prev, isSupported }));
   }, []);
 
-  // Voice Navigation API Service - seguindo padrões do api-client
+  // Voice Navigation API Service - using the generated api-client
   const voiceNavigationApiService = useMemo(() => ({
-    async processCommand(request: VoiceNavigationCommandRequest): Promise<VoiceCommand | null> {
+    async processCommand(request: VoiceCommandRequest): Promise<VoiceCommand | null> {
       console.log(process.env.VITE_API_BASE_URL);
       try {
-        const response = await axiosInstanceRef.current.post<VoiceCommand>(
-          '/api/v1/voice-navigation/command',
-          request
-        );
-        return response.data;
+        const response = await apiClient.Default.Api.processVoiceCommandApiV1VoiceNavigationCommandPost(request);
+        return response.data as VoiceCommand;
       } catch (error) {
         const apiError: VoiceNavigationApiError = {
           message: 'Erro ao processar comando no servidor'
         };
 
-        if (axios.isAxiosError(error)) {
-          if (error.response) {
-            apiError.status = error.response.status;
-            apiError.message = `Erro ${error.response.status}: ${error.response.statusText}`;
-          } else if (error.request) {
+        if (error && typeof error === 'object' && 'response' in error) {
+          const axiosError = error as any;
+          if (axiosError.response) {
+            apiError.status = axiosError.response.status;
+            apiError.message = `Erro ${axiosError.response.status}: ${axiosError.response.statusText}`;
+          } else if (axiosError.request) {
             apiError.message = 'Erro de conectividade com o servidor';
             apiError.code = 'NETWORK_ERROR';
           }
@@ -114,15 +99,15 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
         throw apiError;
       }
     }
-  }), []);
+  }), [apiClient]);
 
-  // Processa comando via API REST usando padrões do api-client
+  // Process command via API REST using api-client patterns
   const processCommandWithAPI = useCallback(async (text: string): Promise<VoiceCommand | null> => {
     try {
-      // Atualiza estado de conexão baseado na tentativa de comunicação
+      // Updates connection state based on communication attempt
       setState(prev => ({ ...prev, isConnected: true }));
 
-      const request: VoiceNavigationCommandRequest = {
+      const request: VoiceCommandRequest = {
         text: text,
         language: props?.selectedLanguage || 'auto'
       };
@@ -143,7 +128,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     }
   }, [props?.selectedLanguage, voiceNavigationApiService]);
 
-  // Executa comando de voz
+  // Executes voice command
   const executeCommand = useCallback(async (command: VoiceCommand) => {
     try {
       setState(prev => ({ ...prev, status: 'processing' }));
@@ -228,7 +213,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     return Promise.resolve();
   }, [props?.selectedLanguage]);
 
-  // Envia comando de texto para o backend
+  // Sends text command to the backend
   const sendTextCommand = useCallback(async (text: string) => {
     setState(prev => ({ ...prev, status: 'processing' }));
 
@@ -244,7 +229,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     return Promise.resolve();
   }, [processCommandWithAPI, executeCommand]);
 
-  // Inicializa reconhecimento de fala
+  // Initializes speech recognition
   const initializeSpeechRecognition = useCallback(() => {
     if (!state.isSupported) return;
 
@@ -267,12 +252,12 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     recognition.onstart = () => {
       setState(prev => ({ ...prev, isListening: true, status: 'listening' }));
 
-      // Limpa timeout anterior se existir
+      // Clears previous timeout if it exists
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
-      // Define timeout de 5 segundos para detectar falta de fala
+      // Sets a 5-second timeout to detect lack of speech
       timeoutRef.current = setTimeout(() => {
         if (recognitionRef.current) {
           recognitionRef.current.stop();
@@ -289,7 +274,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     };
 
     recognition.onresult = (event) => {
-      // Limpa o timeout pois fala foi detectada
+      // Clears the timeout as speech was detected
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
@@ -305,7 +290,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     };
 
     recognition.onerror = (event) => {
-      // Limpa o timeout em caso de erro
+      // Clears the timeout in case of error
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
@@ -337,7 +322,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     };
 
     recognition.onend = () => {
-      // Limpa o timeout quando o reconhecimento termina
+      // Clears the timeout when recognition ends
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
@@ -374,7 +359,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   }, [state.isSupported]);
 
   const stopListening = useCallback(() => {
-    // Limpa o timeout ao parar manualmente
+    // Clears the timeout when stopping manually
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -420,7 +405,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     }
   };
 
-  // Mapeia códigos de idioma para reconhecimento de fala
+  // Maps language codes to speech recognition
   const getRecognitionLanguage = (languageCode?: string): string => {
     const languageMap: Record<string, string> = {
       'en': 'en-US',
@@ -433,7 +418,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     return languageMap[languageCode || 'pt'] || 'pt-BR';
   };
 
-  // Mapeia códigos de idioma para síntese de fala
+  // Maps language codes to speech synthesis
   const getSpeechLanguage = (languageCode?: string): string => {
     const languageMap: Record<string, string> = {
       'en': 'en-US',
