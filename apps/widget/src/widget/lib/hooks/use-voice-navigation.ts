@@ -1,14 +1,27 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import axios from 'axios';
 
 import type {
   SpeechRecognition
 } from '../../../vite-env';
 
-type VoiceCommand = {
+// Voice Navigation API Types - seguindo padrões do api-client
+interface VoiceNavigationCommandRequest {
+  text: string;
+  language: string;
+}
+
+interface VoiceCommand {
   intent: string;
   action: string;
   target?: string;
   confidence: number;
+}
+
+interface VoiceNavigationApiError {
+  message: string;
+  status?: number;
+  code?: string;
 }
 
 type VoiceNavigationState = {
@@ -56,8 +69,16 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   // Estado para controlar o último elemento focado pela navegação por voz
   const lastVoiceNavIndexRef = useRef<number | null>(getInitialNavIndex());
 
-  // Base URL do backend
-  const API_BASE_URL = 'http://localhost:8000/api/v1';
+  // Cria uma instância do axios reutilizável configurada com a mesma base URL do api-client
+  const axiosInstanceRef = useRef(
+    axios.create({
+      baseURL: process.env.VITE_API_BASE_URL || 'http://localhost:8000',
+      timeout: 10000, // 10 segundos de timeout
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  );
 
   // Verifica suporte à Web Speech API
   useEffect(() => {
@@ -65,39 +86,62 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     setState(prev => ({ ...prev, isSupported }));
   }, []);
 
-  // Processa comando via API REST
+  // Voice Navigation API Service - seguindo padrões do api-client
+  const voiceNavigationApiService = useMemo(() => ({
+    async processCommand(request: VoiceNavigationCommandRequest): Promise<VoiceCommand | null> {
+      console.log(process.env.VITE_API_BASE_URL);
+      try {
+        const response = await axiosInstanceRef.current.post<VoiceCommand>(
+          '/api/v1/voice-navigation/command',
+          request
+        );
+        return response.data;
+      } catch (error) {
+        const apiError: VoiceNavigationApiError = {
+          message: 'Erro ao processar comando no servidor'
+        };
+
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            apiError.status = error.response.status;
+            apiError.message = `Erro ${error.response.status}: ${error.response.statusText}`;
+          } else if (error.request) {
+            apiError.message = 'Erro de conectividade com o servidor';
+            apiError.code = 'NETWORK_ERROR';
+          }
+        }
+
+        throw apiError;
+      }
+    }
+  }), []);
+
+  // Processa comando via API REST usando padrões do api-client
   const processCommandWithAPI = useCallback(async (text: string): Promise<VoiceCommand | null> => {
     try {
       // Atualiza estado de conexão baseado na tentativa de comunicação
       setState(prev => ({ ...prev, isConnected: true }));
 
-      const response = await fetch(`${API_BASE_URL}/voice-navigation/command`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-          language: props?.selectedLanguage || 'auto'
-        })
-      });
+      const request: VoiceNavigationCommandRequest = {
+        text: text,
+        language: props?.selectedLanguage || 'auto'
+      };
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const command = await response.json();
+      const command = await voiceNavigationApiService.processCommand(request);
       return command;
     } catch (error) {
+      console.error('Erro ao processar comando:', error);
+
+      const apiError = error as VoiceNavigationApiError;
       setState(prev => ({
         ...prev,
-        error: 'Erro ao processar comando no servidor',
+        error: apiError.message,
         status: 'error',
         isConnected: false
       }));
       return null;
     }
-  }, [props?.selectedLanguage]);
+  }, [props?.selectedLanguage, voiceNavigationApiService]);
 
   // Executa comando de voz
   const executeCommand = useCallback(async (command: VoiceCommand) => {
