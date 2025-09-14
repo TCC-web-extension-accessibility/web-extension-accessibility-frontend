@@ -45,6 +45,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   });
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Estado para controlar o último elemento focado pela navegação por voz
   const lastVoiceNavIndexRef = useRef<number | null>(null);
@@ -82,7 +83,6 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
       const command = await response.json();
       return command;
     } catch (error) {
-      console.error('Erro ao processar comando via API:', error);
       setState(prev => ({
         ...prev,
         error: 'Erro ao processar comando no servidor',
@@ -157,7 +157,14 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
           speakFeedback('Zoom diminuído', props?.selectedLanguage);
           break;
         default:
-          speakFeedback(`Comando não reconhecido: ${command.action}`, props?.selectedLanguage);
+          if(state.error) {
+            setState(prev => ({
+              ...prev,
+              lastCommand: undefined,
+              lastTranscription: undefined,
+            }));
+          }
+          speakFeedback(`Comando não reconhecido`, props?.selectedLanguage);
       }
 
       setState(prev => ({ ...prev, status: 'idle' }));
@@ -209,9 +216,35 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
 
     recognition.onstart = () => {
       setState(prev => ({ ...prev, isListening: true, status: 'listening' }));
+
+      // Limpa timeout anterior se existir
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Define timeout de 5 segundos para detectar falta de fala
+      timeoutRef.current = setTimeout(() => {
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+        }
+        setState(prev => ({
+          ...prev,
+          isListening: false,
+          lastCommand: undefined,
+          lastTranscription: undefined,
+          status: 'error',
+          error: 'Nenhuma fala detectada. Clique no botão Ativar novamente.'
+        }));
+      }, 5000);
     };
 
     recognition.onresult = (event) => {
+      // Limpa o timeout pois fala foi detectada
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
       const transcript = event.results[0][0].transcript;
       setState(prev => ({
         ...prev,
@@ -222,6 +255,12 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     };
 
     recognition.onerror = (event) => {
+      // Limpa o timeout em caso de erro
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
       let errorMessage = 'Erro no reconhecimento de fala';
 
       switch (event.error) {
@@ -248,6 +287,12 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     };
 
     recognition.onend = () => {
+      // Limpa o timeout quando o reconhecimento termina
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
       setState(prev => ({ ...prev, isListening: false }));
     };
 
@@ -279,6 +324,12 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   }, [state.isSupported]);
 
   const stopListening = useCallback(() => {
+    // Limpa o timeout ao parar manualmente
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     if (recognitionRef.current && state.isListening) {
       recognitionRef.current.stop();
     }
@@ -347,31 +398,24 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
 
   const navigateToNextElement = () => {
     const focusableElements = getFocusableElements();
-    let activeElement: Element | null = document.activeElement;
-    let currentIndex = focusableElements.findIndex(el => el === activeElement);
 
-    // Se for a primeira navegação, sempre foca o primeiro elemento
-    if (lastVoiceNavIndexRef.current === null) {
-      const firstEl = focusableElements[0] as HTMLElement;
-      if (firstEl) {
-        firstEl.focus();
-        highlightElement(firstEl);
-        speakFeedback(`Foco em ${getElementDescription(firstEl)}`, props?.selectedLanguage);
-        lastVoiceNavIndexRef.current = 0;
-      }
+    // Se não há elementos focáveis, retorna
+    if (focusableElements.length === 0) {
+      speakFeedback('Nenhum elemento focável encontrado na página', props?.selectedLanguage);
       return;
     }
 
-    // Se o foco não está em nenhum elemento válido, usa o último index salvo
-    if (currentIndex === -1 && lastVoiceNavIndexRef.current !== null) {
-      currentIndex = lastVoiceNavIndexRef.current;
+    let nextIndex: number;
+
+    // Se for a primeira navegação ou não há índice salvo, foca o primeiro elemento
+    if (lastVoiceNavIndexRef.current === null) {
+      nextIndex = 0;
+    } else {
+      // Usa o índice salvo e navega para o próximo
+      nextIndex = (lastVoiceNavIndexRef.current + 1) % focusableElements.length;
     }
 
-    let nextIndex = (currentIndex + 1) % focusableElements.length;
-    if (currentIndex === -1) nextIndex = 0; // Se nada está focado, começa do primeiro
-
     const nextEl = focusableElements[nextIndex] as HTMLElement;
-    console.log("nextEl: ", nextEl);
     if (nextEl) {
       nextEl.focus();
       highlightElement(nextEl);
@@ -382,14 +426,25 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
 
   const navigateToPreviousElement = () => {
     const focusableElements = getFocusableElements();
-    let activeElement: Element | null = document.activeElement;
-    let currentIndex = focusableElements.findIndex(el => el === activeElement);
 
-    if (currentIndex === -1 && lastVoiceNavIndexRef.current !== null) {
-      currentIndex = lastVoiceNavIndexRef.current;
+    // Se não há elementos focáveis, retorna
+    if (focusableElements.length === 0) {
+      speakFeedback('Nenhum elemento focável encontrado na página', props?.selectedLanguage);
+      return;
     }
 
-    let prevIndex = currentIndex > 0 ? currentIndex - 1 : focusableElements.length - 1;
+    let prevIndex: number;
+
+    // Se for a primeira navegação ou não há índice salvo, foca o primeiro elemento
+    if (lastVoiceNavIndexRef.current === null) {
+      prevIndex = 0;
+    } else {
+      // Usa o índice salvo e navega para o anterior
+      prevIndex = lastVoiceNavIndexRef.current > 0
+        ? lastVoiceNavIndexRef.current - 1
+        : focusableElements.length - 1;
+    }
+
     const prevEl = focusableElements[prevIndex] as HTMLElement;
     if (prevEl) {
       prevEl.focus();
@@ -402,9 +457,18 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   const navigateToElement = (target: string) => {
     const element = findElementByTarget(target) as HTMLElement | null;
     if (element) {
+      // Encontra o índice do elemento na lista de elementos focáveis
+      const focusableElements = getFocusableElements();
+      const elementIndex = focusableElements.findIndex(el => el === element);
+
       element.focus();
       highlightElement(element);
       speakFeedback(`Foco em ${getElementDescription(element)}`, props?.selectedLanguage);
+
+      // Armazena o índice se o elemento estiver na lista de focáveis
+      if (elementIndex !== -1) {
+        lastVoiceNavIndexRef.current = elementIndex;
+      }
     } else {
       speakFeedback(`Elemento ${target} não encontrado`, props?.selectedLanguage);
     }
@@ -748,6 +812,12 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   };
 
   const reset = useCallback(() => {
+    // Limpa o timeout no reset
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     stopListening();
     setState({
       isListening: false,
@@ -764,6 +834,12 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     }
 
     return () => {
+      // Limpa o timeout no cleanup
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort?.();

@@ -43,8 +43,7 @@ type WidgetControlsProps = {
   increaseSaturation: () => void;
   currentSaturationStep: number;
   maxSaturationStep: number;
-  onActivateVoiceNavigation?: () => void;
-  onCloseVoiceNavigation?: () => void;
+  onActivateVoiceNavigation: () => void;
 };
 
 export function WidgetControls({

@@ -11,9 +11,11 @@ import { useEffect, useState } from 'react';
 
 type VoiceNavigationControlProps = {
   selectedLanguage: string | 'en';
-}
+};
 
-export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationControlProps) {
+export function VoiceNavigationControl({
+  selectedLanguage,
+}: VoiceNavigationControlProps) {
   const [state, actions] = useVoiceNavigation({ selectedLanguage });
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -63,7 +65,7 @@ export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationCont
       case 'error':
         return 'Erro';
       default:
-        return `Click no botão Ativar`;
+        return 'Clique no botão Ativar';
     }
   };
 
@@ -137,7 +139,7 @@ export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationCont
         </div>
       </div>
 
-      {state.lastTranscription && (
+      {state.lastTranscription && !state.error && (
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
             <strong>Comando:</strong> {state.lastTranscription}
@@ -145,7 +147,7 @@ export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationCont
         </div>
       )}
 
-      {state.lastCommand && (
+      {state.lastCommand && !state.error && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-green-800">
@@ -192,7 +194,8 @@ export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationCont
         </div>
         <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
           <div>
-            <strong>Navegação:</strong> "próximo elemento", "elemento anterior", "rolar para baixo"
+            <strong>Navegação:</strong> "próximo elemento", "elemento anterior",
+            "rolar para baixo"
           </div>
           <div>
             <strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"
@@ -201,7 +204,8 @@ export function VoiceNavigationControl({ selectedLanguage }: VoiceNavigationCont
             <strong>Leitura:</strong> "ler [elemento]", "ler página"
           </div>
           <div>
-            <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom", "diminuir zoom"
+            <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom",
+            "diminuir zoom"
           </div>
         </div>
       </div>

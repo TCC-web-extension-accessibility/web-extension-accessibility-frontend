@@ -95,11 +95,6 @@ export function Widget() {
     ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}
   `;
 
-  // Ativa o painel de navegação por voz
-  const handleOpenVoiceNavigation = () => {
-    setShowVoiceNavigation(true);
-  };
-
   return (
     <>
       <div className={drawerClasses}>
@@ -171,7 +166,7 @@ export function Widget() {
             increaseSaturation={saturation.increaseSaturation}
             currentSaturationStep={saturation.currentStep}
             maxSaturationStep={saturation.maxSaturationStep}
-            onActivateVoiceNavigation={handleOpenVoiceNavigation}
+            onActivateVoiceNavigation={() => setShowVoiceNavigation(true)}
           />
         </div>
 
