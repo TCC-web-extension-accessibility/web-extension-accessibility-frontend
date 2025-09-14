@@ -47,8 +47,14 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Usa sessionStorage para persistir entre montagens/desmontagens do componente
+  const getInitialNavIndex = () => {
+    const stored = sessionStorage.getItem('voice-nav-index');
+    return stored ? parseInt(stored, 10) : null;
+  };
+
   // Estado para controlar o último elemento focado pela navegação por voz
-  const lastVoiceNavIndexRef = useRef<number | null>(null);
+  const lastVoiceNavIndexRef = useRef<number | null>(getInitialNavIndex());
 
   // Base URL do backend
   const API_BASE_URL = 'http://localhost:8000/api/v1';
@@ -421,6 +427,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
       highlightElement(nextEl);
       speakFeedback(`Foco em ${getElementDescription(nextEl)}`, props?.selectedLanguage);
       lastVoiceNavIndexRef.current = nextIndex;
+      sessionStorage.setItem('voice-nav-index', nextIndex.toString());
     }
   };
 
@@ -451,6 +458,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
       highlightElement(prevEl);
       speakFeedback(`Foco em ${getElementDescription(prevEl)}`, props?.selectedLanguage);
       lastVoiceNavIndexRef.current = prevIndex;
+      sessionStorage.setItem('voice-nav-index', prevIndex.toString());
     }
   };
 
@@ -468,6 +476,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
       // Armazena o índice se o elemento estiver na lista de focáveis
       if (elementIndex !== -1) {
         lastVoiceNavIndexRef.current = elementIndex;
+        sessionStorage.setItem('voice-nav-index', elementIndex.toString());
       }
     } else {
       speakFeedback(`Elemento ${target} não encontrado`, props?.selectedLanguage);
