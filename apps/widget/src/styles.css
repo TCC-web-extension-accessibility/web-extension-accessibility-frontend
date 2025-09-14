@@ -6,4 +6,6 @@
 
 #widget-root {
   letter-spacing: normal !important;
+  z-index: 10000;
+  position: relative;
 }

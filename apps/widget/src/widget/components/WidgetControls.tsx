@@ -36,6 +36,9 @@ type WidgetControlsProps = {
   changeReadingGuideMode: () => void;
   maxReadingGuideMode: number;
   currentReadingGuideModeStep: number;
+  increaseContrast: () => void;
+  currentContrastStep: number;
+  maxContrastStep: number;
 };
 
 export function WidgetControls({
@@ -61,6 +64,9 @@ export function WidgetControls({
   changeReadingGuideMode,
   maxReadingGuideMode,
   currentReadingGuideModeStep,
+  increaseContrast,
+  currentContrastStep,
+  maxContrastStep,
 }: WidgetControlsProps) {
   return (
     <div className="@container">
@@ -68,9 +74,9 @@ export function WidgetControls({
         <WidgetButton
           text="Contraste"
           icon={<CircleHalfIcon weight="fill" />}
-          onClick={() => {
-            alert('Contraste feature not implemented yet');
-          }}
+          step={currentContrastStep}
+          maxSteps={maxContrastStep}
+          onClick={() => increaseContrast()}
         />
         <WidgetButton
           text="Leitor"

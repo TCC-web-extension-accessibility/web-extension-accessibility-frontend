@@ -2,6 +2,7 @@ import { GearIcon, PersonArmsSpreadIcon, XIcon } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useContext, useEffect, useState } from 'react';
 import { WidgetContext } from '../lib/context';
+import { useContrast } from '../lib/hooks/use-contrast';
 import { useDisableAnimations } from '../lib/hooks/use-disable-animations';
 import { useFontFamily } from '../lib/hooks/use-font-family';
 import { useFontSize } from '../lib/hooks/use-font-size';
@@ -32,6 +33,7 @@ export function Widget() {
   const highlightLinks = useHighlightLinks();
   const readingGuide = useReadingGuide();
   const language = useSelectLanguage();
+  const contrast = useContrast();
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -48,6 +50,7 @@ export function Widget() {
     }
     readingGuide.cycleReadingGuideMode('off');
     language.selectLanguage('en');
+    contrast.resetContrast();
   };
 
   useEffect(() => {
@@ -146,6 +149,9 @@ export function Widget() {
           changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
           maxReadingGuideMode={readingGuide.maxReadingGuideMode}
           currentReadingGuideModeStep={readingGuide.currentStep}
+          increaseContrast={contrast.increaseContrast}
+          currentContrastStep={contrast.currentStep}
+          maxContrastStep={contrast.maxContrastStep}
         />
       </div>
 
