@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const useFontSize = () => {
   const FONT_SIZE_STORAGE_KEY = 'accessibilty-font-size';
@@ -11,20 +11,20 @@ export const useFontSize = () => {
   const clamp = (value: number, min: number, max: number) =>
     Math.min(max, Math.max(min, value));
 
-  const [fontPercent, setFontPercent] = useState(() => {
-    if (typeof window === 'undefined') return BASE_FONT_PERCENT;
-    const stored = localStorage.getItem(FONT_SIZE_STORAGE_KEY);
-    return stored
-      ? clamp(parseFloat(stored), MIN_FONT_PERCENT, MAX_FONT_PERCENT)
-      : BASE_FONT_PERCENT;
-  });
+  const [fontPercent, setFontPercent] = useState(BASE_FONT_PERCENT);
 
   const applyFontSize = (value: number) => {
     let clamped = clamp(value, MIN_FONT_PERCENT, MAX_FONT_PERCENT);
     if (MAX_FONT_PERCENT === clamped) {
       clamped = clamp(BASE_FONT_PERCENT, MIN_FONT_PERCENT, MAX_FONT_PERCENT);
     }
-    document.body.style.fontSize = `${clamped}%`;
+
+    // Remove font-size style when at base value to restore website defaults
+    if (clamped === BASE_FONT_PERCENT) {
+      document.body.style.removeProperty('font-size');
+    } else {
+      document.body.style.fontSize = `${clamped}%`;
+    }
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(FONT_SIZE_STORAGE_KEY, clamped.toString());
@@ -35,10 +35,6 @@ export const useFontSize = () => {
 
   const currentStep =
     MAX_FONT_STEP - (MAX_FONT_PERCENT - fontPercent) / FONT_STEP;
-
-  useLayoutEffect(() => {
-    applyFontSize(fontPercent);
-  }, []);
 
   const increaseFontSize = (size?: number) => {
     size ? applyFontSize(size) : applyFontSize(fontPercent + FONT_STEP);

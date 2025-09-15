@@ -130,13 +130,7 @@ const applyContrastToTextElements = (level: ContrastLevel) => {
 export const useContrast = () => {
   const CONTRAST_STORAGE_KEY = 'accessibility-contrast';
 
-  const [contrastLevel, setContrastLevel] = useState<ContrastLevel>(() => {
-    if (typeof window === 'undefined') return 'normal';
-    const stored = localStorage.getItem(CONTRAST_STORAGE_KEY);
-    return stored && CONTRAST_LEVELS.includes(stored as ContrastLevel)
-      ? (stored as ContrastLevel)
-      : 'normal';
-  });
+  const [contrastLevel, setContrastLevel] = useState<ContrastLevel>('normal');
 
   const [observer, setObserver] = useState<MutationObserver | null>(null);
 
@@ -210,14 +204,12 @@ export const useContrast = () => {
   const maxContrastStep = CONTRAST_LEVELS.length - 1;
 
   useLayoutEffect(() => {
-    applyContrast(contrastLevel);
-
     return () => {
       if (observer) {
         observer.disconnect();
       }
     };
-  }, [contrastLevel, observer]);
+  }, [observer]);
 
   return {
     contrastLevel,

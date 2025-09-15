@@ -22,15 +22,9 @@ export const useFontFamily = () => {
   const FONT_KEYS = Object.keys(FONTS);
   const MAX_FONT_STEP = FONT_KEYS.length - 1;
 
-  const [currentFontName, setCurrentFontName] = useState<string>(() => {
-    if (typeof window === 'undefined') {
-      return FONTS.default.name;
-    }
-    const storedFontName = localStorage.getItem(FONT_FAMILY_STORAGE_KEY);
-    return storedFontName && FONT_KEYS.includes(storedFontName)
-      ? storedFontName
-      : FONTS.default.name;
-  });
+  const [currentFontName, setCurrentFontName] = useState<string>(
+    FONTS.default.name
+  );
 
   // Add dyslexic font face to document
   useLayoutEffect(() => {
@@ -71,7 +65,12 @@ export const useFontFamily = () => {
         return;
       }
 
-      document.body.style.fontFamily = fontToApply.font || '';
+      // Remove font-family style when default is selected to restore website defaults
+      if (fontName === 'default' || !fontToApply.font) {
+        document.body.style.removeProperty('font-family');
+      } else {
+        document.body.style.fontFamily = fontToApply.font;
+      }
 
       if (typeof window !== 'undefined') {
         localStorage.setItem(FONT_FAMILY_STORAGE_KEY, fontName);
@@ -81,10 +80,6 @@ export const useFontFamily = () => {
     },
     [FONTS, FONT_FAMILY_STORAGE_KEY]
   );
-
-  useLayoutEffect(() => {
-    applyFontFamily(currentFontName);
-  }, [currentFontName, applyFontFamily]);
 
   const currentStep = FONT_KEYS.indexOf(currentFontName);
 

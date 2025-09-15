@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const useLineHeight = () => {
   const LINE_HEIGHT_STORAGE_KEY = 'accessibilty-line-height';
@@ -12,17 +12,9 @@ export const useLineHeight = () => {
   const clamp = (value: number, min: number, max: number) =>
     Math.min(max, Math.max(min, value));
 
-  const [lineHeightPercent, setLineHeightPercent] = useState(() => {
-    if (typeof window === 'undefined') return BASE_LINE_HEIGHT_PERCENT;
-    const stored = localStorage.getItem(LINE_HEIGHT_STORAGE_KEY);
-    return stored
-      ? clamp(
-          parseFloat(stored),
-          MIN_LINE_HEIGHT_PERCENT,
-          MAX_LINE_HEIGHT_PERCENT
-        )
-      : BASE_LINE_HEIGHT_PERCENT;
-  });
+  const [lineHeightPercent, setLineHeightPercent] = useState(
+    BASE_LINE_HEIGHT_PERCENT
+  );
 
   const applyLineHeight = (value: number) => {
     let clamped = clamp(
@@ -37,7 +29,13 @@ export const useLineHeight = () => {
         MAX_LINE_HEIGHT_PERCENT
       );
     }
-    document.body.style.lineHeight = `${clamped}%`;
+
+    // Remove line-height style when at base value to restore website defaults
+    if (clamped === BASE_LINE_HEIGHT_PERCENT) {
+      document.body.style.removeProperty('line-height');
+    } else {
+      document.body.style.lineHeight = `${clamped}%`;
+    }
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(LINE_HEIGHT_STORAGE_KEY, clamped.toString());
@@ -49,10 +47,6 @@ export const useLineHeight = () => {
   const currentStep =
     MAX_LINE_HEIGHT_STEP -
     (MAX_LINE_HEIGHT_PERCENT - lineHeightPercent) / LINE_HEIGHT_STEP;
-
-  useLayoutEffect(() => {
-    applyLineHeight(lineHeightPercent);
-  }, []);
 
   const increaseLineHeight = (size?: number) => {
     size
