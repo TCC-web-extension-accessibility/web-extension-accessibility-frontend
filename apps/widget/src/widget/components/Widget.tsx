@@ -11,6 +11,7 @@ import { useHighlightLinks } from '../lib/hooks/use-highlight-links';
 import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
+import { useSaturation } from '../lib/hooks/use-saturation';
 import { useSelectLanguage } from '../lib/hooks/use-select-language';
 import { translateWidgetIfNeeded } from '../lib/translator';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
@@ -34,6 +35,7 @@ export function Widget() {
   const readingGuide = useReadingGuide();
   const language = useSelectLanguage();
   const contrast = useContrast();
+  const saturation = useSaturation();
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -51,6 +53,7 @@ export function Widget() {
     readingGuide.cycleReadingGuideMode('off');
     language.selectLanguage('en');
     contrast.resetContrast();
+    saturation.resetSaturation();
   };
 
   useEffect(() => {
@@ -152,6 +155,9 @@ export function Widget() {
           increaseContrast={contrast.increaseContrast}
           currentContrastStep={contrast.currentStep}
           maxContrastStep={contrast.maxContrastStep}
+          increaseSaturation={saturation.increaseSaturation}
+          currentSaturationStep={saturation.currentStep}
+          maxSaturationStep={saturation.maxSaturationStep}
         />
       </div>
 

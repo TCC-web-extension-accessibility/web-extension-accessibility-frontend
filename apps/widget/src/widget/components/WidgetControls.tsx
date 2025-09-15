@@ -2,6 +2,7 @@ import {
   ArrowsInLineHorizontalIcon,
   ArrowsOutLineVerticalIcon,
   CircleHalfIcon,
+  DropHalfIcon,
   ImageIcon,
   LinkSimpleHorizontalIcon,
   PauseCircleIcon,
@@ -39,6 +40,9 @@ type WidgetControlsProps = {
   increaseContrast: () => void;
   currentContrastStep: number;
   maxContrastStep: number;
+  increaseSaturation: () => void;
+  currentSaturationStep: number;
+  maxSaturationStep: number;
 };
 
 export function WidgetControls({
@@ -67,6 +71,9 @@ export function WidgetControls({
   increaseContrast,
   currentContrastStep,
   maxContrastStep,
+  increaseSaturation,
+  currentSaturationStep,
+  maxSaturationStep,
 }: WidgetControlsProps) {
   return (
     <div className="@container">
@@ -139,6 +146,13 @@ export function WidgetControls({
           icon={<LinkSimpleHorizontalIcon />}
           onClick={() => toggleHighlightLinks()}
           checked={highlightLinks}
+        />
+        <WidgetButton 
+          text="Saturação" 
+          icon={<DropHalfIcon />} 
+          step={currentSaturationStep}
+          maxSteps={maxSaturationStep}
+          onClick={() => increaseSaturation()}
         />
       </div>
     </div>
