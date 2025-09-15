@@ -114,6 +114,27 @@ export function VoiceNavigationControl({
     );
   };
 
+  const getVoiceCommandStatus = () => {
+    if (
+      state.lastCommand?.intent === 'unknown' ||
+      state.lastCommand?.action === 'unknown'
+    ) {
+      return true;
+    }
+
+    if (state.lastCommand?.intent || state.lastCommand?.action) {
+      return false;
+    }
+    console.log("state.lastCommand?.intent", state.lastCommand?.intent);
+    console.log("state.lastCommand?.action", state.lastCommand?.action);
+    console.log("state.lastCommand?.target", state.lastCommand?.target);
+
+    return state.lastCommand?.target === null;
+  };
+
+  const buttonResetDisabled = () =>
+    state.status === 'idle' && !state.error && !getVoiceCommandStatus();
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -131,7 +152,7 @@ export function VoiceNavigationControl({
             size="small"
             variant={getButtonVariant()}
             onClick={handleToggleListening}
-            disabled={!state.isSupported && !state.isConnected}
+            disabled={!state.isSupported && !state.isConnected || state.status === 'processing'}
             icon={getButtonIcon()}
           >
             {state.isListening ? 'Parar' : 'Ativar'}
@@ -147,7 +168,7 @@ export function VoiceNavigationControl({
         </div>
       )}
 
-      {state.lastCommand && !state.error && (
+      {state.lastCommand && !getVoiceCommandStatus() && !state.error && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-green-800">
@@ -169,10 +190,10 @@ export function VoiceNavigationControl({
         </div>
       )}
 
-      {state.error && (
+      {(state.error || getVoiceCommandStatus()) && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-sm text-red-800">
-            <strong>Erro:</strong> {state.error}
+            <strong>Erro:</strong> {state.error || 'Comando não reconhecido'}
           </p>
         </div>
       )}
@@ -225,9 +246,9 @@ export function VoiceNavigationControl({
         <div className="flex items-center gap-2 ml-auto">
           <Button
             size="small"
-            variant={state.status === 'idle' ? 'default' : 'simple'}
+            variant={buttonResetDisabled() ? 'default' : 'simple'}
             onClick={actions.reset}
-            disabled={state.status === 'idle' && !state.error}
+            disabled={buttonResetDisabled()}
           >
             Resetar
           </Button>
