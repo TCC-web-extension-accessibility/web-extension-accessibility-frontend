@@ -1,17 +1,22 @@
 import { useState } from 'react';
+import {
+  clamp,
+  getStorageNumber,
+  setStorageNumber,
+  shouldExcludeFromStyling,
+} from '../accessibility-utils';
 
 export const useFontSize = () => {
   const FONT_SIZE_STORAGE_KEY = 'accessibilty-font-size';
   const BASE_FONT_PERCENT = 100;
-  const FONT_STEP = 12.5;
+  const FONT_STEP = 1;
   const MIN_FONT_PERCENT = 50;
-  const MAX_FONT_PERCENT = 200;
+  const MAX_FONT_PERCENT = 110;
   const MAX_FONT_STEP = (MAX_FONT_PERCENT - BASE_FONT_PERCENT) / FONT_STEP;
 
-  const clamp = (value: number, min: number, max: number) =>
-    Math.min(max, Math.max(min, value));
-
-  const [fontPercent, setFontPercent] = useState(BASE_FONT_PERCENT);
+  const [fontPercent, setFontPercent] = useState(() =>
+    getStorageNumber(FONT_SIZE_STORAGE_KEY, BASE_FONT_PERCENT)
+  );
 
   const applyFontSize = (value: number) => {
     let clamped = clamp(value, MIN_FONT_PERCENT, MAX_FONT_PERCENT);
@@ -19,17 +24,29 @@ export const useFontSize = () => {
       clamped = clamp(BASE_FONT_PERCENT, MIN_FONT_PERCENT, MAX_FONT_PERCENT);
     }
 
-    // Remove font-size style when at base value to restore website defaults
+    const allElements = document.querySelectorAll('*');
+
+    console.log(clamped);
+
     if (clamped === BASE_FONT_PERCENT) {
-      document.body.style.removeProperty('font-size');
+      allElements.forEach((element) => {
+        if (!shouldExcludeFromStyling(element)) {
+          (element as HTMLElement).style.removeProperty('font-size');
+        }
+      });
     } else {
-      document.body.style.fontSize = `${clamped}%`;
+      allElements.forEach((element) => {
+        if (!shouldExcludeFromStyling(element)) {
+          (element as HTMLElement).style.setProperty(
+            'font-size',
+            `${clamped}%`,
+            'important'
+          );
+        }
+      });
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(FONT_SIZE_STORAGE_KEY, clamped.toString());
-    }
-
+    setStorageNumber(FONT_SIZE_STORAGE_KEY, clamped);
     setFontPercent(clamped);
   };
 

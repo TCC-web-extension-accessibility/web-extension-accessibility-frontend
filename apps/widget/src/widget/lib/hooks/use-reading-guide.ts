@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
+import { getStorageValue, setStorageValue } from '../accessibility-utils';
 
 const STYLE_TAG_ID = 'accessibility-reading-guide-style';
 const MASK_ID = 'accessibility-reading-guide-mask';
@@ -16,10 +17,10 @@ const createStyleTag = (): HTMLStyleElement => {
   const styleTag = document.createElement('style');
   styleTag.id = STYLE_TAG_ID;
   styleTag.innerHTML = `
-    body.reading-guide-bar-active {
+    body.reading-guide-bar-active:not(#web-extension-accessibility *) {
       cursor: none;
     }
-    body.reading-guide-bar-active::after { /* The bar */
+    body.reading-guide-bar-active:not(#web-extension-accessibility *)::after { /* The bar */
       content: '';
       position: fixed;
       top: calc(var(--reading-guide-y, -100px) - 10px);
@@ -33,7 +34,7 @@ const createStyleTag = (): HTMLStyleElement => {
       z-index: 2147483647;
       pointer-events: none;
     }
-    body.reading-guide-bar-active::before { /* The triangle */
+    body.reading-guide-bar-active:not(#web-extension-accessibility *)::before { /* The triangle */
       content: '';
       position: fixed;
       top: calc(var(--reading-guide-y, -100px) - 20px);
@@ -117,9 +118,10 @@ export const useReadingGuide = () => {
     const styleTag = createStyleTag();
     document.head.appendChild(styleTag);
 
-    const storedMode = localStorage.getItem(
-      READING_GUIDE_STORAGE_KEY
-    ) as ReadingGuideMode | null;
+    const storedMode = getStorageValue(
+      READING_GUIDE_STORAGE_KEY,
+      READING_GUIDE_MODES.OFF
+    );
     const initialMode =
       storedMode && Object.values(READING_GUIDE_MODES).includes(storedMode)
         ? storedMode
@@ -137,7 +139,7 @@ export const useReadingGuide = () => {
 
   const cycleReadingGuideMode = (mode?: string) => {
     if (mode) {
-      localStorage.setItem(READING_GUIDE_STORAGE_KEY, mode);
+      setStorageValue(READING_GUIDE_STORAGE_KEY, mode);
       setMode(mode as ReadingGuideMode);
       applyMode(mode as ReadingGuideMode);
       return;
@@ -145,7 +147,7 @@ export const useReadingGuide = () => {
 
     const nextIndex = (currentIndex + 1) % modes.length;
     const nextMode = modes[nextIndex];
-    localStorage.setItem(READING_GUIDE_STORAGE_KEY, nextMode);
+    setStorageValue(READING_GUIDE_STORAGE_KEY, nextMode);
     setMode(nextMode);
     applyMode(nextMode);
   };

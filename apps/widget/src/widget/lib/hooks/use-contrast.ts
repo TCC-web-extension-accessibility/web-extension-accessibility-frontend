@@ -1,4 +1,9 @@
 import { useLayoutEffect, useState } from 'react';
+import {
+  getStorageValue,
+  isInsideWidget,
+  setStorageValue,
+} from '../accessibility-utils';
 
 type ContrastLevel = 'normal' | 'high' | 'highest';
 
@@ -14,13 +19,6 @@ const hasTextContent = (element: Element): boolean => {
     : '';
 
   return textContent.length > 0;
-};
-
-const isInsideWidget = (element: Element): boolean => {
-  const widgetContainer = document.getElementById(
-    'web-extension-accessibility'
-  );
-  return widgetContainer ? widgetContainer.contains(element) : false;
 };
 
 const applyContrastToElement = (element: HTMLElement, level: ContrastLevel) => {
@@ -130,7 +128,9 @@ const applyContrastToTextElements = (level: ContrastLevel) => {
 export const useContrast = () => {
   const CONTRAST_STORAGE_KEY = 'accessibility-contrast';
 
-  const [contrastLevel, setContrastLevel] = useState<ContrastLevel>('normal');
+  const [contrastLevel, setContrastLevel] = useState<ContrastLevel>(() =>
+    getStorageValue(CONTRAST_STORAGE_KEY, 'normal')
+  );
 
   const [observer, setObserver] = useState<MutationObserver | null>(null);
 
@@ -183,9 +183,7 @@ export const useContrast = () => {
       setObserver(null);
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(CONTRAST_STORAGE_KEY, level);
-    }
+    setStorageValue(CONTRAST_STORAGE_KEY, level);
 
     setContrastLevel(level);
   };

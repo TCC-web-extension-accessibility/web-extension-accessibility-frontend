@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import {
+  clamp,
+  getStorageNumber,
+  setStorageNumber,
+  shouldExcludeFromStyling,
+} from '../accessibility-utils';
 
 export const useLetterSpacing = () => {
   const LETTER_SPACING_STORAGE_KEY = 'accessibilty-letter-spacing';
@@ -9,11 +15,9 @@ export const useLetterSpacing = () => {
   const MAX_LETTER_SPACING_STEP =
     (MAX_LETTER_SPACING - BASE_LETTER_SPACING) / LETTER_SPACING_STEP;
 
-  const clamp = (value: number, min: number, max: number) =>
-    Math.min(max, Math.max(min, value));
-
-  const [letterSpacingPercent, setLetterSpacingPercent] =
-    useState(BASE_LETTER_SPACING);
+  const [letterSpacingPercent, setLetterSpacingPercent] = useState(() =>
+    getStorageNumber(LETTER_SPACING_STORAGE_KEY, BASE_LETTER_SPACING)
+  );
 
   const applyLetterSpacing = (value: number) => {
     let clamped = clamp(value, MIN_LETTER_SPACING, MAX_LETTER_SPACING);
@@ -25,17 +29,27 @@ export const useLetterSpacing = () => {
       );
     }
 
-    // Remove letter-spacing style when at base value to restore website defaults
+    const allElements = document.querySelectorAll('*');
+
     if (clamped === BASE_LETTER_SPACING) {
-      document.body.style.removeProperty('letter-spacing');
+      allElements.forEach((element) => {
+        if (!shouldExcludeFromStyling(element)) {
+          (element as HTMLElement).style.removeProperty('letter-spacing');
+        }
+      });
     } else {
-      document.body.style.letterSpacing = `${clamped}px`;
+      allElements.forEach((element) => {
+        if (!shouldExcludeFromStyling(element)) {
+          (element as HTMLElement).style.setProperty(
+            'letter-spacing',
+            `${clamped}px`,
+            'important'
+          );
+        }
+      });
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LETTER_SPACING_STORAGE_KEY, clamped.toString());
-    }
-
+    setStorageNumber(LETTER_SPACING_STORAGE_KEY, clamped);
     setLetterSpacingPercent(clamped);
   };
 

@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
+import { getStorageValue, setStorageValue } from '../accessibility-utils';
 import { LANGUAGES } from '../languages';
 import { translatePage } from '../translator';
 
@@ -13,7 +14,7 @@ export const useSelectLanguage = () => {
         return null;
       }
 
-      const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      const storedLanguage = getStorageValue(LANGUAGE_STORAGE_KEY, null);
       const languageKey =
         storedLanguage && LANGUAGE_KEYS.includes(storedLanguage)
           ? storedLanguage
@@ -39,7 +40,7 @@ export const useSelectLanguage = () => {
           return;
         }
 
-        localStorage.setItem(LANGUAGE_STORAGE_KEY, languageKey);
+        setStorageValue(LANGUAGE_STORAGE_KEY, languageKey);
       }
 
       setSelectedLanguage(language);

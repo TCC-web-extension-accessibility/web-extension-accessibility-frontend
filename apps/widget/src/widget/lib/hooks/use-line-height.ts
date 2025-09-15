@@ -1,4 +1,10 @@
 import { useState } from 'react';
+import {
+  clamp,
+  getStorageNumber,
+  setStorageNumber,
+  shouldExcludeFromStyling,
+} from '../accessibility-utils';
 
 export const useLineHeight = () => {
   const LINE_HEIGHT_STORAGE_KEY = 'accessibilty-line-height';
@@ -9,11 +15,8 @@ export const useLineHeight = () => {
   const MAX_LINE_HEIGHT_STEP =
     (MAX_LINE_HEIGHT_PERCENT - BASE_LINE_HEIGHT_PERCENT) / LINE_HEIGHT_STEP;
 
-  const clamp = (value: number, min: number, max: number) =>
-    Math.min(max, Math.max(min, value));
-
-  const [lineHeightPercent, setLineHeightPercent] = useState(
-    BASE_LINE_HEIGHT_PERCENT
+  const [lineHeightPercent, setLineHeightPercent] = useState(() =>
+    getStorageNumber(LINE_HEIGHT_STORAGE_KEY, BASE_LINE_HEIGHT_PERCENT)
   );
 
   const applyLineHeight = (value: number) => {
@@ -30,17 +33,27 @@ export const useLineHeight = () => {
       );
     }
 
-    // Remove line-height style when at base value to restore website defaults
+    const allElements = document.querySelectorAll('*');
+
     if (clamped === BASE_LINE_HEIGHT_PERCENT) {
-      document.body.style.removeProperty('line-height');
+      allElements.forEach((element) => {
+        if (!shouldExcludeFromStyling(element)) {
+          (element as HTMLElement).style.removeProperty('line-height');
+        }
+      });
     } else {
-      document.body.style.lineHeight = `${clamped}%`;
+      allElements.forEach((element) => {
+        if (!shouldExcludeFromStyling(element)) {
+          (element as HTMLElement).style.setProperty(
+            'line-height',
+            `${clamped}%`,
+            'important'
+          );
+        }
+      });
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LINE_HEIGHT_STORAGE_KEY, clamped.toString());
-    }
-
+    setStorageNumber(LINE_HEIGHT_STORAGE_KEY, clamped);
     setLineHeightPercent(clamped);
   };
 
@@ -53,6 +66,7 @@ export const useLineHeight = () => {
       ? applyLineHeight(size)
       : applyLineHeight(lineHeightPercent + LINE_HEIGHT_STEP);
   };
+
   const resetLineHeight = () => {
     applyLineHeight(BASE_LINE_HEIGHT_PERCENT);
   };

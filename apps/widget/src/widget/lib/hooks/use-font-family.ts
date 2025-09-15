@@ -1,4 +1,9 @@
 import { useCallback, useLayoutEffect, useState } from 'react';
+import {
+  getStorageValue,
+  setStorageValue,
+  shouldExcludeFromStyling,
+} from '../accessibility-utils';
 
 type Font = {
   name: string;
@@ -22,8 +27,8 @@ export const useFontFamily = () => {
   const FONT_KEYS = Object.keys(FONTS);
   const MAX_FONT_STEP = FONT_KEYS.length - 1;
 
-  const [currentFontName, setCurrentFontName] = useState<string>(
-    FONTS.default.name
+  const [currentFontName, setCurrentFontName] = useState<string>(() =>
+    getStorageValue(FONT_FAMILY_STORAGE_KEY, FONTS.default.name)
   );
 
   // Add dyslexic font face to document
@@ -37,7 +42,6 @@ export const useFontFamily = () => {
 
         try {
           await dislexiaFontFamily.load();
-
           document.fonts.add(dislexiaFontFamily);
 
           if (document.fonts.check('1em Dislexia')) {
@@ -65,17 +69,27 @@ export const useFontFamily = () => {
         return;
       }
 
-      // Remove font-family style when default is selected to restore website defaults
+      const allElements = document.querySelectorAll('*');
+
       if (fontName === 'default' || !fontToApply.font) {
-        document.body.style.removeProperty('font-family');
+        allElements.forEach((element) => {
+          if (!shouldExcludeFromStyling(element)) {
+            (element as HTMLElement).style.removeProperty('font-family');
+          }
+        });
       } else {
-        document.body.style.fontFamily = fontToApply.font;
+        allElements.forEach((element) => {
+          if (!shouldExcludeFromStyling(element) && fontToApply.font) {
+            (element as HTMLElement).style.setProperty(
+              'font-family',
+              fontToApply.font,
+              'important'
+            );
+          }
+        });
       }
 
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(FONT_FAMILY_STORAGE_KEY, fontName);
-      }
-
+      setStorageValue(FONT_FAMILY_STORAGE_KEY, fontName);
       setCurrentFontName(fontName);
     },
     [FONTS, FONT_FAMILY_STORAGE_KEY]
