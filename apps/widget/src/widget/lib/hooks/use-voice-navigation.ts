@@ -39,8 +39,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
       setState(prev => ({ ...prev, isConnected: true }));
 
       const request: VoiceCommandRequest = {
-        text: text,
-        language: props?.selectedLanguage || 'auto'
+        text: text
       };
 
       const command = await apiService.processCommand(request);

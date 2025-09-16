@@ -125,9 +125,6 @@ export function VoiceNavigationControl({
     if (state.lastCommand?.intent || state.lastCommand?.action) {
       return false;
     }
-    console.log("state.lastCommand?.intent", state.lastCommand?.intent);
-    console.log("state.lastCommand?.action", state.lastCommand?.action);
-    console.log("state.lastCommand?.target", state.lastCommand?.target);
 
     return state.lastCommand?.target === null;
   };

@@ -149,12 +149,6 @@ export interface VoiceCommandRequest {
      * @memberof VoiceCommandRequest
      */
     'text': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof VoiceCommandRequest
-     */
-    'language'?: string;
 }
 
 /**
