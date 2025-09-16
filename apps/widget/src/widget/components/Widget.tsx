@@ -119,6 +119,7 @@ export function Widget() {
           languages={language.languages}
           selectedLanguage={language.selectedLanguage}
           onLanguageChange={language.selectLanguage}
+          isLoading={language.isLoading}
         />
 
         <AccessibilityProfilesAccordion

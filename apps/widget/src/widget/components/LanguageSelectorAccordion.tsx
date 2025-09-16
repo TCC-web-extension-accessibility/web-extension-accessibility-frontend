@@ -6,12 +6,14 @@ type LanguageSelectorAccordionProps = {
   languages: Language[];
   selectedLanguage: string | null;
   onLanguageChange: (language: string) => void;
+  isLoading: boolean;
 };
 
 export function LanguageSelectorAccordion({
   languages,
   selectedLanguage,
   onLanguageChange,
+  isLoading,
 }: LanguageSelectorAccordionProps) {
   return (
     <Accordion title="Idioma">
@@ -19,6 +21,7 @@ export function LanguageSelectorAccordion({
         languages={languages}
         onLanguageChange={onLanguageChange}
         selectedLanguage={selectedLanguage}
+        isLoading={isLoading}
       />
     </Accordion>
   );

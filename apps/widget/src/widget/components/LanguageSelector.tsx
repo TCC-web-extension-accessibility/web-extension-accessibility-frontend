@@ -28,12 +28,14 @@ type LanguageSelectorProps = {
   languages: Language[];
   selectedLanguage?: string | null;
   onLanguageChange: (language: string) => void;
+  isLoading: boolean;
 };
 
 export function LanguageSelector({
   languages,
   selectedLanguage,
   onLanguageChange,
+  isLoading,
 }: LanguageSelectorProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const listRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -106,6 +108,12 @@ export function LanguageSelector({
               {lang.icon}
             </div>
             <span className={languageName()}>{lang.name}</span>
+
+            {isLoading && selectedLanguage === lang.code && (
+              <div className="ml-auto mr-5">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-solid border-primary border-t-transparent"></div>
+              </div>
+            )}
           </div>
         ))}
       </div>

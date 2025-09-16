@@ -155,7 +155,7 @@ function findAllShadowRoots(): ShadowRoot[] {
   return shadowRoots;
 }
 
-export const translatePage = (language: string) => {
+export const translatePage = async (language: string) => {
   currentLanguage = language;
 
   if (!areOriginalsStored) {
@@ -170,7 +170,7 @@ export const translatePage = (language: string) => {
   revertToOriginals();
 
   if (language.toLowerCase() !== documentLanguage) {
-    translate(language);
+    await translate(language);
   }
 };
 

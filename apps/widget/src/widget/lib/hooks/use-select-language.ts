@@ -28,6 +28,8 @@ export const useSelectLanguage = () => {
     }
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const changeLanguage = useCallback(
     (language: string | null) => {
       if (typeof window !== 'undefined') {
@@ -50,7 +52,15 @@ export const useSelectLanguage = () => {
 
   useLayoutEffect(() => {
     if (selectedLanguage) {
-      translatePage(selectedLanguage);
+      setIsLoading(true);
+      translatePage(selectedLanguage)
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error('Translation failed:', error);
+          setIsLoading(false);
+        });
     }
   }, [selectedLanguage]);
 
@@ -65,5 +75,6 @@ export const useSelectLanguage = () => {
     selectLanguage,
     selectedLanguage,
     languages: Object.values(LANGUAGES),
+    isLoading,
   };
 };

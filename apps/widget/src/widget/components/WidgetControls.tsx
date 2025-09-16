@@ -147,9 +147,9 @@ export function WidgetControls({
           onClick={() => toggleHighlightLinks()}
           checked={highlightLinks}
         />
-        <WidgetButton 
-          text="Saturação" 
-          icon={<DropHalfIcon />} 
+        <WidgetButton
+          text="Saturação"
+          icon={<DropHalfIcon />}
           step={currentSaturationStep}
           maxSteps={maxSaturationStep}
           onClick={() => increaseSaturation()}
