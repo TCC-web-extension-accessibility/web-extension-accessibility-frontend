@@ -18,12 +18,20 @@ import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
+import { useColorFilter } from '../lib/hooks/use-color-filter';
+import { ColorFilterManager } from './ColorFilterManager';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
   const [isVisible, setIsVisible] = useState(isOpen);
   const [animateIn, setAnimateIn] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  const [activeTool, setActiveTool] = useState<string | null>(null);
+
+  const handleToolClick = (toolName: string) => {
+    setActiveTool(prevTool => (prevTool === toolName ? null : toolName));
+  };
 
   const fontSize = useFontSize();
   const fontFamily = useFontFamily();
@@ -36,6 +44,7 @@ export function Widget() {
   const language = useSelectLanguage();
   const contrast = useContrast();
   const saturation = useSaturation();
+  const colorFilter = useColorFilter();
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -54,6 +63,7 @@ export function Widget() {
     language.selectLanguage('en');
     contrast.resetContrast();
     saturation.resetSaturation();
+    colorFilter.resetColorFilter();
   };
 
   useEffect(() => {
@@ -159,7 +169,12 @@ export function Widget() {
           increaseSaturation={saturation.increaseSaturation}
           currentSaturationStep={saturation.currentStep}
           maxSaturationStep={saturation.maxSaturationStep}
+          onColorFilterClick={() => handleToolClick('colorFilter')}
+          isColorFilterActive={activeTool === 'colorFilter'}
         />
+        <div className="tool-panel">
+          {activeTool === 'colorFilter' && <ColorFilterManager />}
+        </div>
       </div>
 
       <WidgetSettings

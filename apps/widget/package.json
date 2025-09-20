@@ -9,6 +9,10 @@
         "serve:test-html": "npx browser-sync start --server ./ --files=\"test.html\" --files=\"dist/**\" --port 8081 --index test.html"
     },
     "dependencies": {
-        "@web-extension-accessibility-frontend/api-client": "workspace:*"
+        "@web-extension-accessibility-frontend/api-client": "workspace:*",
+        "html2canvas": "^1.4.1"
+    },
+    "devDependencies": {
+        "@types/html2canvas": "^1.0.0"
     }
 }

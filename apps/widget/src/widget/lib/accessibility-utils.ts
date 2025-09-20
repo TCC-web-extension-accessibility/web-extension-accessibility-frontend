@@ -1,3 +1,5 @@
+import html2canvas from "html2canvas";
+
 export const isInsideWidget = (element: Element): boolean => {
   if (element.id === 'web-extension-accessibility') {
     return true;
@@ -184,4 +186,20 @@ export const createValueAccessibilityHook = (
     baseValue,
     step,
   };
+};
+
+export const capturePageAsBlob = async(): Promise<Blob | null> => {
+  try {
+    const canvas = await html2canvas(document.body, {
+      useCORS: true,
+      logging: false,
+    });
+
+    return new Promise(resolve => {
+      canvas.toBlob(blob => resolve(blob), 'image/png');
+    });
+  } catch (error) {
+    console.error("Erro ao capturar a tela:", error);
+    return null;
+  }
 };

@@ -5,6 +5,7 @@ import {
   DropHalfIcon,
   ImageIcon,
   LinkSimpleHorizontalIcon,
+  PaletteIcon,
   PauseCircleIcon,
   SpeakerHighIcon,
   SquareSplitVerticalIcon,
@@ -43,6 +44,8 @@ type WidgetControlsProps = {
   increaseSaturation: () => void;
   currentSaturationStep: number;
   maxSaturationStep: number;
+  onColorFilterClick: () => void;
+  isColorFilterActive: boolean;
 };
 
 export function WidgetControls({
@@ -74,6 +77,8 @@ export function WidgetControls({
   increaseSaturation,
   currentSaturationStep,
   maxSaturationStep,
+  onColorFilterClick,
+  isColorFilterActive,
 }: WidgetControlsProps) {
   return (
     <div className="@container">
@@ -153,6 +158,12 @@ export function WidgetControls({
           step={currentSaturationStep}
           maxSteps={maxSaturationStep}
           onClick={() => increaseSaturation()}
+        />
+        <WidgetButton
+          text="Filtro de Cor"
+          icon={<PaletteIcon weight="fill" />}
+          onClick={onColorFilterClick}
+          checked={isColorFilterActive}
         />
       </div>
     </div>
