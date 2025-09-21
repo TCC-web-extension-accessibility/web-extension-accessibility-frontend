@@ -95,6 +95,10 @@ export function Widget() {
     ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}
   `;
 
+  const nameOfTheSelectedLanguage = () => {
+    return language.languages.find(lang => lang.code === language.selectedLanguage)?.name || 'English';
+  };
+
   return (
     <>
       <div className={drawerClasses}>
@@ -170,12 +174,14 @@ export function Widget() {
           />
         </div>
 
-        <VoiceNavigationPanel
-          isOpen={showVoiceNavigation}
-          onClose={() => setShowVoiceNavigation(false)}
-          selectedLanguage={language.selectedLanguage ?? 'en'}
-        />
       </div>
+
+      <VoiceNavigationPanel
+        isOpen={showVoiceNavigation}
+        onClose={() => setShowVoiceNavigation(false)}
+        selectedLanguage={language.selectedLanguage ?? 'en'}
+        nameOfTheSelectedLanguage={nameOfTheSelectedLanguage()}
+      />
 
       <WidgetSettings
         isOpen={showSettings}

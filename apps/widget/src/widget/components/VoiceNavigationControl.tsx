@@ -1,9 +1,10 @@
 import {
+  CloudIcon,
+  CloudSlashIcon,
   MicrophoneIcon,
   MicrophoneSlashIcon,
   SpeakerHighIcon,
-  CloudIcon,
-  CloudSlashIcon,
+  TranslateIcon,
 } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useVoiceNavigation } from '../lib/hooks/use-voice-navigation';
@@ -11,10 +12,12 @@ import { useEffect, useState } from 'react';
 
 type VoiceNavigationControlProps = {
   selectedLanguage: string | 'en';
+  nameOfTheSelectedLanguage: string;
 };
 
 export function VoiceNavigationControl({
   selectedLanguage,
+  nameOfTheSelectedLanguage,
 }: VoiceNavigationControlProps) {
   const [state, actions] = useVoiceNavigation({ selectedLanguage });
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -134,6 +137,14 @@ export function VoiceNavigationControl({
 
   return (
     <div className="space-y-3">
+      <div className="flex items-center gap-1.5">
+        <TranslateIcon size={20} className="text-orange-600" />
+        <p className="text-xs text-orange-800">Voz:</p>
+        <p className="py-1 px-3 bg-orange-100 border border-orange-200 text-xs text-orange-800 rounded-lg">
+          {nameOfTheSelectedLanguage}
+        </p>
+      </div>
+
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <SpeakerHighIcon size={20} className="text-blue-600" />
@@ -149,7 +160,10 @@ export function VoiceNavigationControl({
             size="small"
             variant={getButtonVariant()}
             onClick={handleToggleListening}
-            disabled={!state.isSupported && !state.isConnected || state.status === 'processing'}
+            disabled={
+              (!state.isSupported && !state.isConnected) ||
+              state.status === 'processing'
+            }
             icon={getButtonIcon()}
           >
             {state.isListening ? 'Parar' : 'Ativar'}

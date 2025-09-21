@@ -5,16 +5,12 @@ export const LANGUAGE_MAPPING = {
     'es': 'es-ES',
     'fr': 'fr-FR',
     'de': 'de-DE',
-    'it': 'it-IT'
-  },
-  SPEECH: {
-    'en': 'en-US',
-    'pt': 'pt-BR',
-    'es': 'es-ES',
-    'fr': 'fr-FR',
-    'de': 'de-DE',
-    'it': 'it-IT'
+    'it': 'it-IT',
+    'ja': 'ja-JP',
+    'zh': 'zh-CN',
+    'ru': 'ru-RU',
+    'ar': 'ar-SA',
   }
 } as const;
 
-export const DEFAULT_LANGUAGE = 'pt-BR' as const;
+export const DEFAULT_LANGUAGE = 'en-US' as const;

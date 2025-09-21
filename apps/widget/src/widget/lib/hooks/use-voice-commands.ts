@@ -22,22 +22,22 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
     switch (command.action) {
       case 'scroll_down':
         domService.scrollPage('down');
-        speechService.speak('Rolando para baixo', selectedLanguage);
+        speechService.speak('scrolling down', 'en');
         break;
 
       case 'scroll_up':
         domService.scrollPage('up');
-        speechService.speak('Rolando para cima', selectedLanguage);
+        speechService.speak('scrolling up', 'en');
         break;
 
       case 'scroll_left':
         domService.scrollPage('left');
-        speechService.speak('Rolando para esquerda', selectedLanguage);
+        speechService.speak('scrolling left', 'en');
         break;
 
       case 'scroll_right':
         domService.scrollPage('right');
-        speechService.speak('Rolando para direita', selectedLanguage);
+        speechService.speak('scrolling right', 'en');
         break;
 
       case 'navigate_next':
@@ -52,7 +52,7 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
         if (command.target) {
           navigateToElement(command.target);
         } else {
-          speechService.speak('Nenhum destino especificado para navegação', selectedLanguage);
+          speechService.speak('No navigation target specified', 'en');
         }
         break;
 
@@ -61,9 +61,9 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
           const element = domService.clickElement(command.target);
           if (element) {
             const description = domService.getElementDescription(element);
-            speechService.speak(`Clicado em ${description}`, selectedLanguage);
+            speechService.speak(`Clicked on "${description}"`, 'en');
           } else {
-            speechService.speak(`Elemento ${command.target} não encontrado`, selectedLanguage);
+            speechService.speak(`Element "${command.target}" not found`, 'en');
           }
         }
         break;
@@ -74,7 +74,7 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
           if (text) {
             speechService.speak(text, selectedLanguage);
           } else {
-            speechService.speak(`Elemento ${command.target} não encontrado`, selectedLanguage);
+            speechService.speak(`Element "${command.target}" not found`, 'en');
           }
         } else {
           const pageContent = domService.getPageContent();
@@ -88,21 +88,22 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
 
       case 'go_back':
         window.history.back();
-        speechService.speak('Voltando para página anterior', selectedLanguage);
+        speechService.speak('Going back to previous page', 'en');
         break;
 
       case 'zoom_in':
         domService.applyPageZoom('in');
-        speechService.speak('Zoom aumentado', selectedLanguage);
+        speechService.speak('Zoom in', 'en');
         break;
 
       case 'zoom_out':
         domService.applyPageZoom('out');
-        speechService.speak('Zoom diminuído', selectedLanguage);
+        speechService.speak('Zoom out', 'en');
         break;
 
       default:
-        speechService.speak('Comando não reconhecido', selectedLanguage);
+        speechService.speak('Command not recognized', 'en');
+        break;
     }
   }, [selectedLanguage, domService, speechService]);
 

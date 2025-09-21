@@ -5,20 +5,27 @@ type VoiceNavigationPanelProps = {
   isOpen: boolean;
   onClose: () => void;
   selectedLanguage: string | 'en';
-}
+  nameOfTheSelectedLanguage: string;
+};
 
 export function VoiceNavigationPanel({
   isOpen,
   onClose,
   selectedLanguage,
+  nameOfTheSelectedLanguage,
 }: VoiceNavigationPanelProps) {
   if (!isOpen) return null;
   return (
-    <div className="absolute inset-0 z-50 flex items-end md:items-center justify-center bg-black/30 rounded-l-lg">
-      <div
-        id="voice-navigation-panel"
-        className={`bg-white rounded-t-lg md:rounded-lg shadow-lg w-full md:w-[480px] max-h-[90vh] overflow-y-auto p-6 relative voice-navigation-control`}
-      >
+    <div
+      id="voice-navigation-panel"
+      className={`
+        fixed bottom-0 right-0 md:right-[620px] w-full md:w-[520px] max-h-[90vh]
+        bg-white rounded-l-lg shadow-lg border border-gray-300 p-6
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        voice-navigation-control overflow-y-auto z-40
+      `}
+    >
         <div className="flex items-center justify-between mb-2">
           <div className="text-lg font-bold flex items-center gap-2">
             Painel de Navegação por Voz
@@ -36,9 +43,11 @@ export function VoiceNavigationPanel({
         </div>
 
         <div className="mt-4">
-          <VoiceNavigationControl selectedLanguage={selectedLanguage} />
+          <VoiceNavigationControl
+            selectedLanguage={selectedLanguage}
+            nameOfTheSelectedLanguage={nameOfTheSelectedLanguage}
+          />
         </div>
-      </div>
     </div>
   );
 }

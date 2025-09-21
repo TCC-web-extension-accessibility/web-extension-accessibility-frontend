@@ -9,6 +9,9 @@ export class DomNavigationService {
 
   constructor() {
     this.HOST = document.querySelector(VOICE_NAVIGATION_CONSTANTS.HOST_SELECTOR) as HTMLElement;
+    if (!this.HOST) {
+      this.HOST = document.getElementById("root") as HTMLElement;
+    }
     this.elementFinder = new ElementFinderService();
   }
 
@@ -50,7 +53,7 @@ export class DomNavigationService {
   getPageContent(): string {
     const mainContent = document.querySelector('main') || document.body;
     const text = mainContent.textContent || '';
-    return text.substring(0, 500) + (text.length > 500 ? '...' : '');
+    return text;
   }
 
   // Applies zoom to the page

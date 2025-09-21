@@ -1,12 +1,12 @@
 import { VOICE_NAVIGATION_CONSTANTS } from '../constants/voice-navigation.constants';
-import { getSpeechLanguage } from '../utils/language-mapping.util';
+import { getRecognitionLanguage } from '../utils/language-mapping.util';
 
 export class SpeechFeedbackService {
   // Provides voice feedback using speech synthesis
   speak(text: string, language?: string): void {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = getSpeechLanguage(language);
+      utterance.lang = getRecognitionLanguage(language);
       utterance.rate = VOICE_NAVIGATION_CONSTANTS.SPEECH_RATE;
       speechSynthesis.speak(utterance);
     }

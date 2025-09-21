@@ -23,7 +23,7 @@ export function useElementNavigation({ selectedLanguage, domService, speechServi
     const focusableElements = domService.getFocusableElements();
 
     if (focusableElements.length === 0) {
-      speechService.speak('Nenhum elemento focável encontrado na página', selectedLanguage);
+      speechService.speak('No focusable elements found on the page', 'en');
       return;
     }
 
@@ -40,7 +40,7 @@ export function useElementNavigation({ selectedLanguage, domService, speechServi
       nextEl.focus();
       domService.highlightElement(nextEl);
       const description = domService.getElementDescription(nextEl);
-      speechService.speak(`Foco em ${description}`, selectedLanguage);
+      speechService.speak(`Focus on ${description}`, 'en');
       lastVoiceNavIndexRef.current = nextIndex;
       sessionStorage.setItem(VOICE_NAVIGATION_CONSTANTS.VOICE_NAV_INDEX_KEY, nextIndex.toString());
     }
@@ -50,7 +50,7 @@ export function useElementNavigation({ selectedLanguage, domService, speechServi
     const focusableElements = domService.getFocusableElements();
 
     if (focusableElements.length === 0) {
-      speechService.speak('Nenhum elemento focável encontrado na página', selectedLanguage);
+      speechService.speak('No focusable elements found on the page', 'en');
       return;
     }
 
@@ -69,7 +69,7 @@ export function useElementNavigation({ selectedLanguage, domService, speechServi
       prevEl.focus();
       domService.highlightElement(prevEl);
       const description = domService.getElementDescription(prevEl);
-      speechService.speak(`Foco em ${description}`, selectedLanguage);
+      speechService.speak(`Focus on ${description}`, 'en');
       lastVoiceNavIndexRef.current = prevIndex;
       sessionStorage.setItem(VOICE_NAVIGATION_CONSTANTS.VOICE_NAV_INDEX_KEY, prevIndex.toString());
     }
@@ -82,14 +82,14 @@ export function useElementNavigation({ selectedLanguage, domService, speechServi
       const elementIndex = focusableElements.findIndex(el => el === element);
 
       const description = domService.getElementDescription(element);
-      speechService.speak(`Foco em ${description}`, selectedLanguage);
+      speechService.speak(`Focus on ${description}`, 'en');
 
       if (elementIndex !== -1) {
         lastVoiceNavIndexRef.current = elementIndex;
         sessionStorage.setItem(VOICE_NAVIGATION_CONSTANTS.VOICE_NAV_INDEX_KEY, elementIndex.toString());
       }
     } else {
-      speechService.speak(`Elemento ${target} não encontrado`, selectedLanguage);
+      speechService.speak(`Element ${target} not found`, 'en');
     }
   }, [selectedLanguage, domService, speechService]);
 

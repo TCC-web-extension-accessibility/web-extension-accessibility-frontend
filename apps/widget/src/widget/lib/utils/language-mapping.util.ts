@@ -4,8 +4,3 @@ import { LANGUAGE_MAPPING, DEFAULT_LANGUAGE } from '../constants/language-codes.
 export function getRecognitionLanguage(languageCode?: string): string {
   return LANGUAGE_MAPPING.RECOGNITION[languageCode as keyof typeof LANGUAGE_MAPPING.RECOGNITION] || DEFAULT_LANGUAGE;
 }
-
-// Maps language codes to speech synthesis language codes
-export function getSpeechLanguage(languageCode?: string): string {
-  return LANGUAGE_MAPPING.SPEECH[languageCode as keyof typeof LANGUAGE_MAPPING.SPEECH] || DEFAULT_LANGUAGE;
-}
