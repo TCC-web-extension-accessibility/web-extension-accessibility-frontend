@@ -51,7 +51,14 @@ export const shouldExcludeFromStyling = (element: Element): boolean => {
 export const getStorageValue = (key: string, defaultValue: any = null): any => {
   if (typeof window === 'undefined') return defaultValue;
   const stored = localStorage.getItem(key);
-  return stored ? JSON.parse(stored) : defaultValue;
+
+  if (!stored) return defaultValue;
+
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return defaultValue;
+  }
 };
 
 export const setStorageValue = (key: string, value: any): void => {
