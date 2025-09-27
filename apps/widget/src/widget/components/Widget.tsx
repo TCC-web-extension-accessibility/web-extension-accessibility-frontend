@@ -16,9 +16,9 @@ import { useSelectLanguage } from '../lib/hooks/use-select-language';
 import { translateWidgetIfNeeded } from '../lib/translator';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
+import { VoiceNavigationPanel } from './VoiceNavigationPanel';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
-import { VoiceNavigationPanel } from './VoiceNavigationPanel';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
@@ -38,6 +38,10 @@ export function Widget() {
   const language = useSelectLanguage();
   const contrast = useContrast();
   const saturation = useSaturation();
+
+  const nameOfTheSelectedLanguage =
+    language.languages.find((lang) => lang.code === language.selectedLanguage)
+      ?.name || 'English';
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -81,11 +85,20 @@ export function Widget() {
 
   if (!isVisible) {
     return (
-      <Button
-        className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
-        icon={<PersonArmsSpreadIcon size={24} />}
-        onClick={() => setIsOpen(true)}
-      />
+      <>
+        <Button
+          className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
+          icon={<PersonArmsSpreadIcon size={24} />}
+          onClick={() => setIsOpen(true)}
+        />
+
+        <VoiceNavigationPanel
+          isOpen={showVoiceNavigation}
+          onClose={() => setShowVoiceNavigation(false)}
+          selectedLanguage={language.selectedLanguage ?? 'en'}
+          nameOfTheSelectedLanguage={nameOfTheSelectedLanguage}
+        />
+      </>
     );
   }
   const drawerClasses = `
@@ -95,10 +108,6 @@ export function Widget() {
     ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}
   `;
 
-  const nameOfTheSelectedLanguage = () => {
-    return language.languages.find(lang => lang.code === language.selectedLanguage)?.name || 'English';
-  };
-
   return (
     <>
       <div className={drawerClasses}>
@@ -107,14 +116,14 @@ export function Widget() {
           <div className="flex items-center gap-2">
             <Button
               className="rounded-full p-2 text-2xl"
-              aria-label='Abrir configurações'
+              aria-label="Abrir configurações"
               variant="simple"
               icon={<GearIcon />}
               onClick={() => setShowSettings(true)}
             />
             <Button
               className="p-2 rounded-full text-2xl"
-              aria-label='Fechar menu'
+              aria-label="Fechar menu"
               onClick={() => setIsOpen(false)}
               icon={<XIcon weight="bold" />}
             />
@@ -135,7 +144,9 @@ export function Widget() {
           <AccessibilityProfilesAccordion
             resetAllSettings={resetAllSettings}
             increaseFontSize={fontSize.increaseFontSize}
-            toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
+            toggleDisabledAnimations={
+              disableAnimations.toggleDisabledAnimations
+            }
             changeFontFamily={fontFamily.changeFontFamily}
             changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
             ariaLabel="Perfis de acessibilidade"
@@ -154,7 +165,9 @@ export function Widget() {
             increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
             currentLetterSpacingStep={letterSpacing.currentStep}
             maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
-            toggleDisabledAnimations={disableAnimations.toggleDisabledAnimations}
+            toggleDisabledAnimations={
+              disableAnimations.toggleDisabledAnimations
+            }
             disabledAnimations={disableAnimations.disabledAnimations}
             hideImages={hideImages.hideImages}
             toggleHideImages={hideImages.toggleHideImages}
@@ -170,18 +183,13 @@ export function Widget() {
             increaseSaturation={saturation.increaseSaturation}
             currentSaturationStep={saturation.currentStep}
             maxSaturationStep={saturation.maxSaturationStep}
-            onActivateVoiceNavigation={() => setShowVoiceNavigation(true)}
+            onActivateVoiceNavigation={() => {
+              setShowVoiceNavigation(true);
+              setIsOpen(false);
+            }}
           />
         </div>
-
       </div>
-
-      <VoiceNavigationPanel
-        isOpen={showVoiceNavigation}
-        onClose={() => setShowVoiceNavigation(false)}
-        selectedLanguage={language.selectedLanguage ?? 'en'}
-        nameOfTheSelectedLanguage={nameOfTheSelectedLanguage()}
-      />
 
       <WidgetSettings
         isOpen={showSettings}
