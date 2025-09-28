@@ -22,22 +22,22 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
     switch (command.action) {
       case 'scroll_down':
         domService.scrollPage('down');
-        speechService.speak('scrolling down', 'en');
+        speechService.speak('rolar para baixo', 'pt');
         break;
 
       case 'scroll_up':
         domService.scrollPage('up');
-        speechService.speak('scrolling up', 'en');
+        speechService.speak('rolar para cima', 'pt');
         break;
 
       case 'scroll_left':
         domService.scrollPage('left');
-        speechService.speak('scrolling left', 'en');
+        speechService.speak('rolar para a esquerda', 'pt');
         break;
 
       case 'scroll_right':
         domService.scrollPage('right');
-        speechService.speak('scrolling right', 'en');
+        speechService.speak('rolar para a direita', 'pt');
         break;
 
       case 'navigate_next':
@@ -52,7 +52,7 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
         if (command.target) {
           navigateToElement(command.target);
         } else {
-          speechService.speak('No navigation target specified', 'en');
+          speechService.speak('Nenhum alvo de navegação especificado', 'pt');
         }
         break;
 
@@ -61,9 +61,9 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
           const element = domService.clickElement(command.target);
           if (element) {
             const description = domService.getElementDescription(element);
-            speechService.speak(`Clicked on "${description}"`, 'en');
+            speechService.speak(`Clicou em "${description}"`, 'pt');
           } else {
-            speechService.speak(`Element "${command.target}" not found`, 'en');
+            speechService.speak(`Elemento "${command.target}" não encontrado`, 'pt');
           }
         }
         break;
@@ -74,7 +74,7 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
           if (text) {
             speechService.speak(text, selectedLanguage);
           } else {
-            speechService.speak(`Element "${command.target}" not found`, 'en');
+            speechService.speak(`Elemento "${command.target}" não encontrado`, 'pt');
           }
         } else {
           const pageContent = domService.getPageContent();
@@ -83,26 +83,26 @@ export function useVoiceCommands({ selectedLanguage, domService, speechService }
         break;
 
       case 'show_help':
-        speechService.provideHelp(selectedLanguage);
+        speechService.provideHelp('pt');
         break;
 
       case 'go_back':
         window.history.back();
-        speechService.speak('Going back to previous page', 'en');
+        speechService.speak('Voltando para a página anterior', 'pt');
         break;
 
       case 'zoom_in':
         domService.applyPageZoom('in');
-        speechService.speak('Zoom in', 'en');
+        speechService.speak('Aumentar zoom', 'pt');
         break;
 
       case 'zoom_out':
         domService.applyPageZoom('out');
-        speechService.speak('Zoom out', 'en');
+        speechService.speak('Diminuir zoom', 'pt');
         break;
 
       default:
-        speechService.speak('Command not recognized', 'en');
+        speechService.speak('Comando não reconhecido', 'pt');
         break;
     }
   }, [selectedLanguage, domService, speechService]);

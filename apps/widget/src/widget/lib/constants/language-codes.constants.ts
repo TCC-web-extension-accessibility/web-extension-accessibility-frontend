@@ -13,4 +13,4 @@ export const LANGUAGE_MAPPING = {
   }
 } as const;
 
-export const DEFAULT_LANGUAGE = 'en-US' as const;
+export const DEFAULT_LANGUAGE = 'pt-BR' as const;
