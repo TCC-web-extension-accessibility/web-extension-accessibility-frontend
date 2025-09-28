@@ -75,7 +75,7 @@ export function VoiceNavigationControl({
   const getStatusColor = () => {
     switch (state.status) {
       case 'listening':
-        return 'text-blue-600';
+        return 'text-primary-600';
       case 'processing':
         return 'text-yellow-600';
       case 'error':
@@ -145,9 +145,9 @@ export function VoiceNavigationControl({
         </p>
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <SpeakerHighIcon size={20} className="text-blue-600" />
+          <SpeakerHighIcon size={20} className="text-primary" />
           <span className={`text-sm font-medium ${getStatusColor()}`}>
             {getStatusText()}
           </span>
@@ -173,7 +173,7 @@ export function VoiceNavigationControl({
 
       {state.lastTranscription && !state.error && (
         <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800">
+          <p className="text-sm text-primary">
             <strong>Comando:</strong> {state.lastTranscription}
           </p>
         </div>
@@ -182,19 +182,19 @@ export function VoiceNavigationControl({
       {state.lastCommand && !getVoiceCommandStatus() && !state.error && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-green-800">
+            <p className="text-sm text-success">
               <strong>Processado via API:</strong> {state.lastCommand.action}
               {state.lastCommand.target && (
                 <span> → {state.lastCommand.target}</span>
               )}
             </p>
-            <CloudIcon size={16} className="text-green-600" />
+            <CloudIcon size={16} className="text-success" />
           </div>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-green-600">
+            <span className="text-success">
               Intent: {state.lastCommand.intent}
             </span>
-            <span className="text-green-600">
+            <span className="text-success">
               Confiança: {Math.round(state.lastCommand.confidence * 100)}%
             </span>
           </div>
@@ -203,7 +203,7 @@ export function VoiceNavigationControl({
 
       {(state.error || getVoiceCommandStatus()) && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-800">
+          <p className="text-sm text-danger-500">
             <strong>Erro:</strong> {state.error || 'Comando não reconhecido'}
           </p>
         </div>
@@ -211,47 +211,46 @@ export function VoiceNavigationControl({
 
       {!state.isSupported && (
         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-sm text-yellow-800">
+          <p className="text-sm text-warn">
             <strong>Web Speech API não suportada.</strong>
           </p>
         </div>
       )}
 
-      <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+      <div className="hidden lg:block p-3 bg-gray-50 border border-gray-200 rounded-lg">
         <div className="flex items-center gap-2 mb-2">
           <p className="text-sm font-medium text-gray-800">
-            Comandos de voz disponíveis:
+        Comandos de voz disponíveis:
           </p>
           <CloudIcon size={16} className="text-gray-600" />
         </div>
         <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
           <div>
-            <strong>Navegação:</strong> "próximo elemento", "elemento anterior",
-            "rolar para baixo"
+        <strong>Navegação:</strong> "próximo elemento", "elemento anterior",
+        "rolar para baixo"
           </div>
           <div>
-            <strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"
+        <strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"
           </div>
           <div>
-            <strong>Leitura:</strong> "ler [elemento]", "ler página"
+        <strong>Leitura:</strong> "ler [elemento]", "ler página"
           </div>
           <div>
-            <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom",
-            "diminuir zoom"
+        <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom",
+        "diminuir zoom"
           </div>
         </div>
       </div>
 
       <div className="flex justify-between items-center">
         {isSpeaking && (
-          <button
-            className="flex items-center px-3 py-1 rounded bg-red-100 hover:bg-red-200 text-red-700 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
+          <Button
+            size="small"
+            variant="default"
+            color='danger-500'
             onClick={handleStopVoice}
             aria-label="Parar voz de feedback"
-            type="button"
-          >
-            Parar voz
-          </button>
+          >Parar voz</Button>
         )}
 
         <div className="flex items-center gap-2 ml-auto">

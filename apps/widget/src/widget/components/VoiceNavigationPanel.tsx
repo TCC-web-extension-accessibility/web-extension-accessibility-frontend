@@ -21,16 +21,21 @@ export function VoiceNavigationPanel({
     <div
       id="voice-navigation-panel"
       className={`
-        fixed bottom-0 ${isOpenWidget ? 'right-0 md:right-[620px]' : 'md:right-30'} w-full md:w-[520px] max-h-[90vh]
-        bg-white rounded-t-lg shadow-lg border border-gray-300 p-6
+        fixed right-0 ${
+          isOpenWidget
+            ? 'bottom-0 w-full md:max-w-[600px] lg:max-w-[520px] lg:right-[620px] sm:ml-2 rounded-t-lg'
+            : 'bottom-30 sm:max-w-[520px] max-w-[380px] rounded-l-lg'
+        }
+         sm:max-h-min md:max-h-[90vh]
+        bg-white shadow-lg border border-gray-300 p-6
         transform transition-transform duration-300 ease-in-out
-        ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto z-40
+        ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto z-1000
       `}
     >
       <div className="flex items-center justify-between mb-2">
-        <div className="text-lg font-bold flex items-center gap-2">
+        <h2 className="text-sm sm:text-lg font-bold flex items-center gap-2">
           Painel de Navegação por Voz
-        </div>
+        </h2>
         <div className="flex items-center gap-2">
           <button
             className="ml-2 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"

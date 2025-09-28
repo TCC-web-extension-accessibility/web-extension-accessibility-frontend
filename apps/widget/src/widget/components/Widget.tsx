@@ -134,7 +134,7 @@ export function Widget() {
 
           <div className="border-t border-gray-300 mx-5" />
 
-          <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-4">
+          <div className={`flex-1 min-h-0 overflow-y-auto p-2 space-y-4`}>
             <LanguageSelectorAccordion
               languages={language.languages}
               selectedLanguage={language.selectedLanguage}
