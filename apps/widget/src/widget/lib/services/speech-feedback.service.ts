@@ -12,35 +12,6 @@ export class SpeechFeedbackService {
     }
   }
 
-  // Cancels any ongoing speech synthesis
-  cancel(): void {
-    if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
-    }
-  }
-
-  // Pauses ongoing speech synthesis
-  pause(): void {
-    if ('speechSynthesis' in window) {
-      speechSynthesis.pause();
-    }
-  }
-
-  // Resumes paused speech synthesis
-  resume(): void {
-    if ('speechSynthesis' in window) {
-      speechSynthesis.resume();
-    }
-  }
-
-  // Gets available voices for speech synthesis
-  getAvailableVoices(): SpeechSynthesisVoice[] {
-    if ('speechSynthesis' in window) {
-      return speechSynthesis.getVoices();
-    }
-    return [];
-  }
-
   // Provides help text about available voice commands
   provideHelp(language?: string): void {
     const helpText = `
