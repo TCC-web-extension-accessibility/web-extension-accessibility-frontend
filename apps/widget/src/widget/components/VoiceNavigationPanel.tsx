@@ -4,6 +4,7 @@ import { VoiceNavigationControl } from './VoiceNavigationControl';
 type VoiceNavigationPanelProps = {
   isOpen: boolean;
   onClose: () => void;
+  isOpenWidget: boolean;
   selectedLanguage: string | 'en';
   nameOfTheSelectedLanguage: string;
 };
@@ -13,17 +14,17 @@ export function VoiceNavigationPanel({
   onClose,
   selectedLanguage,
   nameOfTheSelectedLanguage,
+  isOpenWidget,
 }: VoiceNavigationPanelProps) {
   if (!isOpen) return null;
   return (
     <div
       id="voice-navigation-panel"
       className={`
-        fixed bottom-0 inset-x-0 mx-auto w-full md:w-[520px] max-h-[90vh]
-        bg-white rounded-l-lg shadow-lg border border-gray-300 p-6
+        fixed bottom-0 ${isOpenWidget ? 'right-0 md:right-[620px]' : 'md:right-30'} w-full md:w-[520px] max-h-[90vh]
+        bg-white rounded-t-lg shadow-lg border border-gray-300 p-6
         transform transition-transform duration-300 ease-in-out
-        ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-        voice-navigation-control overflow-y-auto z-40
+        ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto z-40
       `}
     >
       <div className="flex items-center justify-between mb-2">

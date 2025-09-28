@@ -83,24 +83,16 @@ export function Widget() {
     }
   }, [isVisible]);
 
-  if (!isVisible) {
-    return (
-      <>
-        <Button
-          className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
-          icon={<PersonArmsSpreadIcon size={24} />}
-          onClick={() => setIsOpen(true)}
-        />
+  const showVoiceNavigationPanel = () => (
+    <VoiceNavigationPanel
+      isOpen={showVoiceNavigation}
+      onClose={() => setShowVoiceNavigation(false)}
+      isOpenWidget={isOpen}
+      selectedLanguage={language.selectedLanguage ?? 'en'}
+      nameOfTheSelectedLanguage={nameOfTheSelectedLanguage}
+    />
+  );
 
-        <VoiceNavigationPanel
-          isOpen={showVoiceNavigation}
-          onClose={() => setShowVoiceNavigation(false)}
-          selectedLanguage={language.selectedLanguage ?? 'en'}
-          nameOfTheSelectedLanguage={nameOfTheSelectedLanguage}
-        />
-      </>
-    );
-  }
   const drawerClasses = `
     fixed bottom-0 right-0 w-full md:w-[600px] h-screen bg-white rounded-l-lg p-6 border border-gray-300
     transform transition-transform duration-300 ease-in-out flex flex-col gap-2
@@ -110,96 +102,111 @@ export function Widget() {
 
   return (
     <>
-      <div className={drawerClasses}>
-        <div className="flex justify-between items-center ">
-          <h2 className="text-xl font-bold">Menu acessibilidade</h2>
-          <div className="flex items-center gap-2">
-            <Button
-              className="rounded-full p-2 text-2xl"
-              aria-label="Abrir configurações"
-              variant="simple"
-              icon={<GearIcon />}
-              onClick={() => setShowSettings(true)}
+      {!isVisible && (
+        <Button
+          className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
+          icon={<PersonArmsSpreadIcon size={24} />}
+          onClick={() => setIsOpen(true)}
+          aria-label="Abrir menu de acessibilidade"
+        />
+      )}
+
+      {isOpen && isVisible && (
+        <div className={drawerClasses}>
+          <div className="flex justify-between items-center ">
+            <h2 className="text-xl font-bold">Menu acessibilidade</h2>
+            <div className="flex items-center gap-2">
+              <Button
+                className="rounded-full p-2 text-2xl"
+                aria-label="Abrir configurações"
+                variant="simple"
+                icon={<GearIcon />}
+                onClick={() => setShowSettings(true)}
+              />
+              <Button
+                className="p-2 rounded-full text-2xl"
+                aria-label="Fechar menu"
+                onClick={() => setIsOpen(false)}
+                icon={<XIcon weight="bold" />}
+              />
+            </div>
+          </div>
+
+          <div className="border-t border-gray-300 mx-5" />
+
+          <div className="flex-1 min-h-0 overflow-y-auto p-2 space-y-4">
+            <LanguageSelectorAccordion
+              languages={language.languages}
+              selectedLanguage={language.selectedLanguage}
+              onLanguageChange={language.selectLanguage}
+              isLoading={language.isLoading}
+              ariaLabel="Idioma"
             />
-            <Button
-              className="p-2 rounded-full text-2xl"
-              aria-label="Fechar menu"
-              onClick={() => setIsOpen(false)}
-              icon={<XIcon weight="bold" />}
+
+            <AccessibilityProfilesAccordion
+              resetAllSettings={resetAllSettings}
+              increaseFontSize={fontSize.increaseFontSize}
+              toggleDisabledAnimations={
+                disableAnimations.toggleDisabledAnimations
+              }
+              changeFontFamily={fontFamily.changeFontFamily}
+              changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+              ariaLabel="Perfis de acessibilidade"
+            />
+
+            <WidgetControls
+              increaseFontSize={fontSize.increaseFontSize}
+              changeFontFamily={fontFamily.changeFontFamily}
+              currentFontSizeStep={fontSize.currentStep}
+              maxFontSizeStep={fontSize.maxFontStep}
+              currentFontFamilyStep={fontFamily.currentStep}
+              maxFontFamilyStep={fontFamily.maxFontStep}
+              increaseLineHeight={lineHeight.increaseLineHeight}
+              currentLineHeightStep={lineHeight.currentStep}
+              maxLineHeightStep={lineHeight.maxLineHeightStep}
+              increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
+              currentLetterSpacingStep={letterSpacing.currentStep}
+              maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
+              toggleDisabledAnimations={
+                disableAnimations.toggleDisabledAnimations
+              }
+              disabledAnimations={disableAnimations.disabledAnimations}
+              hideImages={hideImages.hideImages}
+              toggleHideImages={hideImages.toggleHideImages}
+              highlightLinks={highlightLinks.highlightLinks}
+              toggleHighlightLinks={highlightLinks.toggleHighlightLinks}
+              readingGuideMode={readingGuide.readingGuideMode}
+              changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+              maxReadingGuideMode={readingGuide.maxReadingGuideMode}
+              currentReadingGuideModeStep={readingGuide.currentStep}
+              increaseContrast={contrast.increaseContrast}
+              currentContrastStep={contrast.currentStep}
+              maxContrastStep={contrast.maxContrastStep}
+              increaseSaturation={saturation.increaseSaturation}
+              currentSaturationStep={saturation.currentStep}
+              maxSaturationStep={saturation.maxSaturationStep}
+              onActivateVoiceNavigation={() => {
+                setShowVoiceNavigation(true);
+              }}
+              voiceNavigationEnabled={showVoiceNavigation}
             />
           </div>
         </div>
+      )}
 
-        <div className="border-t border-gray-300 mx-5" />
+      {showVoiceNavigationPanel()}
 
-        <div className="flex-1 min-h-0 overflow-y-auto pr-3 mb-4 space-y-4">
-          <LanguageSelectorAccordion
-            languages={language.languages}
-            selectedLanguage={language.selectedLanguage}
-            onLanguageChange={language.selectLanguage}
-            isLoading={language.isLoading}
-            ariaLabel="Idioma"
-          />
-
-          <AccessibilityProfilesAccordion
-            resetAllSettings={resetAllSettings}
-            increaseFontSize={fontSize.increaseFontSize}
-            toggleDisabledAnimations={
-              disableAnimations.toggleDisabledAnimations
-            }
-            changeFontFamily={fontFamily.changeFontFamily}
-            changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
-            ariaLabel="Perfis de acessibilidade"
-          />
-
-          <WidgetControls
-            increaseFontSize={fontSize.increaseFontSize}
-            changeFontFamily={fontFamily.changeFontFamily}
-            currentFontSizeStep={fontSize.currentStep}
-            maxFontSizeStep={fontSize.maxFontStep}
-            currentFontFamilyStep={fontFamily.currentStep}
-            maxFontFamilyStep={fontFamily.maxFontStep}
-            increaseLineHeight={lineHeight.increaseLineHeight}
-            currentLineHeightStep={lineHeight.currentStep}
-            maxLineHeightStep={lineHeight.maxLineHeightStep}
-            increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
-            currentLetterSpacingStep={letterSpacing.currentStep}
-            maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
-            toggleDisabledAnimations={
-              disableAnimations.toggleDisabledAnimations
-            }
-            disabledAnimations={disableAnimations.disabledAnimations}
-            hideImages={hideImages.hideImages}
-            toggleHideImages={hideImages.toggleHideImages}
-            highlightLinks={highlightLinks.highlightLinks}
-            toggleHighlightLinks={highlightLinks.toggleHighlightLinks}
-            readingGuideMode={readingGuide.readingGuideMode}
-            changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
-            maxReadingGuideMode={readingGuide.maxReadingGuideMode}
-            currentReadingGuideModeStep={readingGuide.currentStep}
-            increaseContrast={contrast.increaseContrast}
-            currentContrastStep={contrast.currentStep}
-            maxContrastStep={contrast.maxContrastStep}
-            increaseSaturation={saturation.increaseSaturation}
-            currentSaturationStep={saturation.currentStep}
-            maxSaturationStep={saturation.maxSaturationStep}
-            onActivateVoiceNavigation={() => {
-              setShowVoiceNavigation(true);
-              setIsOpen(false);
-            }}
-          />
-        </div>
-      </div>
-
-      <WidgetSettings
-        isOpen={showSettings}
-        onClose={() => {
-          setShowSettings(false);
-          setIsOpen(false);
-        }}
-        onBack={() => setShowSettings(false)}
-        onResetSettings={resetAllSettings}
-      />
+      {isOpen && isVisible && (
+        <WidgetSettings
+          isOpen={showSettings}
+          onClose={() => {
+            setShowSettings(false);
+            setIsOpen(false);
+          }}
+          onBack={() => setShowSettings(false)}
+          onResetSettings={resetAllSettings}
+        />
+      )}
     </>
   );
 }
