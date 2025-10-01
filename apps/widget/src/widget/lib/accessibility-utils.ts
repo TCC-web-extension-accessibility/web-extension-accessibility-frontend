@@ -1,4 +1,4 @@
-import html2canvas from "html2canvas";
+import domtoimage from 'dom-to-image-more';
 
 export const isInsideWidget = (element: Element): boolean => {
   if (element.id === 'web-extension-accessibility') {
@@ -188,18 +188,22 @@ export const createValueAccessibilityHook = (
   };
 };
 
-export const capturePageAsBlob = async(): Promise<Blob | null> => {
-  try {
-    const canvas = await html2canvas(document.body, {
-      useCORS: true,
-      logging: false,
-    });
+/**
+ * @returns {Promise<Blob | null>}
+ */
+export const capturePageAsBlob = async (): Promise<Blob | null> => {
+    try {
+        const nodeToCapture = document.body;
 
-    return new Promise(resolve => {
-      canvas.toBlob(blob => resolve(blob), 'image/png');
-    });
-  } catch (error) {
-    console.error("Erro ao capturar a tela:", error);
-    return null;
-  }
+        const filter = (node: Node): boolean => {
+            return node instanceof HTMLElement;
+        };
+
+        const blob = await domtoimage.toBlob(nodeToCapture, { filter: filter });
+        
+        return blob;
+    } catch (error) {
+        console.error("Erro ao capturar a tela com dom-to-image-more:", error);
+        return null;
+    }
 };

@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@web-extension-accessibility-frontend/api-client": "workspace:*",
-        "html2canvas": "^1.4.1"
+        "dom-to-image-more": "^3.7.1"
     },
     "devDependencies": {
         "@types/html2canvas": "^1.0.0"
