@@ -7,8 +7,8 @@ import {
   TranslateIcon,
 } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
-import { useVoiceNavigation } from '../lib/hooks/use-voice-navigation';
 import { useEffect, useState } from 'react';
+import { useVoiceNavigation } from '../lib/hooks/use-voice-navigation';
 
 type VoiceNavigationControlProps = {
   selectedLanguage: string | 'en';
@@ -77,9 +77,9 @@ export function VoiceNavigationControl({
       case 'listening':
         return 'text-primary-600';
       case 'processing':
-        return 'text-yellow-600';
+        return 'text-warn';
       case 'error':
-        return 'text-red-600';
+        return 'text-danger';
       default:
         return 'text-gray-600';
     }
@@ -106,13 +106,13 @@ export function VoiceNavigationControl({
     if (state.isConnected) {
       return (
         <span title="Conectado ao servidor">
-          <CloudIcon size={16} className="text-green-600" />
+          <CloudIcon size={16} className="text-success" />
         </span>
       );
     }
     return (
       <span title="Desconectado do servidor">
-        <CloudSlashIcon size={16} className="text-red-600" />
+        <CloudSlashIcon size={16} className="text-danger" />
       </span>
     );
   };
@@ -203,7 +203,7 @@ export function VoiceNavigationControl({
 
       {(state.error || getVoiceCommandStatus()) && (
         <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-danger-500">
+          <p className="text-sm text-danger">
             <strong>Erro:</strong> {state.error || 'Comando não reconhecido'}
           </p>
         </div>
@@ -220,24 +220,24 @@ export function VoiceNavigationControl({
       <div className="hidden lg:block p-3 bg-gray-50 border border-gray-200 rounded-lg">
         <div className="flex items-center gap-2 mb-2">
           <p className="text-sm font-medium text-gray-800">
-        Comandos de voz disponíveis:
+            Comandos de voz disponíveis:
           </p>
           <CloudIcon size={16} className="text-gray-600" />
         </div>
         <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
           <div>
-        <strong>Navegação:</strong> "próximo elemento", "elemento anterior",
-        "rolar para baixo"
+            <strong>Navegação:</strong> "próximo elemento", "elemento anterior",
+            "rolar para baixo"
           </div>
           <div>
-        <strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"
+            <strong>Interação:</strong> "clicar em [elemento]", "botão [nome]"
           </div>
           <div>
-        <strong>Leitura:</strong> "ler [elemento]", "ler página"
+            <strong>Leitura:</strong> "ler [elemento]", "ler página"
           </div>
           <div>
-        <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom",
-        "diminuir zoom"
+            <strong>Sistema:</strong> "ajuda", "voltar", "aumentar zoom",
+            "diminuir zoom"
           </div>
         </div>
       </div>
@@ -247,10 +247,12 @@ export function VoiceNavigationControl({
           <Button
             size="small"
             variant="default"
-            color='danger-500'
+            color="danger-500"
             onClick={handleStopVoice}
             aria-label="Parar voz de feedback"
-          >Parar voz</Button>
+          >
+            Parar voz
+          </Button>
         )}
 
         <div className="flex items-center gap-2 ml-auto">

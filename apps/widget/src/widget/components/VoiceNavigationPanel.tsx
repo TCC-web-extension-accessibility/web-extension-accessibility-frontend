@@ -27,7 +27,7 @@ export function VoiceNavigationPanel({
             : 'bottom-30 sm:max-w-[520px] max-w-[380px] rounded-l-lg'
         }
          sm:max-h-min md:max-h-[90vh]
-        bg-white shadow-lg border border-gray-300 p-6
+        bg-background shadow-lg border border-gray-300 p-6
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'} overflow-y-auto z-1000
       `}
