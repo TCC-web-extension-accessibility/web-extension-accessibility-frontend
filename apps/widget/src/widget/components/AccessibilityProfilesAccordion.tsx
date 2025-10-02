@@ -38,6 +38,7 @@ type AccessibilityProfilesAccordionProps = {
   changeFontFamily: (fontName: string) => void;
   toggleDisabledAnimations: (disabled: boolean) => void;
   changeReadingGuideMode: (mode?: string) => void;
+  ariaLabel: string;
 };
 
 export function AccessibilityProfilesAccordion({
@@ -46,6 +47,7 @@ export function AccessibilityProfilesAccordion({
   toggleDisabledAnimations,
   changeFontFamily,
   changeReadingGuideMode,
+  ariaLabel
 }: AccessibilityProfilesAccordionProps) {
   const handleProfileClick = (action: () => void) => {
     resetAllSettings();
@@ -54,6 +56,7 @@ export function AccessibilityProfilesAccordion({
 
   return (
     <Accordion
+      ariaLabel={ariaLabel}
       children={
         <ToggleGroup
           type="single"

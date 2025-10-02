@@ -137,6 +137,19 @@ export interface ValidationError {
  */
 export interface ValidationErrorLocInner {
 }
+/**
+ * 
+ * @export
+ * @interface VoiceCommandRequest
+ */
+export interface VoiceCommandRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof VoiceCommandRequest
+     */
+    'text': string;
+}
 
 /**
  * ApiApi - axios parameter creator
@@ -224,6 +237,42 @@ export const ApiApiAxiosParamCreator = function (configuration?: Configuration) 
         },
         /**
          * 
+         * @summary Process Voice Command
+         * @param {VoiceCommandRequest} voiceCommandRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        processVoiceCommandApiV1VoiceNavigationCommandPost: async (voiceCommandRequest: VoiceCommandRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'voiceCommandRequest' is not null or undefined
+            assertParamExists('processVoiceCommandApiV1VoiceNavigationCommandPost', 'voiceCommandRequest', voiceCommandRequest)
+            const localVarPath = `/api/v1/voice-navigation/command`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(voiceCommandRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Translate Text List
          * @param {TranslationSchema} translationSchema 
          * @param {*} [options] Override http request option.
@@ -296,6 +345,19 @@ export const ApiApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Process Voice Command
+         * @param {VoiceCommandRequest} voiceCommandRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest: VoiceCommandRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ApiApi.processVoiceCommandApiV1VoiceNavigationCommandPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Translate Text List
          * @param {TranslationSchema} translationSchema 
          * @param {*} [options] Override http request option.
@@ -339,6 +401,16 @@ export const ApiApiFactory = function (configuration?: Configuration, basePath?:
         },
         /**
          * 
+         * @summary Process Voice Command
+         * @param {VoiceCommandRequest} voiceCommandRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest: VoiceCommandRequest, options?: any): AxiosPromise<any> {
+            return localVarFp.processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Translate Text List
          * @param {TranslationSchema} translationSchema 
          * @param {*} [options] Override http request option.
@@ -375,6 +447,16 @@ export interface ApiApiInterface {
      * @memberof ApiApiInterface
      */
     describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Process Voice Command
+     * @param {VoiceCommandRequest} voiceCommandRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApiInterface
+     */
+    processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest: VoiceCommandRequest, options?: RawAxiosRequestConfig): AxiosPromise<any>;
 
     /**
      * 
@@ -417,6 +499,18 @@ export class ApiApi extends BaseAPI implements ApiApiInterface {
      */
     public describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig) {
         return ApiApiFp(this.configuration).describeImageApiV1DescribeImagePost(file, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Process Voice Command
+     * @param {VoiceCommandRequest} voiceCommandRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApi
+     */
+    public processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest: VoiceCommandRequest, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).processVoiceCommandApiV1VoiceNavigationCommandPost(voiceCommandRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -13,10 +13,10 @@ function initializeWidget() {
 function onReady() {
   try {
     const element = document.createElement('div');
-    element.id = 'web-extension-accessibility';
     const shadow = element.attachShadow({ mode: 'open' });
     const shadowRoot = document.createElement('div');
 
+    element.setAttribute('id', 'web-extension-accessibility');
     shadowRoot.id = 'widget-root';
 
     const component = <WidgetContainer />;

@@ -43,6 +43,8 @@ type WidgetControlsProps = {
   increaseSaturation: () => void;
   currentSaturationStep: number;
   maxSaturationStep: number;
+  onActivateVoiceNavigation: () => void;
+  voiceNavigationEnabled: boolean;
 };
 
 export function WidgetControls({
@@ -74,6 +76,8 @@ export function WidgetControls({
   increaseSaturation,
   currentSaturationStep,
   maxSaturationStep,
+  onActivateVoiceNavigation,
+  voiceNavigationEnabled,
 }: WidgetControlsProps) {
   return (
     <div className="@container">
@@ -140,6 +144,12 @@ export function WidgetControls({
           checked={readingGuideMode !== READING_GUIDE_MODES.OFF}
           maxSteps={maxReadingGuideMode}
           step={currentReadingGuideModeStep}
+        />
+        <WidgetButton
+          text="Navegação por voz"
+          icon={<SpeakerHighIcon weight="fill" />}
+          onClick={onActivateVoiceNavigation}
+          checked={voiceNavigationEnabled}
         />
         <WidgetButton
           text="Destacar links"

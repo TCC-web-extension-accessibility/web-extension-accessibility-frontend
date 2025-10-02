@@ -15,6 +15,7 @@ const loading = tv({
       'grey-300': ['border-gray-300'],
       'grey-600': ['border-gray-600'],
       'grey-200': ['border-gray-200'],
+      'danger-500': ['border-danger-500'],
     },
   },
 });
@@ -71,6 +72,12 @@ const variants = tv({
         '[--fg-color:var(--color-foreground)]',
         '[--hover-color:var(--color-grey-100)]',
         '[--hover-text-color:var(--color-foreground)]',
+      ],
+      'danger-500': [
+        '[--bg-color:var(--color-danger-500)]',
+        '[--fg-color:var(--color-danger-foreground)]',
+        '[--hover-color:var(--color-danger-200)]',
+        '[--hover-text-color:var(--color-danger-foreground)]',
       ],
     },
     variant: {
