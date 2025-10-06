@@ -58,3 +58,9 @@ Inicie o servidor para rodar o index.html
 ```bash
 pnpm serve:widget:test-html
 ```
+
+### Gerar/Atualizar API Client para comunicação com o backend
+
+```bash
+pnpm generate:api-client
+```
