@@ -13,6 +13,7 @@ import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
 import { useSaturation } from '../lib/hooks/use-saturation';
 import { useSelectLanguage } from '../lib/hooks/use-select-language';
+import { useColorFilter } from '../lib/hooks/use-color-filter';
 import { translateWidgetIfNeeded } from '../lib/translator';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
@@ -38,6 +39,7 @@ export function Widget() {
   const language = useSelectLanguage();
   const contrast = useContrast();
   const saturation = useSaturation();
+  const colorFilter = useColorFilter();
 
   const nameOfTheSelectedLanguage =
     language.languages.find((lang) => lang.code === language.selectedLanguage)
@@ -60,6 +62,7 @@ export function Widget() {
     language.selectLanguage('en');
     contrast.resetContrast();
     saturation.resetSaturation();
+    colorFilter.resetFilter();
   };
 
   useEffect(() => {
@@ -189,6 +192,7 @@ export function Widget() {
                 setShowVoiceNavigation(true);
               }}
               voiceNavigationEnabled={showVoiceNavigation}
+              applyFilter={colorFilter.applyFilter}
             />
           </div>
         </div>

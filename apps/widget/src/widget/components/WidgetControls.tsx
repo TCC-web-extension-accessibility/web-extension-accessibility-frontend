@@ -1,4 +1,5 @@
 import {
+  PaletteIcon, 
   ArrowsInLineHorizontalIcon,
   ArrowsOutLineVerticalIcon,
   CircleHalfIcon,
@@ -13,6 +14,9 @@ import {
 } from '@phosphor-icons/react';
 import { READING_GUIDE_MODES } from '../lib/hooks/use-reading-guide';
 import { WidgetButton } from './WidgetButton';
+import { FilterMenu } from './FilterMenu';
+import { useState } from 'react';
+import type { ColorFilterType } from '../lib/types/color-filter.types';
 
 type WidgetControlsProps = {
   increaseFontSize: () => void;
@@ -45,7 +49,9 @@ type WidgetControlsProps = {
   maxSaturationStep: number;
   onActivateVoiceNavigation: () => void;
   voiceNavigationEnabled: boolean;
+  applyFilter: (filter: ColorFilterType) => void;
 };
+
 
 export function WidgetControls({
   increaseFontSize,
@@ -78,7 +84,9 @@ export function WidgetControls({
   maxSaturationStep,
   onActivateVoiceNavigation,
   voiceNavigationEnabled,
+  applyFilter,
 }: WidgetControlsProps) {
+  const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   return (
     <div className="@container">
       <div className="grid grid-cols-2 gap-2.5 @[470px]:grid-cols-3">
@@ -164,7 +172,14 @@ export function WidgetControls({
           maxSteps={maxSaturationStep}
           onClick={() => increaseSaturation()}
         />
+        <WidgetButton
+          text="Filtro de Cor"
+          icon={<PaletteIcon weight="fill" />}
+          onClick={() => setFilterMenuOpen((prev) => !prev)}
+          checked={isFilterMenuOpen}
+        />
       </div>
+      {isFilterMenuOpen && <FilterMenu applyFilter={applyFilter} />}
     </div>
   );
 }

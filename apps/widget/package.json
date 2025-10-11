@@ -9,6 +9,7 @@
         "serve:test-html": "npx browser-sync start --server ./ --files=\"test.html\" --files=\"dist/**\" --port 8081 --index test.html"
     },
     "dependencies": {
-        "@web-extension-accessibility-frontend/api-client": "workspace:*"
+        "@web-extension-accessibility-frontend/api-client": "workspace:*",
+        "dom-to-image-more": "^3.7.1"
     }
 }

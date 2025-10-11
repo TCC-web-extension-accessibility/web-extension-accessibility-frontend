@@ -152,6 +152,9 @@ importers:
       '@web-extension-accessibility-frontend/api-client':
         specifier: workspace:*
         version: link:../../libs/api-client
+      dom-to-image-more:
+        specifier: ^3.7.1
+        version: 3.7.1
 
   libs/api-client: {}
 
@@ -2486,6 +2489,9 @@ packages:
 
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
+
+  dom-to-image-more@3.7.1:
+    resolution: {integrity: sha512-XajsuvCLnPVuYFsFOuGuTvFogMTZEQmYLlySPoDRNZWUk953CIoUTS2rqXpwyFjqDgi2fC+Wk9GSlL1UbAvfbw==}
 
   domexception@4.0.0:
     resolution: {integrity: sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw==}
@@ -6958,6 +6964,8 @@ snapshots:
       esutils: 2.0.3
 
   dom-accessibility-api@0.5.16: {}
+
+  dom-to-image-more@3.7.1: {}
 
   domexception@4.0.0:
     dependencies:
