@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'Admin',
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={'antialiased'}>
-        {children}
+        <Providers>{children}</Providers>
         <script
           src="http://127.0.0.1:8081/dist/widget/widget.js"
           defer
