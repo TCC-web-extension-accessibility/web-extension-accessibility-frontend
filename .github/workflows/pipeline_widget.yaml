@@ -183,7 +183,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: accessibility-widget
           directory: apps/widget/dist/widget
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ secrets.DEPLOYMENT_TOKEN }}
 
       - name: Deploy to Cloudflare Pages (Development)
         if: needs.determine-environment.outputs.environment == 'development'
@@ -193,7 +193,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: accessibility-widget-dev
           directory: apps/widget/dist/widget
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ secrets.DEPLOYMENT_TOKEN }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
