@@ -22,7 +22,7 @@ on:
 
 env:
   NODE_VERSION: '18'
-  PNPM_VERSION: '9'
+  PNPM_VERSION: 'latest'
 
 jobs:
   determine-environment:
@@ -53,16 +53,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
+      - name: Verify pnpm installation
+        run: |
+          which pnpm
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
