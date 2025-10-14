@@ -1,0 +1,101 @@
+name: Deploy Admin to Vercel
+
+on:
+  push:
+    paths:
+      - 'apps/admin/**'
+      - 'libs/**'
+    branches:
+      - main
+      - develop
+
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - preview
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '9'
+
+jobs:
+  determine-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      vercel-env: ${{ steps.env.outputs.vercel-env }}
+    steps:
+      - name: Determine environment
+        id: env
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" != "" ]]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+            echo "vercel-env=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "vercel-env=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=preview" >> $GITHUB_OUTPUT
+            echo "vercel-env=preview" >> $GITHUB_OUTPUT
+          fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: determine-environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build admin app
+        run: pnpm run build:admin
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to Vercel (Production)
+        if: needs.determine-environment.outputs.environment == 'production'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: apps/admin
+          vercel-args: '--prod'
+
+      - name: Deploy to Vercel (Preview)
+        if: needs.determine-environment.outputs.environment == 'preview'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: apps/admin
+
+      - name: Output deployment info
+        run: |
+          ENV="${{ needs.determine-environment.outputs.environment }}"
+          if [[ "$ENV" == "production" ]]; then
+            echo "🚀 Admin deployed to production: https://your-admin-domain.vercel.app"
+          else
+            echo "🚀 Admin deployed to preview environment"
+          fi
