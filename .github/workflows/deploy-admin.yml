@@ -76,6 +76,8 @@ jobs:
         run: pnpm run build:admin
         env:
           NODE_ENV: production
+          NEXT_PUBLIC_API_BASE_URL: http://0.0.0.0:8000
+          NEXT_PUBLIC_WIDGET_URL: https://accessibility-widget.pages.dev/widget.js
 
       - name: Deploy to Vercel (Production)
         if: needs.determine-environment.outputs.environment == 'production'
@@ -85,7 +87,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: apps/admin
-          vercel-args: '--prod'
+          vercel-args: '--prod --prebuilt'
 
       - name: Deploy to Vercel (Preview)
         if: needs.determine-environment.outputs.environment == 'preview'
@@ -95,12 +97,13 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: apps/admin
+          vercel-args: '--prebuilt'
 
-      - name: Output deployment info
-        run: |
-          ENV="${{ needs.determine-environment.outputs.environment }}"
-          if [[ "$ENV" == "production" ]]; then
-            echo "🚀 Admin deployed to production: https://your-admin-domain.vercel.app"
-          else
-            echo "🚀 Admin deployed to preview environment"
-          fi
+      # - name: Output deployment info
+      #   run: |
+      #     ENV="${{ needs.determine-environment.outputs.environment }}"
+      #     if [[ "$ENV" == "production" ]]; then
+      #       echo "🚀 Admin deployed to production: https://your-admin-domain.vercel.app"
+      #     else
+      #       echo "🚀 Admin deployed to preview environment"
+      #     fi

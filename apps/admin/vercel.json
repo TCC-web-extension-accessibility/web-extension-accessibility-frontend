@@ -1,19 +1,9 @@
 {
     "version": 2,
-    "buildCommand": "cd ../.. && pnpm run build:admin",
-    "outputDirectory": ".next",
-    "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
     "framework": "nextjs",
-    "build": {
-        "env": {
-            "NODE_ENV": "production"
-        }
-    },
-    "functions": {
-        "apps/admin/pages/api/**/*.ts": {
-            "maxDuration": 30
-        }
-    },
+    "buildCommand": "echo 'Build handled by GitHub Actions'",
+    "installCommand": "echo 'Dependencies already installed'",
+    "outputDirectory": ".next",
     "rewrites": [
         {
             "source": "/api/(.*)",
