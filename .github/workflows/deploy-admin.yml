@@ -22,7 +22,7 @@ on:
 
 env:
   NODE_VERSION: '18'
-  PNPM_VERSION: '10.11.0'
+  PNPM_VERSION: '10.18.3'
 
 jobs:
   determine-environment:
