@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     '@web-extension-accessibility-frontend/ui',
     '@web-extension-accessibility-frontend/api-client',
   ],
+  output: 'standalone',
 };
 
 export default nextConfig;
