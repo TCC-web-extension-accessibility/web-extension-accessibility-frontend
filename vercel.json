@@ -1,8 +1,4 @@
 {
-    "version": 2,
-    "framework": "nextjs",
-    "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm run build:admin",
-    "outputDirectory": ".next",
     "rewrites": [
         {
             "source": "/api/(.*)",

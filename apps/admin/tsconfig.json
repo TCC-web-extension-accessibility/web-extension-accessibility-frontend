@@ -22,7 +22,12 @@
     ],
     "paths": {
       "~/*": ["./*"],
-      "@web-extension-accessibility-frontend/ui": ["../../libs/ui/src/index.ts"]
+      "@web-extension-accessibility-frontend/ui": [
+        "../../libs/ui/src/index.ts"
+      ],
+      "@web-extension-accessibility-frontend/api-client": [
+        "../../libs/api-client/index.ts"
+      ]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
