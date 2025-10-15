@@ -1,8 +1,7 @@
 {
     "version": 2,
     "framework": "nextjs",
-    "buildCommand": "echo 'Build handled by GitHub Actions'",
-    "installCommand": "echo 'Dependencies already installed'",
+    "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm run build:admin",
     "outputDirectory": ".next",
     "rewrites": [
         {
