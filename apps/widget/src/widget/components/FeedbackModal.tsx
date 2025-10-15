@@ -31,8 +31,10 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const { mutate: sendFeedback, isPending } = useMutation({
     mutationFn: async (feedback: FeedbackFormData) => {
       const api = getClientApi();
+      console.log('API Client:', api);
       // Using a test endpoint since feedback endpoint doesn't exist yet
-      await api.Default.Auth.readUsersMeAuthUsersMeGet();
+      // TODO: Fazer endpoint de feedback --- IGNORE ---
+      //await api.Default.Auth.readUsersMeAuthUsersMeGet();
 
       // Log the feedback data for testing
       console.log('Feedback submitted:', feedback);
