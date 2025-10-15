@@ -12,6 +12,7 @@ import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
 import { useSaturation } from '../lib/hooks/use-saturation';
+import { useReader } from '../lib/hooks/use-reader';
 import { useSelectLanguage } from '../lib/hooks/use-select-language';
 import { useColorFilter } from '../lib/hooks/use-color-filter';
 import { translateWidgetIfNeeded } from '../lib/translator';
@@ -40,6 +41,7 @@ export function Widget() {
   const contrast = useContrast();
   const saturation = useSaturation();
   const colorFilter = useColorFilter();
+  const [readerState, readerActions] = useReader({ selectedLanguage: language.selectedLanguage ?? 'en' });
 
   const nameOfTheSelectedLanguage =
     language.languages.find((lang) => lang.code === language.selectedLanguage)
@@ -73,6 +75,8 @@ export function Widget() {
     } else {
       setAnimateIn(false);
       const timer = setTimeout(() => setIsVisible(false), 300);
+      // parar leitura ao fechar
+      readerActions.stop();
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -193,6 +197,11 @@ export function Widget() {
               }}
               voiceNavigationEnabled={showVoiceNavigation}
               applyFilter={colorFilter.applyFilter}
+              onToggleReader={readerActions.toggle}
+              readerIsPlaying={readerState.isPlaying}
+              readerIsLoading={readerState.isLoading}
+              readerIsPaused={readerState.isPaused}
+              onResumeReader={readerActions.resume}
             />
           </div>
         </div>

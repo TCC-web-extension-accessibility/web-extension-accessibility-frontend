@@ -26,6 +26,50 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface FeedbackRequestSchema
+ */
+export interface FeedbackRequestSchema {
+    /**
+     * 
+     * @type {string}
+     * @memberof FeedbackRequestSchema
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FeedbackRequestSchema
+     */
+    'message': string;
+}
+/**
+ * 
+ * @export
+ * @interface FeedbackResponseSchema
+ */
+export interface FeedbackResponseSchema {
+    /**
+     * 
+     * @type {string}
+     * @memberof FeedbackResponseSchema
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FeedbackResponseSchema
+     */
+    'message': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FeedbackResponseSchema
+     */
+    'timestamp': string;
+}
+/**
+ * 
+ * @export
  * @interface HTTPValidationError
  */
 export interface HTTPValidationError {
@@ -35,6 +79,62 @@ export interface HTTPValidationError {
      * @memberof HTTPValidationError
      */
     'detail'?: Array<ValidationError>;
+}
+/**
+ * 
+ * @export
+ * @interface PageFeedbackResponseSchema
+ */
+export interface PageFeedbackResponseSchema {
+    /**
+     * 
+     * @type {Array<FeedbackResponseSchema>}
+     * @memberof PageFeedbackResponseSchema
+     */
+    'items': Array<FeedbackResponseSchema>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageFeedbackResponseSchema
+     */
+    'total': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageFeedbackResponseSchema
+     */
+    'page': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageFeedbackResponseSchema
+     */
+    'size': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageFeedbackResponseSchema
+     */
+    'pages': number;
+}
+/**
+ * 
+ * @export
+ * @interface TTSRequest
+ */
+export interface TTSRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof TTSRequest
+     */
+    'text': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TTSRequest
+     */
+    'lang'?: string;
 }
 /**
  * 
@@ -152,6 +252,354 @@ export interface VoiceCommandRequest {
 }
 
 /**
+ * AdminApi - axios parameter creator
+ * @export
+ */
+export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get Feedbacks
+         * @param {number} [page] Page number
+         * @param {number} [size] Page size
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFeedbacksAdminFeedbackGet: async (page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/admin/feedback`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Login For Access Token
+         * @param {string} username 
+         * @param {string} password 
+         * @param {string | null} [grantType] 
+         * @param {string} [scope] 
+         * @param {string | null} [clientId] 
+         * @param {string | null} [clientSecret] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        loginForAccessTokenAdminLoginPost: async (username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('loginForAccessTokenAdminLoginPost', 'username', username)
+            // verify required parameter 'password' is not null or undefined
+            assertParamExists('loginForAccessTokenAdminLoginPost', 'password', password)
+            const localVarPath = `/admin/login`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new URLSearchParams();
+
+
+            if (grantType !== undefined) { 
+                localVarFormParams.set('grant_type', grantType as any);
+            }
+    
+            if (username !== undefined) { 
+                localVarFormParams.set('username', username as any);
+            }
+    
+            if (password !== undefined) { 
+                localVarFormParams.set('password', password as any);
+            }
+    
+            if (scope !== undefined) { 
+                localVarFormParams.set('scope', scope as any);
+            }
+    
+            if (clientId !== undefined) { 
+                localVarFormParams.set('client_id', clientId as any);
+            }
+    
+            if (clientSecret !== undefined) { 
+                localVarFormParams.set('client_secret', clientSecret as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams.toString();
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Read Users Me
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readUsersMeAdminUsersMeGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/admin/users/me/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AdminApi - functional programming interface
+ * @export
+ */
+export const AdminApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get Feedbacks
+         * @param {number} [page] Page number
+         * @param {number} [size] Page size
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getFeedbacksAdminFeedbackGet(page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PageFeedbackResponseSchema>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getFeedbacksAdminFeedbackGet(page, size, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.getFeedbacksAdminFeedbackGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Login For Access Token
+         * @param {string} username 
+         * @param {string} password 
+         * @param {string | null} [grantType] 
+         * @param {string} [scope] 
+         * @param {string | null} [clientId] 
+         * @param {string | null} [clientSecret] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async loginForAccessTokenAdminLoginPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Token>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.loginForAccessTokenAdminLoginPost(username, password, grantType, scope, clientId, clientSecret, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.loginForAccessTokenAdminLoginPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Read Users Me
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async readUsersMeAdminUsersMeGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSchema>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.readUsersMeAdminUsersMeGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.readUsersMeAdminUsersMeGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AdminApi - factory interface
+ * @export
+ */
+export const AdminApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AdminApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get Feedbacks
+         * @param {number} [page] Page number
+         * @param {number} [size] Page size
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getFeedbacksAdminFeedbackGet(page?: number, size?: number, options?: any): AxiosPromise<PageFeedbackResponseSchema> {
+            return localVarFp.getFeedbacksAdminFeedbackGet(page, size, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Login For Access Token
+         * @param {string} username 
+         * @param {string} password 
+         * @param {string | null} [grantType] 
+         * @param {string} [scope] 
+         * @param {string | null} [clientId] 
+         * @param {string | null} [clientSecret] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        loginForAccessTokenAdminLoginPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: any): AxiosPromise<Token> {
+            return localVarFp.loginForAccessTokenAdminLoginPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Read Users Me
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        readUsersMeAdminUsersMeGet(options?: any): AxiosPromise<UserSchema> {
+            return localVarFp.readUsersMeAdminUsersMeGet(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AdminApi - interface
+ * @export
+ * @interface AdminApi
+ */
+export interface AdminApiInterface {
+    /**
+     * 
+     * @summary Get Feedbacks
+     * @param {number} [page] Page number
+     * @param {number} [size] Page size
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    getFeedbacksAdminFeedbackGet(page?: number, size?: number, options?: RawAxiosRequestConfig): AxiosPromise<PageFeedbackResponseSchema>;
+
+    /**
+     * 
+     * @summary Login For Access Token
+     * @param {string} username 
+     * @param {string} password 
+     * @param {string | null} [grantType] 
+     * @param {string} [scope] 
+     * @param {string | null} [clientId] 
+     * @param {string | null} [clientSecret] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    loginForAccessTokenAdminLoginPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Token>;
+
+    /**
+     * 
+     * @summary Read Users Me
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    readUsersMeAdminUsersMeGet(options?: RawAxiosRequestConfig): AxiosPromise<UserSchema>;
+
+}
+
+/**
+ * AdminApi - object-oriented interface
+ * @export
+ * @class AdminApi
+ * @extends {BaseAPI}
+ */
+export class AdminApi extends BaseAPI implements AdminApiInterface {
+    /**
+     * 
+     * @summary Get Feedbacks
+     * @param {number} [page] Page number
+     * @param {number} [size] Page size
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public getFeedbacksAdminFeedbackGet(page?: number, size?: number, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).getFeedbacksAdminFeedbackGet(page, size, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Login For Access Token
+     * @param {string} username 
+     * @param {string} password 
+     * @param {string | null} [grantType] 
+     * @param {string} [scope] 
+     * @param {string | null} [clientId] 
+     * @param {string | null} [clientSecret] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public loginForAccessTokenAdminLoginPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).loginForAccessTokenAdminLoginPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Read Users Me
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public readUsersMeAdminUsersMeGet(options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).readUsersMeAdminUsersMeGet(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * ApiApi - axios parameter creator
  * @export
  */
@@ -160,13 +608,13 @@ export const ApiApiAxiosParamCreator = function (configuration?: Configuration) 
         /**
          * 
          * @summary Convert Audio
-         * @param {string} text 
+         * @param {TTSRequest} tTSRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        convertAudioApiV1ConvertAudioPost: async (text: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'text' is not null or undefined
-            assertParamExists('convertAudioApiV1ConvertAudioPost', 'text', text)
+        convertAudioApiV1ConvertAudioPost: async (tTSRequest: TTSRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tTSRequest' is not null or undefined
+            assertParamExists('convertAudioApiV1ConvertAudioPost', 'tTSRequest', tTSRequest)
             const localVarPath = `/api/v1/convert-audio/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -179,15 +627,14 @@ export const ApiApiAxiosParamCreator = function (configuration?: Configuration) 
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (text !== undefined) {
-                localVarQueryParameter['text'] = text;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(tTSRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -229,6 +676,42 @@ export const ApiApiAxiosParamCreator = function (configuration?: Configuration) 
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Post Feedback
+         * @param {FeedbackRequestSchema} feedbackRequestSchema 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postFeedbackApiV1FeedbackPost: async (feedbackRequestSchema: FeedbackRequestSchema, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'feedbackRequestSchema' is not null or undefined
+            assertParamExists('postFeedbackApiV1FeedbackPost', 'feedbackRequestSchema', feedbackRequestSchema)
+            const localVarPath = `/api/v1/feedback`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(feedbackRequestSchema, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -320,12 +803,12 @@ export const ApiApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Convert Audio
-         * @param {string} text 
+         * @param {TTSRequest} tTSRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.convertAudioApiV1ConvertAudioPost(text, options);
+        async convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.convertAudioApiV1ConvertAudioPost(tTSRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ApiApi.convertAudioApiV1ConvertAudioPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -341,6 +824,19 @@ export const ApiApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.describeImageApiV1DescribeImagePost(file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ApiApi.describeImageApiV1DescribeImagePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Post Feedback
+         * @param {FeedbackRequestSchema} feedbackRequestSchema 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postFeedbackApiV1FeedbackPost(feedbackRequestSchema: FeedbackRequestSchema, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FeedbackRequestSchema>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postFeedbackApiV1FeedbackPost(feedbackRequestSchema, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ApiApi.postFeedbackApiV1FeedbackPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -382,12 +878,12 @@ export const ApiApiFactory = function (configuration?: Configuration, basePath?:
         /**
          * 
          * @summary Convert Audio
-         * @param {string} text 
+         * @param {TTSRequest} tTSRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        convertAudioApiV1ConvertAudioPost(text: string, options?: any): AxiosPromise<void> {
-            return localVarFp.convertAudioApiV1ConvertAudioPost(text, options).then((request) => request(axios, basePath));
+        convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.convertAudioApiV1ConvertAudioPost(tTSRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -398,6 +894,16 @@ export const ApiApiFactory = function (configuration?: Configuration, basePath?:
          */
         describeImageApiV1DescribeImagePost(file: File, options?: any): AxiosPromise<any> {
             return localVarFp.describeImageApiV1DescribeImagePost(file, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Post Feedback
+         * @param {FeedbackRequestSchema} feedbackRequestSchema 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postFeedbackApiV1FeedbackPost(feedbackRequestSchema: FeedbackRequestSchema, options?: any): AxiosPromise<FeedbackRequestSchema> {
+            return localVarFp.postFeedbackApiV1FeedbackPost(feedbackRequestSchema, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -431,12 +937,12 @@ export interface ApiApiInterface {
     /**
      * 
      * @summary Convert Audio
-     * @param {string} text 
+     * @param {TTSRequest} tTSRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiApiInterface
      */
-    convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -447,6 +953,16 @@ export interface ApiApiInterface {
      * @memberof ApiApiInterface
      */
     describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig): AxiosPromise<any>;
+
+    /**
+     * 
+     * @summary Post Feedback
+     * @param {FeedbackRequestSchema} feedbackRequestSchema 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApiInterface
+     */
+    postFeedbackApiV1FeedbackPost(feedbackRequestSchema: FeedbackRequestSchema, options?: RawAxiosRequestConfig): AxiosPromise<FeedbackRequestSchema>;
 
     /**
      * 
@@ -480,13 +996,13 @@ export class ApiApi extends BaseAPI implements ApiApiInterface {
     /**
      * 
      * @summary Convert Audio
-     * @param {string} text 
+     * @param {TTSRequest} tTSRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiApi
      */
-    public convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig) {
-        return ApiApiFp(this.configuration).convertAudioApiV1ConvertAudioPost(text, options).then((request) => request(this.axios, this.basePath));
+    public convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).convertAudioApiV1ConvertAudioPost(tTSRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -499,6 +1015,18 @@ export class ApiApi extends BaseAPI implements ApiApiInterface {
      */
     public describeImageApiV1DescribeImagePost(file: File, options?: RawAxiosRequestConfig) {
         return ApiApiFp(this.configuration).describeImageApiV1DescribeImagePost(file, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Post Feedback
+     * @param {FeedbackRequestSchema} feedbackRequestSchema 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ApiApi
+     */
+    public postFeedbackApiV1FeedbackPost(feedbackRequestSchema: FeedbackRequestSchema, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).postFeedbackApiV1FeedbackPost(feedbackRequestSchema, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -523,261 +1051,6 @@ export class ApiApi extends BaseAPI implements ApiApiInterface {
      */
     public translateTextListApiV1TranslatePost(translationSchema: TranslationSchema, options?: RawAxiosRequestConfig) {
         return ApiApiFp(this.configuration).translateTextListApiV1TranslatePost(translationSchema, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * AuthApi - axios parameter creator
- * @export
- */
-export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Login For Access Token
-         * @param {string} username 
-         * @param {string} password 
-         * @param {string | null} [grantType] 
-         * @param {string} [scope] 
-         * @param {string | null} [clientId] 
-         * @param {string | null} [clientSecret] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        loginForAccessTokenAuthTokenPost: async (username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'username' is not null or undefined
-            assertParamExists('loginForAccessTokenAuthTokenPost', 'username', username)
-            // verify required parameter 'password' is not null or undefined
-            assertParamExists('loginForAccessTokenAuthTokenPost', 'password', password)
-            const localVarPath = `/auth/token`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-            const localVarFormParams = new URLSearchParams();
-
-
-            if (grantType !== undefined) { 
-                localVarFormParams.set('grant_type', grantType as any);
-            }
-    
-            if (username !== undefined) { 
-                localVarFormParams.set('username', username as any);
-            }
-    
-            if (password !== undefined) { 
-                localVarFormParams.set('password', password as any);
-            }
-    
-            if (scope !== undefined) { 
-                localVarFormParams.set('scope', scope as any);
-            }
-    
-            if (clientId !== undefined) { 
-                localVarFormParams.set('client_id', clientId as any);
-            }
-    
-            if (clientSecret !== undefined) { 
-                localVarFormParams.set('client_secret', clientSecret as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded';
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams.toString();
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Read Users Me
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        readUsersMeAuthUsersMeGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/auth/users/me/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication OAuth2PasswordBearer required
-            // oauth required
-            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * AuthApi - functional programming interface
- * @export
- */
-export const AuthApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = AuthApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Login For Access Token
-         * @param {string} username 
-         * @param {string} password 
-         * @param {string | null} [grantType] 
-         * @param {string} [scope] 
-         * @param {string | null} [clientId] 
-         * @param {string | null} [clientSecret] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async loginForAccessTokenAuthTokenPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Token>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.loginForAccessTokenAuthTokenPost(username, password, grantType, scope, clientId, clientSecret, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AuthApi.loginForAccessTokenAuthTokenPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Read Users Me
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async readUsersMeAuthUsersMeGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSchema>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.readUsersMeAuthUsersMeGet(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AuthApi.readUsersMeAuthUsersMeGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * AuthApi - factory interface
- * @export
- */
-export const AuthApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = AuthApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Login For Access Token
-         * @param {string} username 
-         * @param {string} password 
-         * @param {string | null} [grantType] 
-         * @param {string} [scope] 
-         * @param {string | null} [clientId] 
-         * @param {string | null} [clientSecret] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        loginForAccessTokenAuthTokenPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: any): AxiosPromise<Token> {
-            return localVarFp.loginForAccessTokenAuthTokenPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Read Users Me
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        readUsersMeAuthUsersMeGet(options?: any): AxiosPromise<UserSchema> {
-            return localVarFp.readUsersMeAuthUsersMeGet(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * AuthApi - interface
- * @export
- * @interface AuthApi
- */
-export interface AuthApiInterface {
-    /**
-     * 
-     * @summary Login For Access Token
-     * @param {string} username 
-     * @param {string} password 
-     * @param {string | null} [grantType] 
-     * @param {string} [scope] 
-     * @param {string | null} [clientId] 
-     * @param {string | null} [clientSecret] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AuthApiInterface
-     */
-    loginForAccessTokenAuthTokenPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<Token>;
-
-    /**
-     * 
-     * @summary Read Users Me
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AuthApiInterface
-     */
-    readUsersMeAuthUsersMeGet(options?: RawAxiosRequestConfig): AxiosPromise<UserSchema>;
-
-}
-
-/**
- * AuthApi - object-oriented interface
- * @export
- * @class AuthApi
- * @extends {BaseAPI}
- */
-export class AuthApi extends BaseAPI implements AuthApiInterface {
-    /**
-     * 
-     * @summary Login For Access Token
-     * @param {string} username 
-     * @param {string} password 
-     * @param {string | null} [grantType] 
-     * @param {string} [scope] 
-     * @param {string | null} [clientId] 
-     * @param {string | null} [clientSecret] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AuthApi
-     */
-    public loginForAccessTokenAuthTokenPost(username: string, password: string, grantType?: string | null, scope?: string, clientId?: string | null, clientSecret?: string | null, options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).loginForAccessTokenAuthTokenPost(username, password, grantType, scope, clientId, clientSecret, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Read Users Me
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AuthApi
-     */
-    public readUsersMeAuthUsersMeGet(options?: RawAxiosRequestConfig) {
-        return AuthApiFp(this.configuration).readUsersMeAuthUsersMeGet(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

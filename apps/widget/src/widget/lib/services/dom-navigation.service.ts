@@ -52,8 +52,60 @@ export class DomNavigationService {
   // Gets page content for reading
   getPageContent(): string {
     const mainContent = document.querySelector('main') || document.body;
-    const text = mainContent.textContent || '';
-    return text;
+
+    const contentClone = mainContent.cloneNode(true) as HTMLElement;
+    const tagsToRemove = ['script', 'style', 'noscript', 'iframe', 'svg', 'canvas'];
+    tagsToRemove.forEach(tag => {
+      contentClone.querySelectorAll(tag).forEach(el => el.remove());
+    });
+
+    const elementTexts: string[] = [];
+    function extractTexts(node: Element) {
+      // Se for um elemento sem filhos, ou se tiver texto direto, ou se for uma tag <a>, pega o texto/aria-label/alt/title
+      if (!node.children.length || node.tagName.toLowerCase() === 'a') {
+        let text = (node.textContent || '').trim();
+        if (!text) {
+          text = node.getAttribute('aria-label') ||
+             node.getAttribute('alt') ||
+             node.getAttribute('title') ||
+             '';
+          text = text.trim();
+        }
+        if (text) {
+          elementTexts.push(text);
+        }
+        return;
+      }
+
+      // Se for um elemento com filhos, pega o texto direto (não dos filhos)
+      const childNodes = Array.from(node.childNodes);
+      let directText = '';
+      childNodes.forEach(child => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          directText += (child.textContent || '').trim();
+        }
+      });
+      if (!directText) {
+        directText = node.getAttribute('aria-label') ||
+                     node.getAttribute('alt') ||
+                     node.getAttribute('title') ||
+                     '';
+        directText = directText.trim();
+      }
+      if (directText) {
+        elementTexts.push(directText);
+      }
+
+      // Recursivamente processa os filhos
+      Array.from(node.children).forEach(child => extractTexts(child));
+    }
+
+    extractTexts(contentClone);
+
+    console.log('Conteúdo da página para leitura:', contentClone);
+    const text = contentClone.textContent || '';
+    console.log('Conteúdo da página para leitura:', text);
+    return elementTexts.join('. ');
   }
 
   // Applies zoom to the page
