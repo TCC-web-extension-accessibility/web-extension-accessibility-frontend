@@ -4,10 +4,6 @@
     "outputDirectory": ".next",
     "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
     "framework": "nextjs",
-    "env": {
-        "NEXT_PUBLIC_API_BASE_URL": "@api_base_url",
-        "NEXT_PUBLIC_WIDGET_URL": "@widget_url"
-    },
     "build": {
         "env": {
             "NODE_ENV": "production"
