@@ -7,6 +7,8 @@ export type ReaderState = {
   isLoading: boolean;
   isPlaying: boolean;
   isPaused: boolean;
+  progress: number;
+  barVisible: boolean;
   error?: string;
 };
 
@@ -16,6 +18,7 @@ export type ReaderActions = {
   pause: () => void;
   resume: () => Promise<void>;
   toggle: () => Promise<void>;
+  playPause: () => void;
 };
 
 export type UseReaderProps = {
@@ -27,6 +30,8 @@ export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] 
     isLoading: false,
     isPlaying: false,
     isPaused: false,
+    progress: 0,
+    barVisible: false,
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -65,7 +70,7 @@ export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] 
     }
 
     cleanupAudio();
-    setState((prev) => ({ ...prev, isPlaying: false, isLoading: false, isPaused: false }));
+    setState((prev) => ({ ...prev, isPlaying: false, isLoading: false, isPaused: false, progress: 0, barVisible: false }));
   }, [cleanupAudio]);
 
   const pause = useCallback(() => {
@@ -135,17 +140,24 @@ export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] 
       audioRef.current = audio;
 
       audio.addEventListener('ended', () => {
-        setState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
+        setState((prev) => ({ ...prev, isPlaying: false, isPaused: false, progress: 0, barVisible: false }));
         cleanupAudio();
       });
 
       audio.addEventListener('error', () => {
-        setState((prev) => ({ ...prev, isPlaying: false, isPaused: false, error: 'Falha na reprodução do áudio' }));
+        setState((prev) => ({ ...prev, isPlaying: false, isPaused: false, progress: 0, barVisible: false, error: 'Falha na reprodução do áudio' }));
         cleanupAudio();
       });
 
+      audio.addEventListener('timeupdate', () => {
+        if (audio.duration > 0) {
+          const progress = (audio.currentTime / audio.duration) * 100;
+          setState((prev) => ({ ...prev, progress }));
+        }
+      });
+
       await audio.play();
-      setState((prev) => ({ ...prev, isPlaying: true, isPaused: false }));
+      setState((prev) => ({ ...prev, isPlaying: true, isPaused: false, barVisible: true }));
     } catch (err: any) {
       // se foi cancelado pelo usuário, não tratar como erro
       const canceled = err?.name === 'CanceledError' || err?.code === 'ERR_CANCELED' || err?.message === 'canceled' || err?.name === 'AbortError';
@@ -155,6 +167,7 @@ export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] 
           ...prev,
           isPlaying: false,
           isPaused: false,
+          barVisible: false,
           error: err?.message || 'Erro ao gerar áudio',
         }));
       }
@@ -167,18 +180,22 @@ export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] 
   }, [api, domService, cleanupAudio, props?.selectedLanguage]);
 
   const toggle = useCallback(async () => {
-    if (state.isLoading) {
-      stop();
-    } else if (state.isPlaying) {
-      pause();
-    } else if (state.isPaused) {
+    if (state.isLoading || state.isPlaying || state.isPaused) {
       stop();
     } else {
       await readPage();
     }
-  }, [state.isPlaying, state.isLoading, state.isPaused, readPage, stop, pause]);
+  }, [state.isPlaying, state.isLoading, state.isPaused, readPage, stop]);
 
-  const actions: ReaderActions = { readPage, stop, pause, resume, toggle };
+  const playPause = useCallback(() => {
+    if (state.isPlaying) {
+      pause();
+    } else if (state.isPaused) {
+      resume();
+    }
+  }, [state.isPlaying, state.isPaused, pause, resume]);
+
+  const actions: ReaderActions = { readPage, stop, pause, resume, toggle, playPause };
 
   return [state, actions];
 }

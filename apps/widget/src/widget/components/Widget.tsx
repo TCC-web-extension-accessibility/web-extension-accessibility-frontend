@@ -21,6 +21,7 @@ import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { VoiceNavigationPanel } from './VoiceNavigationPanel';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
+import { AudioProgressBar } from './AudioProgressBar';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
@@ -46,6 +47,14 @@ export function Widget() {
   const nameOfTheSelectedLanguage =
     language.languages.find((lang) => lang.code === language.selectedLanguage)
       ?.name || 'English';
+
+  // Determinar o texto do botão Leitor baseado no estado
+  const getReaderButtonText = () => {
+    if (readerState.isLoading) return 'Analisando';
+    if (readerState.isPlaying) return 'Falando';
+    if (readerState.isPaused) return 'Pausado';
+    return 'Leitor';
+  };
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -75,8 +84,6 @@ export function Widget() {
     } else {
       setAnimateIn(false);
       const timer = setTimeout(() => setIsVisible(false), 300);
-      // parar leitura ao fechar
-      readerActions.stop();
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -109,6 +116,17 @@ export function Widget() {
 
   return (
     <>
+      {readerState.barVisible && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <AudioProgressBar
+            isPlaying={readerState.isPlaying}
+            progress={readerState.progress}
+            onPlayPause={readerActions.playPause}
+            onStop={readerActions.stop}
+          />
+        </div>
+      )}
+
       {!isVisible && (
         <Button
           className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
@@ -161,6 +179,7 @@ export function Widget() {
               ariaLabel="Perfis de acessibilidade"
             />
 
+
             <WidgetControls
               increaseFontSize={fontSize.increaseFontSize}
               changeFontFamily={fontFamily.changeFontFamily}
@@ -198,10 +217,10 @@ export function Widget() {
               voiceNavigationEnabled={showVoiceNavigation}
               applyFilter={colorFilter.applyFilter}
               onToggleReader={readerActions.toggle}
-              readerIsPlaying={readerState.isPlaying}
               readerIsLoading={readerState.isLoading}
+              readerIsPlaying={readerState.isPlaying}
               readerIsPaused={readerState.isPaused}
-              onResumeReader={readerActions.resume}
+              readerText={getReaderButtonText()}
             />
           </div>
         </div>

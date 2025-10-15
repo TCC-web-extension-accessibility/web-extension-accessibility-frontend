@@ -61,7 +61,7 @@ export class DomNavigationService {
 
     const elementTexts: string[] = [];
     function extractTexts(node: Element) {
-      // Se for um elemento sem filhos, ou se tiver texto direto, ou se for uma tag <a>, pega o texto/aria-label/alt/title
+      // Se for um elemento sem filhos, ou se for uma tag <a>, pega o texto/aria-label/alt/title
       if (!node.children.length || node.tagName.toLowerCase() === 'a') {
         let text = (node.textContent || '').trim();
         if (!text) {
@@ -85,15 +85,30 @@ export class DomNavigationService {
           directText += (child.textContent || '').trim();
         }
       });
-      if (!directText) {
-        directText = node.getAttribute('aria-label') ||
-                     node.getAttribute('alt') ||
-                     node.getAttribute('title') ||
-                     '';
-        directText = directText.trim();
-      }
-      if (directText) {
-        elementTexts.push(directText);
+      if (directText.trim()) {
+        elementTexts.push(directText.trim());
+      } else {
+        // Verificar se tem algum filho que seja span ou h1-h6 com texto
+        let hasSpanOrHeadingWithText = false;
+        for (const child of node.children) {
+          if (['span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(child.tagName.toLowerCase())) {
+            const childText = (child.textContent || '').trim();
+            if (childText) {
+              hasSpanOrHeadingWithText = true;
+              break;
+            }
+          }
+        }
+        if (!hasSpanOrHeadingWithText) {
+          // Senão, pega aria-label/alt/title
+          const attrText = node.getAttribute('aria-label') ||
+                           node.getAttribute('alt') ||
+                           node.getAttribute('title') ||
+                           '';
+          if (attrText.trim()) {
+            elementTexts.push(attrText.trim());
+          }
+        }
       }
 
       // Recursivamente processa os filhos
@@ -102,9 +117,6 @@ export class DomNavigationService {
 
     extractTexts(contentClone);
 
-    console.log('Conteúdo da página para leitura:', contentClone);
-    const text = contentClone.textContent || '';
-    console.log('Conteúdo da página para leitura:', text);
     return elementTexts.join('. ');
   }
 

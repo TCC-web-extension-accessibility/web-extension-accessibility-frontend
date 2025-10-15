@@ -1,6 +1,5 @@
 import {
   PaletteIcon,
-  ArrowsClockwiseIcon,
   ArrowsInLineHorizontalIcon,
   ArrowsOutLineVerticalIcon,
   CircleHalfIcon,
@@ -8,7 +7,6 @@ import {
   ImageIcon,
   LinkSimpleHorizontalIcon,
   PauseCircleIcon,
-  PlayCircleIcon,
   SpeakerHighIcon,
   SquareSplitVerticalIcon,
   TextAaIcon,
@@ -53,10 +51,10 @@ type WidgetControlsProps = {
   voiceNavigationEnabled: boolean;
   applyFilter: (filter: ColorFilterType) => void;
   onToggleReader: () => void;
-  readerIsPlaying: boolean;
   readerIsLoading: boolean;
-  readerIsPaused?: boolean;
-  onResumeReader: () => void;
+  readerIsPlaying: boolean;
+  readerIsPaused: boolean;
+  readerText: string;
 };
 
 
@@ -93,10 +91,10 @@ export function WidgetControls({
   voiceNavigationEnabled,
   applyFilter,
   onToggleReader,
-  readerIsPlaying,
   readerIsLoading,
+  readerIsPlaying,
   readerIsPaused,
-  onResumeReader,
+  readerText,
 }: WidgetControlsProps) {
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   return (
@@ -110,26 +108,10 @@ export function WidgetControls({
           onClick={() => increaseContrast()}
         />
         <WidgetButton
-          text={
-            readerIsLoading
-              ? 'Analisando'
-              : readerIsPlaying
-              ? 'Pausar'
-              : readerIsPaused
-              ? 'Retomar'
-              : 'Leitor'
-          }
-          icon={
-            readerIsLoading ? (
-              <ArrowsClockwiseIcon weight="fill" />
-            ) : readerIsPaused ? (
-              <PlayCircleIcon weight="fill" />
-            ) : (
-              <SpeakerHighIcon weight="fill" />
-            )
-          }
-          onClick={readerIsPaused ? onResumeReader : onToggleReader}
-          checked={readerIsPlaying}
+          text={readerText}
+          icon={<SpeakerHighIcon weight="fill" />}
+          onClick={onToggleReader}
+          checked={readerIsLoading || readerIsPlaying || readerIsPaused}
         />
         <WidgetButton
           text="Tamanho do texto"
