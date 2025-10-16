@@ -31,12 +31,10 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const { mutate: sendFeedback, isPending } = useMutation({
     mutationFn: async (feedback: FeedbackFormData) => {
       const api = getClientApi();
-      // Using a test endpoint since feedback endpoint doesn't exist yet
-      await api.Default.Auth.readUsersMeAuthUsersMeGet();
-
-      // Log the feedback data for testing
-      console.log('Feedback submitted:', feedback);
-      return 'success';
+      await api.Default.Api.postFeedbackApiV1FeedbackPost({
+        title: feedback.title,
+        message: feedback.message,
+      });
     },
     onSuccess: () => {
       toast.success('Feedback enviado com sucesso!');
@@ -60,19 +58,21 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
   if (!isOpen) return null;
 
-  const modalClasses = `
-    fixed bottom-0 right-0 w-full md:w-[600px] h-screen bg-black/60 flex items-center justify-center z-[60]
-  `;
-
-  const contentClasses = `
-    bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto
-    transform transition-all duration-300 ease-in-out
-    ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
-  `;
-
   return (
-    <div className={modalClasses} onClick={handleClose}>
-      <div className={contentClasses} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={
+        'fixed bottom-0 right-0 w-full md:w-[600px] h-screen bg-black/60 flex items-center justify-center z-[60]'
+      }
+      onClick={handleClose}
+    >
+      <div
+        className={`
+        bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto
+          transform transition-all duration-300 ease-in-out
+          ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
+        `}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Enviar Feedback</h2>
           <Button

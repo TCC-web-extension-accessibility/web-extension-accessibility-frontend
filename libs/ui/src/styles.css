@@ -65,22 +65,39 @@ html {
 
   --color-danger: #fc4042;
   --color-danger-foreground: #ffffff;
-  --color-danger-100: #ffe6e7;
-  --color-danger-200: #fecfd0;
+  --color-danger-100: #ffe6e6;
+  --color-danger-200: #feb4b4;
+  --color-danger-300: #fd8183;
+  --color-danger-400: #fc4f51;
   --color-danger-500: #fc4042;
-  --color-danger-600: #fb1014;
+  --color-danger-600: #e20406;
+  --color-danger-700: #b00305;
+  --color-danger-800: #7e0203;
+  --color-danger-900: #4b0102;
 
   --color-success: #68b517;
   --color-success-foreground: #ffffff;
-  --color-success-100: #daf9da;
+  --color-success-100: #f2fce8;
+  --color-success-200: #d9f6bb;
+  --color-success-300: #c0f18e;
+  --color-success-400: #a7eb61;
   --color-success-500: #68b517;
+  --color-success-600: #75cc1a;
+  --color-success-700: #5b9e14;
+  --color-success-800: #41710e;
+  --color-success-900: #274409;
 
   --color-warn: #e5a000;
   --color-warn-foreground: #ffffff;
-  --color-warn-100: #fffbeb;
-  --color-warn-200: #fff1c2;
-  --color-warn-300: #f7e450;
+  --color-warn-100: #fff7e5;
+  --color-warn-200: #ffe8b3;
+  --color-warn-300: #ffd980;
+  --color-warn-400: #ffc94d;
   --color-warn-500: #e5a000;
+  --color-warn-600: #e6a000;
+  --color-warn-700: #b37d00;
+  --color-warn-800: #805900;
+  --color-warn-900: #805900;
 
   /* Fonts */
   --font-inter: 'Inter', sans-serif;
