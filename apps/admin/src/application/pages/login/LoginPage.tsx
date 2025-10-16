@@ -3,6 +3,7 @@
 import { EyeIcon, GoogleLogoIcon } from '@phosphor-icons/react';
 import { useMutation } from '@tanstack/react-query';
 import { Button, TextInput } from '@web-extension-accessibility-frontend/ui';
+import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -40,7 +41,7 @@ export function LoginPage() {
         router.push('/home');
       }
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ detail: string }>) => {
       console.error('Login error:', error);
       const errorMessage =
         error.response?.data?.detail ||
