@@ -1,85 +1,84 @@
 {
-    "version": "1.0.0",
-    "environment": "production",
-    "lastUpdated": "2025-01-14T22:41:00Z",
-    "updatedBy": "system",
-    "features": {
-        "languageSelector": {
-            "enabled": true,
-            "config": {
-                "defaultLanguage": "pt-BR",
-                "supportedLanguages": [
-                    "pt-BR",
-                    "en",
-                    "es"
-                ]
-            }
-        },
-        "accessibilityProfiles": {
-            "enabled": true,
-            "profiles": [
-                "colorblind",
-                "lowVision",
-                "adhd",
-                "epilepsy"
-            ]
-        },
-        "widgetControls": {
-            "contrast": {
-                "enabled": true,
-                "maxSteps": 5
-            },
-            "reader": {
-                "enabled": false
-            },
-            "fontSize": {
-                "enabled": true,
-                "maxSteps": 3
-            },
-            "fontFamily": {
-                "enabled": true,
-                "families": [
-                    "default",
-                    "dyslexic"
-                ]
-            },
-            "lineHeight": {
-                "enabled": true,
-                "maxSteps": 3
-            },
-            "letterSpacing": {
-                "enabled": true,
-                "maxSteps": 3
-            },
-            "disableAnimations": {
-                "enabled": true
-            },
-            "hideImages": {
-                "enabled": true
-            },
-            "readingGuide": {
-                "enabled": true
-            },
-            "voiceNavigation": {
-                "enabled": true
-            },
-            "highlightLinks": {
-                "enabled": true
-            },
-            "saturation": {
-                "enabled": true,
-                "maxSteps": 5
-            },
-            "colorFilter": {
-                "enabled": true
-            }
-        }
-    },
-    "buildSettings": {
-        "minify": true,
-        "sourceMap": false,
-        "targetEnvironments": [
-            "es2020"
+  "version": "1.0.0",
+  "environment": "production",
+  "features": {
+    "languageSelector": {
+      "enabled": false,
+      "config": {
+        "defaultLanguage": "pt-BR",
+        "supportedLanguages": [
+          "pt-BR",
+          "en",
+          "es"
         ]
+      }
+    },
+    "accessibilityProfiles": {
+      "enabled": true,
+      "profiles": [
+        "colorblind",
+        "lowVision",
+        "adhd",
+        "epilepsy"
+      ]
+    },
+    "widgetControls": {
+      "contrast": {
+        "enabled": true,
+        "maxSteps": 5
+      },
+      "reader": {
+        "enabled": false
+      },
+      "fontSize": {
+        "enabled": true,
+        "maxSteps": 3
+      },
+      "fontFamily": {
+        "enabled": true,
+        "families": [
+          "default",
+          "dyslexic"
+        ]
+      },
+      "lineHeight": {
+        "enabled": true,
+        "maxSteps": 3
+      },
+      "letterSpacing": {
+        "enabled": true,
+        "maxSteps": 3
+      },
+      "disableAnimations": {
+        "enabled": true
+      },
+      "hideImages": {
+        "enabled": true
+      },
+      "readingGuide": {
+        "enabled": true
+      },
+      "voiceNavigation": {
+        "enabled": true
+      },
+      "highlightLinks": {
+        "enabled": true
+      },
+      "saturation": {
+        "enabled": true,
+        "maxSteps": 5
+      },
+      "colorFilter": {
+        "enabled": true
+      }
     }
+  },
+  "buildSettings": {
+    "minify": true,
+    "sourceMap": false,
+    "targetEnvironments": [
+      "es2020"
+    ]
+  },
+  "lastUpdated": "2025-10-18T21:46:33.753620Z"
 }
