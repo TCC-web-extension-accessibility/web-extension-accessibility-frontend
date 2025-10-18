@@ -1,5 +1,5 @@
 import {
-  PaletteIcon, 
+  PaletteIcon,
   ArrowsInLineHorizontalIcon,
   ArrowsOutLineVerticalIcon,
   CircleHalfIcon,
@@ -50,6 +50,11 @@ type WidgetControlsProps = {
   onActivateVoiceNavigation: () => void;
   voiceNavigationEnabled: boolean;
   applyFilter: (filter: ColorFilterType) => void;
+  onToggleReader: () => void;
+  readerIsLoading: boolean;
+  readerIsPlaying: boolean;
+  readerIsPaused: boolean;
+  readerText: string;
 };
 
 
@@ -85,6 +90,11 @@ export function WidgetControls({
   onActivateVoiceNavigation,
   voiceNavigationEnabled,
   applyFilter,
+  onToggleReader,
+  readerIsLoading,
+  readerIsPlaying,
+  readerIsPaused,
+  readerText,
 }: WidgetControlsProps) {
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   return (
@@ -98,12 +108,10 @@ export function WidgetControls({
           onClick={() => increaseContrast()}
         />
         <WidgetButton
-          text="Leitor"
+          text={readerText}
           icon={<SpeakerHighIcon weight="fill" />}
-          onClick={() => {
-            alert('Reader feature not implemented yet');
-          }}
-          disabled={true}
+          onClick={onToggleReader}
+          checked={readerIsLoading || readerIsPlaying || readerIsPaused}
         />
         <WidgetButton
           text="Tamanho do texto"

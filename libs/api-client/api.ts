@@ -120,6 +120,25 @@ export interface PageFeedbackResponseSchema {
 /**
  * 
  * @export
+ * @interface TTSRequest
+ */
+export interface TTSRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof TTSRequest
+     */
+    'text': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TTSRequest
+     */
+    'lang'?: string;
+}
+/**
+ * 
+ * @export
  * @interface Token
  */
 export interface Token {
@@ -589,13 +608,13 @@ export const ApiApiAxiosParamCreator = function (configuration?: Configuration) 
         /**
          * 
          * @summary Convert Audio
-         * @param {string} text 
+         * @param {TTSRequest} tTSRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        convertAudioApiV1ConvertAudioPost: async (text: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'text' is not null or undefined
-            assertParamExists('convertAudioApiV1ConvertAudioPost', 'text', text)
+        convertAudioApiV1ConvertAudioPost: async (tTSRequest: TTSRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tTSRequest' is not null or undefined
+            assertParamExists('convertAudioApiV1ConvertAudioPost', 'tTSRequest', tTSRequest)
             const localVarPath = `/api/v1/convert-audio/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -608,15 +627,14 @@ export const ApiApiAxiosParamCreator = function (configuration?: Configuration) 
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (text !== undefined) {
-                localVarQueryParameter['text'] = text;
-            }
-
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(tTSRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -785,12 +803,12 @@ export const ApiApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Convert Audio
-         * @param {string} text 
+         * @param {TTSRequest} tTSRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.convertAudioApiV1ConvertAudioPost(text, options);
+        async convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.convertAudioApiV1ConvertAudioPost(tTSRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ApiApi.convertAudioApiV1ConvertAudioPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -860,12 +878,12 @@ export const ApiApiFactory = function (configuration?: Configuration, basePath?:
         /**
          * 
          * @summary Convert Audio
-         * @param {string} text 
+         * @param {TTSRequest} tTSRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        convertAudioApiV1ConvertAudioPost(text: string, options?: any): AxiosPromise<void> {
-            return localVarFp.convertAudioApiV1ConvertAudioPost(text, options).then((request) => request(axios, basePath));
+        convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.convertAudioApiV1ConvertAudioPost(tTSRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -919,12 +937,12 @@ export interface ApiApiInterface {
     /**
      * 
      * @summary Convert Audio
-     * @param {string} text 
+     * @param {TTSRequest} tTSRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiApiInterface
      */
-    convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig): AxiosPromise<void>;
+    convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: RawAxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * 
@@ -978,13 +996,13 @@ export class ApiApi extends BaseAPI implements ApiApiInterface {
     /**
      * 
      * @summary Convert Audio
-     * @param {string} text 
+     * @param {TTSRequest} tTSRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ApiApi
      */
-    public convertAudioApiV1ConvertAudioPost(text: string, options?: RawAxiosRequestConfig) {
-        return ApiApiFp(this.configuration).convertAudioApiV1ConvertAudioPost(text, options).then((request) => request(this.axios, this.basePath));
+    public convertAudioApiV1ConvertAudioPost(tTSRequest: TTSRequest, options?: RawAxiosRequestConfig) {
+        return ApiApiFp(this.configuration).convertAudioApiV1ConvertAudioPost(tTSRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

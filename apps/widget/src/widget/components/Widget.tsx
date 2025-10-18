@@ -12,6 +12,7 @@ import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
 import { useLineHeight } from '../lib/hooks/use-line-height';
 import { useReadingGuide } from '../lib/hooks/use-reading-guide';
 import { useSaturation } from '../lib/hooks/use-saturation';
+import { useReader } from '../lib/hooks/use-reader';
 import { useSelectLanguage } from '../lib/hooks/use-select-language';
 import { useColorFilter } from '../lib/hooks/use-color-filter';
 import { translateWidgetIfNeeded } from '../lib/translator';
@@ -20,6 +21,7 @@ import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { VoiceNavigationPanel } from './VoiceNavigationPanel';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
+import { AudioProgressBar } from './AudioProgressBar';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
@@ -40,10 +42,19 @@ export function Widget() {
   const contrast = useContrast();
   const saturation = useSaturation();
   const colorFilter = useColorFilter();
+  const [readerState, readerActions] = useReader({ selectedLanguage: language.selectedLanguage ?? 'en' });
 
   const nameOfTheSelectedLanguage =
     language.languages.find((lang) => lang.code === language.selectedLanguage)
       ?.name || 'English';
+
+  // Determinar o texto do botão Leitor baseado no estado
+  const getReaderButtonText = () => {
+    if (readerState.isLoading) return 'Analisando';
+    if (readerState.isPlaying) return 'Falando';
+    if (readerState.isPaused) return 'Pausado';
+    return 'Leitor';
+  };
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -105,6 +116,17 @@ export function Widget() {
 
   return (
     <>
+      {readerState.barVisible && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <AudioProgressBar
+            isPlaying={readerState.isPlaying}
+            progress={readerState.progress}
+            onPlayPause={readerActions.playPause}
+            onStop={readerActions.stop}
+          />
+        </div>
+      )}
+
       {!isVisible && (
         <Button
           className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
@@ -157,6 +179,7 @@ export function Widget() {
               ariaLabel="Perfis de acessibilidade"
             />
 
+
             <WidgetControls
               increaseFontSize={fontSize.increaseFontSize}
               changeFontFamily={fontFamily.changeFontFamily}
@@ -193,6 +216,11 @@ export function Widget() {
               }}
               voiceNavigationEnabled={showVoiceNavigation}
               applyFilter={colorFilter.applyFilter}
+              onToggleReader={readerActions.toggle}
+              readerIsLoading={readerState.isLoading}
+              readerIsPlaying={readerState.isPlaying}
+              readerIsPaused={readerState.isPaused}
+              readerText={getReaderButtonText()}
             />
           </div>
         </div>
