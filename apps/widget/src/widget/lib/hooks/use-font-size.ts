@@ -7,6 +7,16 @@ import {
 } from '../accessibility-utils';
 
 export const useFontSize = () => {
+  if (import.meta.env.VITE_FEATURE_FONTSIZE !== 'true') {
+    return {
+      increaseFontSize: () => {},
+      currentStep: 0,
+      maxFontStep: 0,
+      resetFontSize: () => {},
+      isEnabled: false,
+    };
+  }
+
   const FONT_SIZE_STORAGE_KEY = 'accessibilty-font-size';
   const BASE_FONT_PERCENT = 100;
   const FONT_STEP = 1;
@@ -65,5 +75,6 @@ export const useFontSize = () => {
     currentStep,
     maxFontStep: MAX_FONT_STEP - 1,
     resetFontSize,
+    isEnabled: true,
   };
 };

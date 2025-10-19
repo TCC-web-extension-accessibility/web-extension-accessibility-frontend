@@ -4,6 +4,15 @@ import { LANGUAGES } from '../languages';
 import { translatePage } from '../translator';
 
 export const useSelectLanguage = () => {
+  if (import.meta.env.VITE_FEATURE_LANGUAGE_SELECTOR !== 'true') {
+    return {
+      selectLanguage: () => {},
+      selectedLanguage: null,
+      languages: [],
+      isLoading: false,
+      isEnabled: false,
+    };
+  }
   const LANGUAGE_STORAGE_KEY = 'accessibility-language';
 
   const LANGUAGE_KEYS = Object.keys(LANGUAGES);
@@ -76,5 +85,6 @@ export const useSelectLanguage = () => {
     selectedLanguage,
     languages: Object.values(LANGUAGES),
     isLoading,
+    isEnabled: true,
   };
 };

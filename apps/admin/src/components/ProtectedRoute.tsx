@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Loading from '../app/(dashboard)/loading';
 import { authService } from '../lib/auth';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -21,11 +22,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   if (isChecking) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return <>{children}</>;

@@ -90,6 +90,15 @@ const handleMouseMove = (event: MouseEvent) => {
 };
 
 export const useReadingGuide = () => {
+  if (import.meta.env.VITE_FEATURE_READINGGUIDE !== 'true') {
+    return {
+      readingGuideMode: 'off',
+      cycleReadingGuideMode: () => {},
+      maxReadingGuideMode: 0,
+      currentStep: 0,
+      isEnabled: false,
+    };
+  }
   const READING_GUIDE_STORAGE_KEY = 'accessibility-reading-guide-mode';
   const modes = Object.values(READING_GUIDE_MODES);
   const [mode, setMode] = useState<ReadingGuideMode>(READING_GUIDE_MODES.OFF);
@@ -157,5 +166,6 @@ export const useReadingGuide = () => {
     maxReadingGuideMode: modes.length - 1,
     currentStep: currentIndex,
     cycleReadingGuideMode,
+    isEnabled: true,
   };
 };

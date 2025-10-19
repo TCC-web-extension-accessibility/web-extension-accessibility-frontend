@@ -10,6 +10,16 @@ type SaturationLevel = 'normal' | 'low' | 'high' | 'zero';
 const SATURATION_LEVELS: SaturationLevel[] = ['normal', 'low', 'high', 'zero'];
 
 export const useSaturation = () => {
+  if (import.meta.env.VITE_FEATURE_SATURATION !== 'true') {
+    return {
+      saturationLevel: 'normal',
+      increaseSaturation: () => {},
+      resetSaturation: () => {},
+      currentStep: 0,
+      maxSaturationStep: 0,
+      isEnabled: false,
+    };
+  }
   const SATURATION_STORAGE_KEY = 'accessibility-saturation';
 
   const [saturationLevel, setSaturationLevel] = useState<SaturationLevel>(() =>
@@ -77,5 +87,6 @@ export const useSaturation = () => {
     resetSaturation,
     currentStep,
     maxSaturationStep,
+    isEnabled: true,
   };
 };

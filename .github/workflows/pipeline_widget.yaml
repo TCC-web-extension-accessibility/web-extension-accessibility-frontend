@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - 'apps/widget/**'
-      - 'configs/widget/**'
-      - 'scripts/**'
     branches:
       - main
       - develop
@@ -31,11 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.env.outputs.environment }}
-      config-exists: ${{ steps.config.outputs.exists }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Determine environment
         id: env
         run: |
@@ -47,16 +41,6 @@ jobs:
             echo "environment=development" >> $GITHUB_OUTPUT
           else
             echo "environment=development" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Check if config exists
-        id: config
-        run: |
-          ENV="${{ steps.env.outputs.environment }}"
-          if [[ -f "configs/widget/${ENV}.json" ]]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
   build-and-deploy:
@@ -86,86 +70,45 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Create config directory if not exists
-        run: mkdir -p configs/widget scripts
-
-      - name: Create default config if needed
-        if: needs.determine-environment.outputs.config-exists == 'false'
+      - name: Fetch configuration and generate environment variables
         run: |
+          echo "📋 Fetching configuration from API..."
           ENV="${{ needs.determine-environment.outputs.environment }}"
-          cat > "configs/widget/${ENV}.json" << 'EOF'
-          {
-            "version": "1.0.0",
-            "environment": "${{ needs.determine-environment.outputs.environment }}",
-            "lastUpdated": "${{ github.event.head_commit.timestamp }}",
-            "features": {
-              "languageSelector": { "enabled": true },
-              "accessibilityProfiles": { "enabled": true },
-              "widgetControls": {
-                "contrast": { "enabled": true },
-                "reader": { "enabled": false },
-                "fontSize": { "enabled": true },
-                "fontFamily": { "enabled": true },
-                "lineHeight": { "enabled": true },
-                "letterSpacing": { "enabled": true },
-                "disableAnimations": { "enabled": true },
-                "hideImages": { "enabled": true },
-                "readingGuide": { "enabled": true },
-                "voiceNavigation": { "enabled": true },
-                "highlightLinks": { "enabled": true },
-                "saturation": { "enabled": true },
-                "colorFilter": { "enabled": true }
-              }
-            }
-          }
-          EOF
 
-      - name: Create config generator script if needed
-        run: |
-          if [[ ! -f "scripts/generate-widget-env.js" ]]; then
-            cat > scripts/generate-widget-env.js << 'EOF'
-          const fs = require('fs');
-          const path = require('path');
+          # Fetch config from API
+          CONFIG_JSON=$(curl -s -H "X-API-Key: ${{ secrets.CONFIG_API_KEY }}" \
+            "${{ secrets.BACKEND_API_URL }}/public/widget/config")
 
-          const environment = process.argv[2] || 'development';
-          const configPath = path.join(process.cwd(), 'configs', 'widget', `${environment}.json`);
-          const envOutputPath = path.join(process.cwd(), 'apps', 'widget', `.env.${environment}`);
-
-          console.log(`📋 Reading config from: ${configPath}`);
-
-          if (!fs.existsSync(configPath)) {
-            console.error(`❌ Config file not found: ${configPath}`);
-            process.exit(1);
-          }
-
-          const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-
-          const envVars = [];
-          envVars.push(`# Generated from ${configPath} at ${new Date().toISOString()}`);
-          envVars.push(`VITE_WIDGET_VERSION=${config.version}`);
-          envVars.push(`VITE_ENVIRONMENT=${environment}`);
-
-          // Feature flags
-          const features = config.features;
-          envVars.push(`VITE_FEATURE_LANGUAGE_SELECTOR=${features.languageSelector.enabled}`);
-          envVars.push(`VITE_FEATURE_ACCESSIBILITY_PROFILES=${features.accessibilityProfiles.enabled}`);
-
-          // Widget controls
-          Object.entries(features.widgetControls).forEach(([key, value]) => {
-            const envKey = `VITE_FEATURE_${key.toUpperCase()}`;
-            envVars.push(`${envKey}=${value.enabled}`);
-          });
-
-          fs.writeFileSync(envOutputPath, envVars.join('\n'));
-          console.log(`✅ Generated ${envOutputPath} with ${envVars.length} variables`);
-          EOF
+          if [ $? -ne 0 ]; then
+            echo "❌ Failed to fetch configuration from API"
+            exit 1
           fi
 
-      - name: Generate environment variables from config
-        run: |
-          ENV="${{ needs.determine-environment.outputs.environment }}"
-          node scripts/generate-widget-env.js $ENV
-          echo "📋 Generated environment variables for: $ENV"
+          echo "✅ Configuration fetched successfully"
+          echo "$CONFIG_JSON" | jq '.'
+
+          # Generate .env file directly from API response using jq
+          echo "📝 Generating environment variables..."
+
+          ENV_FILE="apps/widget/.env.$ENV"
+          mkdir -p apps/widget
+
+          {
+            echo "# Generated from API at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            echo "VITE_WIDGET_VERSION=$(echo "$CONFIG_JSON" | jq -r '.version')"
+            echo ""
+            echo "# Feature Flags"
+            echo "VITE_FEATURE_LANGUAGE_SELECTOR=$(echo "$CONFIG_JSON" | jq -r '.features.language_selector.enabled')"
+            echo "VITE_FEATURE_ACCESSIBILITY_PROFILES=$(echo "$CONFIG_JSON" | jq -r '.features.accessibility_profiles.enabled')"
+            echo ""
+            echo "# Widget Controls"
+            echo "$CONFIG_JSON" | jq -r '.features.widget_controls | to_entries[] | "VITE_FEATURE_\(.key | ascii_upcase)=\(.value.enabled)"'
+          } > "$ENV_FILE"
+
+          echo "✅ Generated $ENV_FILE"
+          echo ""
+          echo "📋 Environment variables:"
+          cat "$ENV_FILE"
 
       - name: Build widget
         run: |
