@@ -28,7 +28,7 @@ export function getApi(axiosInstance: AxiosInstance) {
 
 export function getClientApi() {
   const axiosInstance = axios.create({
-    baseURL: process.env.VITE_API_BASE_URL || 'http://0.0.0.0:8000',
+    baseURL: process.env.VITE_API_BASE_URL,
   });
 
   return getApi(axiosInstance);

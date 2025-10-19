@@ -29,8 +29,20 @@ try {
   envVars.push(`# Generated from ${configPath} at ${new Date().toISOString()}`);
 
   envVars.push(`VITE_WIDGET_VERSION=${config.version || '1.0.0'}`);
+  envVars.push('');
+
+  // API Configuration
+  envVars.push('# API Configuration');
+  envVars.push(`VITE_API_BASE_URL=${process.env.VITE_API_BASE_URL}`);
+  envVars.push('');
+
+  // Distribution URL
+  envVars.push('# Distribution URL');
+  envVars.push(`VITE_DIST_URL=${process.env.VITE_DIST_URL}`);
+  envVars.push('');
 
   // Feature flags
+  envVars.push('# Feature Flags');
   const features = config.features;
 
   // Main features
@@ -40,8 +52,10 @@ try {
   envVars.push(
     `VITE_FEATURE_ACCESSIBILITY_PROFILES=${features.accessibility_profiles.enabled}`
   );
+  envVars.push('');
 
   // Widget controls - convert each control to environment variable
+  envVars.push('# Widget Controls');
   Object.entries(features.widget_controls).forEach(([key, value]) => {
     const envKey = `VITE_FEATURE_${key.toUpperCase()}`;
     envVars.push(`${envKey}=${value.enabled}`);
