@@ -6,7 +6,7 @@ import {
 } from '../accessibility-utils';
 
 export const useDisableAnimations = () => {
-  if (import.meta.env.VITE_FEATURE_DISABLEANIMATIONS !== 'true') {
+  if (import.meta.env.VITE_FEATURE_DISABLE_ANIMATIONS !== 'true') {
     return {
       disabledAnimations: false,
       toggleDisabledAnimations: () => {},

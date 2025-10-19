@@ -5,7 +5,7 @@ import type { ColorFilterType } from '../types/color-filter.types';
 const LOCAL_STORAGE_KEY = 'accessibility_filter';
 
 export function useColorFilter() {
-  if (import.meta.env.VITE_FEATURE_COLORFILTER !== 'true') {
+  if (import.meta.env.VITE_FEATURE_COLOR_FILTER !== 'true') {
     return {
       activeFilter: 'no-filter',
       applyFilter: () => {},

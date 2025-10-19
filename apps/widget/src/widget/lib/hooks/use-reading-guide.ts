@@ -90,7 +90,7 @@ const handleMouseMove = (event: MouseEvent) => {
 };
 
 export const useReadingGuide = () => {
-  if (import.meta.env.VITE_FEATURE_READINGGUIDE !== 'true') {
+  if (import.meta.env.VITE_FEATURE_READING_GUIDE !== 'true') {
     return {
       readingGuideMode: 'off',
       cycleReadingGuideMode: () => {},

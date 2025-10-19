@@ -15,7 +15,7 @@ const FONTS_PATH = import.meta.env.PROD
   : '/fonts';
 
 export const useFontFamily = () => {
-  if (import.meta.env.VITE_FEATURE_FONTFAMILY !== 'true') {
+  if (import.meta.env.VITE_FEATURE_FONT_FAMILY !== 'true') {
     return {
       changeFontFamily: () => {},
       currentStep: 0,

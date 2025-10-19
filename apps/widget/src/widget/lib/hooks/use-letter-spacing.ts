@@ -7,7 +7,7 @@ import {
 } from '../accessibility-utils';
 
 export const useLetterSpacing = () => {
-  if (import.meta.env.VITE_FEATURE_LETTERSPACING !== 'true') {
+  if (import.meta.env.VITE_FEATURE_LETTER_SPACING !== 'true') {
     return {
       increaseLetterSpacing: () => {},
       currentStep: 0,

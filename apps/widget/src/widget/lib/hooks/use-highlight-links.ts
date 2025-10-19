@@ -22,7 +22,7 @@ const createStyleTag = (): HTMLStyleElement => {
 };
 
 export const useHighlightLinks = () => {
-  if (import.meta.env.VITE_FEATURE_HIGHLIGHTLINKS !== 'true') {
+  if (import.meta.env.VITE_FEATURE_HIGHLIGHT_LINKS !== 'true') {
     return {
       highlightLinks: false,
       toggleHighlightLinks: () => {},

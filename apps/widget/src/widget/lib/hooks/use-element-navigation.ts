@@ -14,7 +14,7 @@ export function useElementNavigation({
   domService,
   speechService,
 }: UseElementNavigationProps) {
-  if (import.meta.env.VITE_FEATURE_VOICENAVIGATION !== 'true') {
+  if (import.meta.env.VITE_FEATURE_VOICE_NAVIGATION !== 'true') {
     return {
       navigateToNextElement: () => {},
       navigateToPreviousElement: () => {},

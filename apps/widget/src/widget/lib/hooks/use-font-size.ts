@@ -7,7 +7,7 @@ import {
 } from '../accessibility-utils';
 
 export const useFontSize = () => {
-  if (import.meta.env.VITE_FEATURE_FONTSIZE !== 'true') {
+  if (import.meta.env.VITE_FEATURE_FONT_SIZE !== 'true') {
     return {
       increaseFontSize: () => {},
       currentStep: 0,

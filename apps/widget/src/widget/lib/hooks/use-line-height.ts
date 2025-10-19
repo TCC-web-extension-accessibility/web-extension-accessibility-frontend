@@ -7,7 +7,7 @@ import {
 } from '../accessibility-utils';
 
 export const useLineHeight = () => {
-  if (import.meta.env.VITE_FEATURE_LINEHEIGHT !== 'true') {
+  if (import.meta.env.VITE_FEATURE_LINE_HEIGHT !== 'true') {
     return {
       increaseLineHeight: () => {},
       currentStep: 0,

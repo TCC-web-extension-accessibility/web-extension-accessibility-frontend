@@ -18,7 +18,7 @@ const createStyleTag = (): HTMLStyleElement => {
 };
 
 export const useHideImages = () => {
-  if (import.meta.env.VITE_FEATURE_HIDEIMAGES !== 'true') {
+  if (import.meta.env.VITE_FEATURE_HIDE_IMAGES !== 'true') {
     return {
       hideImages: false,
       toggleHideImages: () => {},
