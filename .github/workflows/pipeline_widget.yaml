@@ -89,36 +89,22 @@ jobs:
       - name: Create config directory if not exists
         run: mkdir -p configs/widget scripts
 
-      - name: Create default config if needed
-        if: needs.determine-environment.outputs.config-exists == 'false'
+      - name: Fetch widget configuration from API
         run: |
+          echo "📋 Fetching configuration from API..."
           ENV="${{ needs.determine-environment.outputs.environment }}"
-          cat > "configs/widget/${ENV}.json" << 'EOF'
-          {
-            "version": "1.0.0",
-            "environment": "${{ needs.determine-environment.outputs.environment }}",
-            "lastUpdated": "${{ github.event.head_commit.timestamp }}",
-            "features": {
-              "languageSelector": { "enabled": true },
-              "accessibilityProfiles": { "enabled": true },
-              "widgetControls": {
-                "contrast": { "enabled": true },
-                "reader": { "enabled": false },
-                "fontSize": { "enabled": true },
-                "fontFamily": { "enabled": true },
-                "lineHeight": { "enabled": true },
-                "letterSpacing": { "enabled": true },
-                "disableAnimations": { "enabled": true },
-                "hideImages": { "enabled": true },
-                "readingGuide": { "enabled": true },
-                "voiceNavigation": { "enabled": true },
-                "highlightLinks": { "enabled": true },
-                "saturation": { "enabled": true },
-                "colorFilter": { "enabled": true }
-              }
-            }
-          }
-          EOF
+
+          curl -s -H "X-API-Key: ${{ secrets.CONFIG_API_KEY }}" \
+            "${{ secrets.BACKEND_API_URL }}/public/widget/config" \
+            -o "configs/widget/${ENV}.json"
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Configuration fetched successfully"
+            cat "configs/widget/${ENV}.json"
+          else
+            echo "❌ Failed to fetch configuration from API"
+            exit 1
+          fi
 
       - name: Create config generator script if needed
         run: |
