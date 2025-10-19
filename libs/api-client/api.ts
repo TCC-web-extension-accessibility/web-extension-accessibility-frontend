@@ -24,6 +24,81 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
 /**
+ * Deployment trigger information
+ * @export
+ * @interface DeploymentInfo
+ */
+export interface DeploymentInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentInfo
+     */
+    'status': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentInfo
+     */
+    'environment': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentInfo
+     */
+    'workflow': string;
+}
+/**
+ * Response for admin GET /admin/deployment/status
+ * @export
+ * @interface DeploymentStatusResponse
+ */
+export interface DeploymentStatusResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentStatusResponse
+     */
+    'status': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentStatusResponse
+     */
+    'conclusion'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentStatusResponse
+     */
+    'url'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentStatusResponse
+     */
+    'created_at'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DeploymentStatusResponse
+     */
+    'updated_at'?: string | null;
+}
+/**
+ * Individual feature control with enabled flag
+ * @export
+ * @interface FeatureControl
+ */
+export interface FeatureControl {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FeatureControl
+     */
+    'enabled': boolean;
+}
+/**
  * 
  * @export
  * @interface FeedbackRequestSchema
@@ -231,6 +306,248 @@ export interface VoiceCommandRequest {
      */
     'text': string;
 }
+/**
+ * Response for admin GET /admin/config
+ * @export
+ * @interface WidgetConfigAdminResponse
+ */
+export interface WidgetConfigAdminResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof WidgetConfigAdminResponse
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetConfigAdminResponse
+     */
+    'version': string;
+    /**
+     * 
+     * @type {WidgetConfigJson}
+     * @memberof WidgetConfigAdminResponse
+     */
+    'config': WidgetConfigJson;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetConfigAdminResponse
+     */
+    'deployment_status': string;
+}
+/**
+ * Widget configuration JSON structure
+ * @export
+ * @interface WidgetConfigJson
+ */
+export interface WidgetConfigJson {
+    /**
+     * 
+     * @type {WidgetFeaturesOutput}
+     * @memberof WidgetConfigJson
+     */
+    'features': WidgetFeaturesOutput;
+}
+/**
+ * Response for public GET /public/widget/config
+ * @export
+ * @interface WidgetConfigPublicResponse
+ */
+export interface WidgetConfigPublicResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetConfigPublicResponse
+     */
+    'version': string;
+    /**
+     * 
+     * @type {WidgetFeaturesOutput}
+     * @memberof WidgetConfigPublicResponse
+     */
+    'features': WidgetFeaturesOutput;
+}
+/**
+ * Request for admin PUT /admin/config
+ * @export
+ * @interface WidgetConfigUpdateRequest
+ */
+export interface WidgetConfigUpdateRequest {
+    /**
+     * 
+     * @type {WidgetFeaturesInput}
+     * @memberof WidgetConfigUpdateRequest
+     */
+    'features': WidgetFeaturesInput;
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetConfigUpdateRequest
+     */
+    'version'?: string | null;
+}
+/**
+ * Response for admin PUT /admin/config
+ * @export
+ * @interface WidgetConfigUpdateResponse
+ */
+export interface WidgetConfigUpdateResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof WidgetConfigUpdateResponse
+     */
+    'message': string;
+    /**
+     * 
+     * @type {WidgetConfigJson}
+     * @memberof WidgetConfigUpdateResponse
+     */
+    'config': WidgetConfigJson;
+    /**
+     * 
+     * @type {DeploymentInfo}
+     * @memberof WidgetConfigUpdateResponse
+     */
+    'deployment': DeploymentInfo;
+}
+/**
+ * All widget controls
+ * @export
+ * @interface WidgetControls
+ */
+export interface WidgetControls {
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'contrast': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'reader': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'font_size': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'font_family': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'line_height': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'letter_spacing': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'disable_animations': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'hide_images': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'reading_guide': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'voice_navigation': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'highlight_links': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'saturation': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetControls
+     */
+    'color_filter': FeatureControl;
+}
+/**
+ * Widget features configuration
+ * @export
+ * @interface WidgetFeaturesInput
+ */
+export interface WidgetFeaturesInput {
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetFeaturesInput
+     */
+    'language_selector': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetFeaturesInput
+     */
+    'accessibility_profiles': FeatureControl;
+    /**
+     * 
+     * @type {WidgetControls}
+     * @memberof WidgetFeaturesInput
+     */
+    'widget_controls': WidgetControls;
+}
+/**
+ * Widget features configuration
+ * @export
+ * @interface WidgetFeaturesOutput
+ */
+export interface WidgetFeaturesOutput {
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetFeaturesOutput
+     */
+    'language_selector': FeatureControl;
+    /**
+     * 
+     * @type {FeatureControl}
+     * @memberof WidgetFeaturesOutput
+     */
+    'accessibility_profiles': FeatureControl;
+    /**
+     * 
+     * @type {WidgetControls}
+     * @memberof WidgetFeaturesOutput
+     */
+    'widget_controls': WidgetControls;
+}
 
 /**
  * AdminApi - axios parameter creator
@@ -238,6 +555,74 @@ export interface VoiceCommandRequest {
  */
 export const AdminApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * Get widget configuration
+         * @summary Get Config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getConfigAdminConfigGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/admin/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Check deployment status from GitHub Actions
+         * @summary Get Deployment Status
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDeploymentStatusAdminDeploymentStatusGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/admin/deployment/status`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @summary Get Feedbacks
@@ -384,6 +769,46 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Update widget configuration and trigger deployment
+         * @summary Update Config
+         * @param {WidgetConfigUpdateRequest} widgetConfigUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateConfigAdminConfigPut: async (widgetConfigUpdateRequest: WidgetConfigUpdateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'widgetConfigUpdateRequest' is not null or undefined
+            assertParamExists('updateConfigAdminConfigPut', 'widgetConfigUpdateRequest', widgetConfigUpdateRequest)
+            const localVarPath = `/admin/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication OAuth2PasswordBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2PasswordBearer", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(widgetConfigUpdateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -394,6 +819,30 @@ export const AdminApiAxiosParamCreator = function (configuration?: Configuration
 export const AdminApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration)
     return {
+        /**
+         * Get widget configuration
+         * @summary Get Config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getConfigAdminConfigGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WidgetConfigAdminResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getConfigAdminConfigGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.getConfigAdminConfigGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Check deployment status from GitHub Actions
+         * @summary Get Deployment Status
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDeploymentStatusAdminDeploymentStatusGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeploymentStatusResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDeploymentStatusAdminDeploymentStatusGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.getDeploymentStatusAdminDeploymentStatusGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @summary Get Feedbacks
@@ -438,6 +887,19 @@ export const AdminApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['AdminApi.readUsersMeAdminUsersMeGet']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Update widget configuration and trigger deployment
+         * @summary Update Config
+         * @param {WidgetConfigUpdateRequest} widgetConfigUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateConfigAdminConfigPut(widgetConfigUpdateRequest: WidgetConfigUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WidgetConfigUpdateResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateConfigAdminConfigPut(widgetConfigUpdateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AdminApi.updateConfigAdminConfigPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -448,6 +910,24 @@ export const AdminApiFp = function(configuration?: Configuration) {
 export const AdminApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = AdminApiFp(configuration)
     return {
+        /**
+         * Get widget configuration
+         * @summary Get Config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getConfigAdminConfigGet(options?: any): AxiosPromise<WidgetConfigAdminResponse> {
+            return localVarFp.getConfigAdminConfigGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Check deployment status from GitHub Actions
+         * @summary Get Deployment Status
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDeploymentStatusAdminDeploymentStatusGet(options?: any): AxiosPromise<DeploymentStatusResponse> {
+            return localVarFp.getDeploymentStatusAdminDeploymentStatusGet(options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary Get Feedbacks
@@ -483,6 +963,16 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
         readUsersMeAdminUsersMeGet(options?: any): AxiosPromise<UserSchema> {
             return localVarFp.readUsersMeAdminUsersMeGet(options).then((request) => request(axios, basePath));
         },
+        /**
+         * Update widget configuration and trigger deployment
+         * @summary Update Config
+         * @param {WidgetConfigUpdateRequest} widgetConfigUpdateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateConfigAdminConfigPut(widgetConfigUpdateRequest: WidgetConfigUpdateRequest, options?: any): AxiosPromise<WidgetConfigUpdateResponse> {
+            return localVarFp.updateConfigAdminConfigPut(widgetConfigUpdateRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -492,6 +982,24 @@ export const AdminApiFactory = function (configuration?: Configuration, basePath
  * @interface AdminApi
  */
 export interface AdminApiInterface {
+    /**
+     * Get widget configuration
+     * @summary Get Config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    getConfigAdminConfigGet(options?: RawAxiosRequestConfig): AxiosPromise<WidgetConfigAdminResponse>;
+
+    /**
+     * Check deployment status from GitHub Actions
+     * @summary Get Deployment Status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    getDeploymentStatusAdminDeploymentStatusGet(options?: RawAxiosRequestConfig): AxiosPromise<DeploymentStatusResponse>;
+
     /**
      * 
      * @summary Get Feedbacks
@@ -527,6 +1035,16 @@ export interface AdminApiInterface {
      */
     readUsersMeAdminUsersMeGet(options?: RawAxiosRequestConfig): AxiosPromise<UserSchema>;
 
+    /**
+     * Update widget configuration and trigger deployment
+     * @summary Update Config
+     * @param {WidgetConfigUpdateRequest} widgetConfigUpdateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApiInterface
+     */
+    updateConfigAdminConfigPut(widgetConfigUpdateRequest: WidgetConfigUpdateRequest, options?: RawAxiosRequestConfig): AxiosPromise<WidgetConfigUpdateResponse>;
+
 }
 
 /**
@@ -536,6 +1054,28 @@ export interface AdminApiInterface {
  * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI implements AdminApiInterface {
+    /**
+     * Get widget configuration
+     * @summary Get Config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public getConfigAdminConfigGet(options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).getConfigAdminConfigGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Check deployment status from GitHub Actions
+     * @summary Get Deployment Status
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public getDeploymentStatusAdminDeploymentStatusGet(options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).getDeploymentStatusAdminDeploymentStatusGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Get Feedbacks
@@ -575,6 +1115,18 @@ export class AdminApi extends BaseAPI implements AdminApiInterface {
      */
     public readUsersMeAdminUsersMeGet(options?: RawAxiosRequestConfig) {
         return AdminApiFp(this.configuration).readUsersMeAdminUsersMeGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update widget configuration and trigger deployment
+     * @summary Update Config
+     * @param {WidgetConfigUpdateRequest} widgetConfigUpdateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AdminApi
+     */
+    public updateConfigAdminConfigPut(widgetConfigUpdateRequest: WidgetConfigUpdateRequest, options?: RawAxiosRequestConfig) {
+        return AdminApiFp(this.configuration).updateConfigAdminConfigPut(widgetConfigUpdateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1033,6 +1585,135 @@ export class ApiApi extends BaseAPI implements ApiApiInterface {
      */
     public translateTextListApiV1TranslatePost(translationSchema: TranslationSchema, options?: RawAxiosRequestConfig) {
         return ApiApiFp(this.configuration).translateTextListApiV1TranslatePost(translationSchema, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * PublicApi - axios parameter creator
+ * @export
+ */
+export const PublicApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Get widget configuration for CI/CD builds  This endpoint is used by GitHub Actions to fetch the latest config Authentication: X-API-Key header
+         * @summary Get Widget Config
+         * @param {string} xApiKey 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWidgetConfigPublicWidgetConfigGet: async (xApiKey: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'xApiKey' is not null or undefined
+            assertParamExists('getWidgetConfigPublicWidgetConfigGet', 'xApiKey', xApiKey)
+            const localVarPath = `/public/widget/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (xApiKey != null) {
+                localVarHeaderParameter['x-api-key'] = String(xApiKey);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PublicApi - functional programming interface
+ * @export
+ */
+export const PublicApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PublicApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Get widget configuration for CI/CD builds  This endpoint is used by GitHub Actions to fetch the latest config Authentication: X-API-Key header
+         * @summary Get Widget Config
+         * @param {string} xApiKey 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getWidgetConfigPublicWidgetConfigGet(xApiKey: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WidgetConfigPublicResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getWidgetConfigPublicWidgetConfigGet(xApiKey, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PublicApi.getWidgetConfigPublicWidgetConfigGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * PublicApi - factory interface
+ * @export
+ */
+export const PublicApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PublicApiFp(configuration)
+    return {
+        /**
+         * Get widget configuration for CI/CD builds  This endpoint is used by GitHub Actions to fetch the latest config Authentication: X-API-Key header
+         * @summary Get Widget Config
+         * @param {string} xApiKey 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getWidgetConfigPublicWidgetConfigGet(xApiKey: string, options?: any): AxiosPromise<WidgetConfigPublicResponse> {
+            return localVarFp.getWidgetConfigPublicWidgetConfigGet(xApiKey, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PublicApi - interface
+ * @export
+ * @interface PublicApi
+ */
+export interface PublicApiInterface {
+    /**
+     * Get widget configuration for CI/CD builds  This endpoint is used by GitHub Actions to fetch the latest config Authentication: X-API-Key header
+     * @summary Get Widget Config
+     * @param {string} xApiKey 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PublicApiInterface
+     */
+    getWidgetConfigPublicWidgetConfigGet(xApiKey: string, options?: RawAxiosRequestConfig): AxiosPromise<WidgetConfigPublicResponse>;
+
+}
+
+/**
+ * PublicApi - object-oriented interface
+ * @export
+ * @class PublicApi
+ * @extends {BaseAPI}
+ */
+export class PublicApi extends BaseAPI implements PublicApiInterface {
+    /**
+     * Get widget configuration for CI/CD builds  This endpoint is used by GitHub Actions to fetch the latest config Authentication: X-API-Key header
+     * @summary Get Widget Config
+     * @param {string} xApiKey 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PublicApi
+     */
+    public getWidgetConfigPublicWidgetConfigGet(xApiKey: string, options?: RawAxiosRequestConfig) {
+        return PublicApiFp(this.configuration).getWidgetConfigPublicWidgetConfigGet(xApiKey, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

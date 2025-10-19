@@ -34,7 +34,7 @@ const variants = tv({
   ],
   variants: {
     disabled: {
-      true: '!bg-grey-200 !text-grey-300 pointer-events-none cursor-not-allowed',
+      true: '!bg-grey-200 !text-grey-300 !border-grey-300 pointer-events-none cursor-not-allowed',
     },
     color: {
       primary: [

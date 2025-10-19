@@ -27,22 +27,22 @@ try {
 
   const envVars = [];
   envVars.push(`# Generated from ${configPath} at ${new Date().toISOString()}`);
-  envVars.push(`VITE_WIDGET_VERSION=${config.version}`);
-  envVars.push(`VITE_ENVIRONMENT=${environment}`);
+
+  envVars.push(`VITE_WIDGET_VERSION=${config.version || '1.0.0'}`);
 
   // Feature flags
   const features = config.features;
 
   // Main features
   envVars.push(
-    `VITE_FEATURE_LANGUAGE_SELECTOR=${features.languageSelector.enabled}`
+    `VITE_FEATURE_LANGUAGE_SELECTOR=${features.language_selector.enabled}`
   );
   envVars.push(
-    `VITE_FEATURE_ACCESSIBILITY_PROFILES=${features.accessibilityProfiles.enabled}`
+    `VITE_FEATURE_ACCESSIBILITY_PROFILES=${features.accessibility_profiles.enabled}`
   );
 
   // Widget controls - convert each control to environment variable
-  Object.entries(features.widgetControls).forEach(([key, value]) => {
+  Object.entries(features.widget_controls).forEach(([key, value]) => {
     const envKey = `VITE_FEATURE_${key.toUpperCase()}`;
     envVars.push(`${envKey}=${value.enabled}`);
   });

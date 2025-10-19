@@ -96,14 +96,13 @@ jobs:
           {
             echo "# Generated from API at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
             echo "VITE_WIDGET_VERSION=$(echo "$CONFIG_JSON" | jq -r '.version')"
-            echo "VITE_ENVIRONMENT=$ENV"
             echo ""
             echo "# Feature Flags"
-            echo "VITE_FEATURE_LANGUAGE_SELECTOR=$(echo "$CONFIG_JSON" | jq -r '.features.languageSelector.enabled')"
-            echo "VITE_FEATURE_ACCESSIBILITY_PROFILES=$(echo "$CONFIG_JSON" | jq -r '.features.accessibilityProfiles.enabled')"
+            echo "VITE_FEATURE_LANGUAGE_SELECTOR=$(echo "$CONFIG_JSON" | jq -r '.features.language_selector.enabled')"
+            echo "VITE_FEATURE_ACCESSIBILITY_PROFILES=$(echo "$CONFIG_JSON" | jq -r '.features.accessibility_profiles.enabled')"
             echo ""
             echo "# Widget Controls"
-            echo "$CONFIG_JSON" | jq -r '.features.widgetControls | to_entries[] | "VITE_FEATURE_\(.key | ascii_upcase)=\(.value.enabled)"'
+            echo "$CONFIG_JSON" | jq -r '.features.widget_controls | to_entries[] | "VITE_FEATURE_\(.key | ascii_upcase)=\(.value.enabled)"'
           } > "$ENV_FILE"
 
           echo "✅ Generated $ENV_FILE"
