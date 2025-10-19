@@ -146,7 +146,7 @@ export function WidgetControls({
             step={readingGuide.currentStep}
           />
         )}
-        {import.meta.env.VITE_FEATURE_VOICENAVIGATION === 'true' && (
+        {import.meta.env.VITE_FEATURE_VOICE_NAVIGATION === 'true' && (
           <WidgetButton
             text="Navegação por voz"
             icon={<SpeakerHighIcon weight="fill" />}
