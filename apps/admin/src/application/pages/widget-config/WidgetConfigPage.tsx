@@ -1,6 +1,6 @@
 'use client';
 
-import { SpinnerGapIcon, WarningCircleIcon } from '@phosphor-icons/react';
+import { WarningCircleIcon } from '@phosphor-icons/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   DeploymentStatusResponse,
@@ -11,6 +11,7 @@ import { Button, Switch } from '@web-extension-accessibility-frontend/ui';
 import { useCallback, useEffect, useRef } from 'react';
 import { Controller, useForm, type Control } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import Loading from '~/src/app/(dashboard)/loading';
 import { getClientApi } from '../../../lib/api-client';
 import { DeploymentStatusBanner } from './DeploymentStatusBanner';
 
@@ -184,11 +185,7 @@ export function WidgetConfigPage() {
   }, [configData?.config, reset]);
 
   if (isLoadingConfig) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <SpinnerGapIcon size={48} className="animate-spin text-primary" />
-      </div>
-    );
+    return <Loading />;
   }
 
   if (isErrorConfig) {
