@@ -44,7 +44,9 @@ export function Widget() {
   const contrast = useContrast();
   const saturation = useSaturation();
   const colorFilter = useColorFilter();
-  const [readerState, readerActions] = useReader({ selectedLanguage: language.selectedLanguage ?? 'en' });
+  const { readerState, readerActions } = useReader({
+    selectedLanguage: language.selectedLanguage ?? 'en',
+  });
 
   const nameOfTheSelectedLanguage =
     language.languages.find((lang) => lang.code === language.selectedLanguage)
@@ -201,11 +203,11 @@ export function Widget() {
                 setShowVoiceNavigation(true);
               }}
               voiceNavigationEnabled={showVoiceNavigation}
-              onToggleReader={readerActions.toggle}
-              readerIsLoading={readerState.isLoading}
-              readerIsPlaying={readerState.isPlaying}
-              readerIsPaused={readerState.isPaused}
-              readerText={getReaderButtonText()}
+              reader={{
+                readerState,
+                readerActions,
+                readerText: getReaderButtonText(),
+              }}
             />
           </div>
         </div>

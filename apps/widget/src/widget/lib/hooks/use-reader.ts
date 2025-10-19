@@ -10,6 +10,7 @@ export type ReaderState = {
   progress: number;
   barVisible: boolean;
   error?: string;
+  isEnabled: boolean;
 };
 
 export type ReaderActions = {
@@ -25,13 +26,35 @@ export type UseReaderProps = {
   selectedLanguage?: string;
 };
 
-export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] {
+export function useReader(props?: UseReaderProps): {readerState: ReaderState, readerActions: ReaderActions} {
+  if (import.meta.env.VITE_FEATURE_READER !== 'true') {
+    return {
+      readerState: {
+        isLoading: false,
+        isPlaying: false,
+        isPaused: false,
+        progress: 0,
+        barVisible: false,
+        isEnabled: false,
+      },
+      readerActions: {
+        readPage: async () => {},
+        stop: () => {},
+        pause: () => {},
+        resume: async () => {},
+        toggle: async () => {},
+        playPause: () => {},
+      },
+    };
+  }
+
   const [state, setState] = useState<ReaderState>({
     isLoading: false,
     isPlaying: false,
     isPaused: false,
     progress: 0,
     barVisible: false,
+    isEnabled: true,
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -197,5 +220,5 @@ export function useReader(props?: UseReaderProps): [ReaderState, ReaderActions] 
 
   const actions: ReaderActions = { readPage, stop, pause, resume, toggle, playPause };
 
-  return [state, actions];
+  return {readerState: state, readerActions: actions};
 }

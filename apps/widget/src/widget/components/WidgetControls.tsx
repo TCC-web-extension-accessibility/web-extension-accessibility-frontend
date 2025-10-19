@@ -24,6 +24,7 @@ import {
   useHighlightLinks,
   useLetterSpacing,
   useLineHeight,
+  useReader,
   useReadingGuide,
   useSaturation,
 } from '../lib/hooks';
@@ -44,11 +45,11 @@ type WidgetControlsProps = {
   colorFilter: ReturnType<typeof useColorFilter>;
   onActivateVoiceNavigation: () => void;
   voiceNavigationEnabled: boolean;
-  onToggleReader: () => void;
-  readerIsLoading: boolean;
-  readerIsPlaying: boolean;
-  readerIsPaused: boolean;
-  readerText: string;
+  reader: {
+    readerState: ReturnType<typeof useReader>['readerState'];
+    readerActions: ReturnType<typeof useReader>['readerActions'];
+    readerText: string;
+  };
 };
 
 export function WidgetControls({
@@ -65,11 +66,7 @@ export function WidgetControls({
   colorFilter,
   onActivateVoiceNavigation,
   voiceNavigationEnabled,
-  onToggleReader,
-  readerIsLoading,
-  readerIsPlaying,
-  readerIsPaused,
-  readerText,
+  reader,
 }: WidgetControlsProps) {
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   return (
@@ -84,12 +81,12 @@ export function WidgetControls({
             onClick={() => contrast.increaseContrast()}
           />
         )}
-        {import.meta.env.VITE_FEATURE_READER === 'true' && (
+        {reader.readerState.isEnabled && (
           <WidgetButton
-          text={readerText}
-          icon={<SpeakerHighIcon weight="fill" />}
-          onClick={onToggleReader}
-          checked={readerIsLoading || readerIsPlaying || readerIsPaused}
+            text={reader.readerText}
+            icon={<SpeakerHighIcon weight="fill" />}
+            onClick={reader.readerActions.toggle}
+            checked={reader.readerState.isLoading || reader.readerState.isPlaying || reader.readerState.isPaused}
           />
         )}
         {fontSize.isEnabled && (
