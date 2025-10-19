@@ -20,7 +20,7 @@ export function useSpeechRecognition({
   onResult,
   onError,
 }: UseSpeechRecognitionProps) {
-  if (import.meta.env.VITE_FEATURE_VOICENAVIGATION !== 'true') {
+  if (import.meta.env.VITE_FEATURE_VOICE_NAVIGATION !== 'true') {
     return {
       isListening: false,
       isSupported: false,
