@@ -10,9 +10,7 @@ type Font = {
   font?: string;
 };
 
-const FONTS_PATH = import.meta.env.PROD
-  ? `${import.meta.env.VITE_DIST_URL}/fonts`
-  : '/fonts';
+const FONTS_PATH = `${import.meta.env.VITE_DIST_URL}/fonts`;
 
 export const useFontFamily = () => {
   if (import.meta.env.VITE_FEATURE_FONT_FAMILY !== 'true') {
