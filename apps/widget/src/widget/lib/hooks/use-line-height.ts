@@ -7,6 +7,15 @@ import {
 } from '../accessibility-utils';
 
 export const useLineHeight = () => {
+  if (import.meta.env.VITE_FEATURE_LINEHEIGHT !== 'true') {
+    return {
+      increaseLineHeight: () => {},
+      currentStep: 0,
+      maxLineHeightStep: 0,
+      resetLineHeight: () => {},
+      isEnabled: false,
+    };
+  }
   const LINE_HEIGHT_STORAGE_KEY = 'accessibilty-line-height';
   const BASE_LINE_HEIGHT_PERCENT = 100;
   const LINE_HEIGHT_STEP = 12.5;
@@ -76,5 +85,6 @@ export const useLineHeight = () => {
     currentStep,
     maxLineHeightStep: MAX_LINE_HEIGHT_STEP - 1,
     resetLineHeight,
+    isEnabled: true,
   };
 };

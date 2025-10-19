@@ -126,6 +126,17 @@ const applyContrastToTextElements = (level: ContrastLevel) => {
 };
 
 export const useContrast = () => {
+  if (import.meta.env.VITE_FEATURE_CONTRAST !== 'true') {
+    return {
+      contrastLevel: 'normal',
+      increaseContrast: () => {},
+      resetContrast: () => {},
+      currentStep: 0,
+      maxContrastStep: 0,
+      isEnabled: false,
+    };
+  }
+
   const CONTRAST_STORAGE_KEY = 'accessibility-contrast';
 
   const [contrastLevel, setContrastLevel] = useState<ContrastLevel>(() =>
@@ -215,5 +226,6 @@ export const useContrast = () => {
     resetContrast,
     currentStep,
     maxContrastStep,
+    isEnabled: true,
   };
 };

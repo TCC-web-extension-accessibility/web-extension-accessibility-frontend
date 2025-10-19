@@ -15,6 +15,14 @@ const FONTS_PATH = import.meta.env.PROD
   : '/fonts';
 
 export const useFontFamily = () => {
+  if (import.meta.env.VITE_FEATURE_FONTFAMILY !== 'true') {
+    return {
+      changeFontFamily: () => {},
+      currentStep: 0,
+      maxFontStep: 0,
+      isEnabled: false,
+    };
+  }
   const FONT_FAMILY_STORAGE_KEY = 'accessibility-font-family';
 
   const FONTS: Record<string, Font> = {
@@ -113,5 +121,6 @@ export const useFontFamily = () => {
     changeFontFamily,
     currentStep,
     maxFontStep: MAX_FONT_STEP,
+    isEnabled: true,
   };
 };

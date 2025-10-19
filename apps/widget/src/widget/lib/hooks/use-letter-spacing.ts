@@ -7,6 +7,15 @@ import {
 } from '../accessibility-utils';
 
 export const useLetterSpacing = () => {
+  if (import.meta.env.VITE_FEATURE_LETTERSPACING !== 'true') {
+    return {
+      increaseLetterSpacing: () => {},
+      currentStep: 0,
+      maxLetterSpacingStep: 0,
+      resetLetterSpacing: () => {},
+      isEnabled: false,
+    };
+  }
   const LETTER_SPACING_STORAGE_KEY = 'accessibilty-letter-spacing';
   const BASE_LETTER_SPACING = 1;
   const LETTER_SPACING_STEP = 1;
@@ -71,5 +80,6 @@ export const useLetterSpacing = () => {
     currentStep,
     maxLetterSpacingStep: MAX_LETTER_SPACING_STEP - 1,
     resetLetterSpacing,
+    isEnabled: true,
   };
 };

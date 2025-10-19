@@ -1,24 +1,38 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { SpeechRecognition } from '../types/speech-api.types';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { VOICE_NAVIGATION_CONSTANTS } from '../constants/voice-navigation.constants';
+import type { SpeechRecognition } from '../types/speech-api.types';
 import { getRecognitionLanguage } from '../utils/language-mapping.util';
 
 type UseSpeechRecognitionProps = {
   selectedLanguage?: string;
   onResult: (transcript: string) => void;
   onError: (error: string) => void;
-}
+};
 
 type SpeechRecognitionState = {
   isListening: boolean;
   isSupported: boolean;
   error?: string;
-}
+};
 
-export function useSpeechRecognition({ selectedLanguage, onResult, onError }: UseSpeechRecognitionProps) {
+export function useSpeechRecognition({
+  selectedLanguage,
+  onResult,
+  onError,
+}: UseSpeechRecognitionProps) {
+  if (import.meta.env.VITE_FEATURE_VOICENAVIGATION !== 'true') {
+    return {
+      isListening: false,
+      isSupported: false,
+      error: undefined,
+      startListening: () => {},
+      stopListening: () => {},
+      isEnabled: false,
+    };
+  }
   const [state, setState] = useState<SpeechRecognitionState>({
     isListening: false,
-    isSupported: false
+    isSupported: false,
   });
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -26,8 +40,9 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
 
   // Check for Web Speech API support
   useEffect(() => {
-    const isSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-    setState(prev => ({ ...prev, isSupported }));
+    const isSupported =
+      'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+    setState((prev) => ({ ...prev, isSupported }));
   }, []);
 
   // Initialize speech recognition
@@ -38,11 +53,12 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
       try {
         recognitionRef.current.abort?.();
         recognitionRef.current.stop?.();
-      } catch { }
+      } catch {}
       recognitionRef.current = null;
     }
 
-    const SpeechRecognitionClass = (window.SpeechRecognition || window.webkitSpeechRecognition) as typeof window.SpeechRecognition;
+    const SpeechRecognitionClass = (window.SpeechRecognition ||
+      window.webkitSpeechRecognition) as typeof window.SpeechRecognition;
     const recognition = new SpeechRecognitionClass();
 
     recognition.continuous = false;
@@ -51,7 +67,7 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-      setState(prev => ({ ...prev, isListening: true, error: undefined }));
+      setState((prev) => ({ ...prev, isListening: true, error: undefined }));
 
       // Clear previous timeout if it exists
       if (timeoutRef.current) {
@@ -63,7 +79,7 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
         if (recognitionRef.current) {
           recognitionRef.current.stop();
         }
-        setState(prev => ({ ...prev, isListening: false }));
+        setState((prev) => ({ ...prev, isListening: false }));
         onError('Nenhuma fala detectada. Clique no botão Ativar novamente.');
       }, VOICE_NAVIGATION_CONSTANTS.SPEECH_TIMEOUT);
     };
@@ -103,7 +119,11 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
           break;
       }
 
-      setState(prev => ({ ...prev, isListening: false, error: errorMessage }));
+      setState((prev) => ({
+        ...prev,
+        isListening: false,
+        error: errorMessage,
+      }));
       onError(errorMessage);
     };
 
@@ -114,7 +134,7 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
         timeoutRef.current = null;
       }
 
-      setState(prev => ({ ...prev, isListening: false }));
+      setState((prev) => ({ ...prev, isListening: false }));
     };
 
     recognitionRef.current = recognition as any;
@@ -123,18 +143,18 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
   // Start listening to voice
   const startListening = useCallback(async () => {
     try {
-      setState(prev => ({ ...prev, error: undefined }));
+      setState((prev) => ({ ...prev, error: undefined }));
 
       if (state.isSupported && recognitionRef.current) {
         recognitionRef.current.start();
       } else {
         const error = 'Web Speech API não suportada neste navegador';
-        setState(prev => ({ ...prev, error }));
+        setState((prev) => ({ ...prev, error }));
         onError(error);
       }
     } catch (error) {
       const errorMessage = 'Erro ao iniciar escuta';
-      setState(prev => ({ ...prev, error: errorMessage }));
+      setState((prev) => ({ ...prev, error: errorMessage }));
       onError(errorMessage);
     }
   }, [state.isSupported, onError]);
@@ -150,7 +170,7 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
       recognitionRef.current.stop();
     }
 
-    setState(prev => ({ ...prev, isListening: false }));
+    setState((prev) => ({ ...prev, isListening: false }));
   }, [state.isListening]);
 
   // Initialize components
@@ -170,7 +190,7 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
         try {
           recognitionRef.current.abort?.();
           recognitionRef.current.stop?.();
-        } catch { }
+        } catch {}
         recognitionRef.current = null;
       }
     };
@@ -179,6 +199,7 @@ export function useSpeechRecognition({ selectedLanguage, onResult, onError }: Us
   return {
     ...state,
     startListening,
-    stopListening
+    stopListening,
+    isEnabled: true,
   };
 }

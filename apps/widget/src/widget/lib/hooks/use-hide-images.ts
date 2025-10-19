@@ -18,6 +18,13 @@ const createStyleTag = (): HTMLStyleElement => {
 };
 
 export const useHideImages = () => {
+  if (import.meta.env.VITE_FEATURE_HIDEIMAGES !== 'true') {
+    return {
+      hideImages: false,
+      toggleHideImages: () => {},
+      isEnabled: false,
+    };
+  }
   const HIDE_IMAGES_STORAGE_KEY = 'accessibility-hide-images';
   const [hideImages, setHideImages] = useState(() =>
     getStorageValue(HIDE_IMAGES_STORAGE_KEY, false)
@@ -52,5 +59,6 @@ export const useHideImages = () => {
   return {
     hideImages,
     toggleHideImages,
+    isEnabled: true,
   };
 };

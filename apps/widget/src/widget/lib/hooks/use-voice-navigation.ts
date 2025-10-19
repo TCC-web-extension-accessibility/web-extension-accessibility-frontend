@@ -1,24 +1,26 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { VoiceCommandRequest } from '@web-extension-accessibility-frontend/api-client';
-import type {
-  VoiceNavigationState,
-  VoiceNavigationActions,
-  UseVoiceNavigationProps,
-  VoiceCommand,
-  VoiceNavigationApiError
-} from '../types/voice-navigation.types';
-import { VoiceNavigationApiService } from '../services/voice-navigation-api.service';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DomNavigationService } from '../services/dom-navigation.service';
 import { SpeechFeedbackService } from '../services/speech-feedback.service';
+import { VoiceNavigationApiService } from '../services/voice-navigation-api.service';
+import type {
+  UseVoiceNavigationProps,
+  VoiceCommand,
+  VoiceNavigationActions,
+  VoiceNavigationApiError,
+  VoiceNavigationState,
+} from '../types/voice-navigation.types';
 import { useSpeechRecognition } from './use-speech-recognition';
 import { useVoiceCommands } from './use-voice-commands';
 
-export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavigationState, VoiceNavigationActions] {
+export function useVoiceNavigation(
+  props?: UseVoiceNavigationProps
+): [VoiceNavigationState, VoiceNavigationActions] {
   const [state, setState] = useState<VoiceNavigationState>({
     isListening: false,
     isConnected: false,
     isSupported: false,
-    status: 'idle'
+    status: 'idle',
   });
 
   // Initialize services
@@ -30,81 +32,93 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   const { executeCommand } = useVoiceCommands({
     selectedLanguage: props?.selectedLanguage,
     domService,
-    speechService
+    speechService,
   });
 
   // Process command via API REST
-  const processCommandWithAPI = useCallback(async (text: string): Promise<VoiceCommand | null> => {
-    try {
-      setState(prev => ({ ...prev, isConnected: true }));
+  const processCommandWithAPI = useCallback(
+    async (text: string): Promise<VoiceCommand | null> => {
+      try {
+        setState((prev) => ({ ...prev, isConnected: true }));
 
-      const request: VoiceCommandRequest = {
-        text: text
-      };
+        const request: VoiceCommandRequest = {
+          text: text,
+        };
 
-      const command = await apiService.processCommand(request);
-      return command;
-    } catch (error) {
-      console.error('Erro ao processar comando:', error);
+        const command = await apiService.processCommand(request);
+        return command;
+      } catch (error) {
+        console.error('Erro ao processar comando:', error);
 
-      const apiError = error as VoiceNavigationApiError;
-      setState(prev => ({
-        ...prev,
-        error: apiError.message,
-        status: 'error',
-        isConnected: false
-      }));
-      return null;
-    }
-  }, [props?.selectedLanguage, apiService]);
+        const apiError = error as VoiceNavigationApiError;
+        setState((prev) => ({
+          ...prev,
+          error: apiError.message,
+          status: 'error',
+          isConnected: false,
+        }));
+        return null;
+      }
+    },
+    [props?.selectedLanguage, apiService]
+  );
 
   // Enhanced execute command with navigation support
-  const executeCommandEnhanced = useCallback(async (command: VoiceCommand) => {
-    try {
-      setState(prev => ({ ...prev, status: 'processing' }));
+  const executeCommandEnhanced = useCallback(
+    async (command: VoiceCommand) => {
+      try {
+        setState((prev) => ({ ...prev, status: 'processing' }));
 
-      await executeCommand(command);
+        await executeCommand(command);
 
-      setState(prev => ({ ...prev, status: 'idle' }));
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        error: 'Erro ao executar comando',
-        status: 'error'
-      }));
-    }
-  }, [executeCommand]);
+        setState((prev) => ({ ...prev, status: 'idle' }));
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          error: 'Erro ao executar comando',
+          status: 'error',
+        }));
+      }
+    },
+    [executeCommand]
+  );
 
   // Sends text command to the backend
-  const sendTextCommand = useCallback(async (text: string) => {
-    setState(prev => ({ ...prev, status: 'processing' }));
+  const sendTextCommand = useCallback(
+    async (text: string) => {
+      setState((prev) => ({ ...prev, status: 'processing' }));
 
-    const command = await processCommandWithAPI(text);
-    if (command) {
-      setState(prev => ({
-        ...prev,
-        lastCommand: command,
-        status: 'idle'
-      }));
-      await executeCommandEnhanced(command);
-    }
-  }, [processCommandWithAPI, executeCommandEnhanced]);
+      const command = await processCommandWithAPI(text);
+      if (command) {
+        setState((prev) => ({
+          ...prev,
+          lastCommand: command,
+          status: 'idle',
+        }));
+        await executeCommandEnhanced(command);
+      }
+    },
+    [processCommandWithAPI, executeCommandEnhanced]
+  );
 
   // Speech recognition handlers
-  const handleSpeechResult = useCallback((transcript: string) => {
-    setState(prev => ({
-      ...prev,
-      lastTranscription: transcript,
-      status: 'processing'
-    }));
-    void sendTextCommand(transcript);
-  }, [sendTextCommand]);
+  const handleSpeechResult = useCallback(
+    (transcript: string) => {
+      setState((prev) => ({
+        ...prev,
+        lastTranscription: transcript,
+        status: 'processing',
+      }));
+      void sendTextCommand(transcript);
+    },
+    [sendTextCommand]
+  );
 
   const handleSpeechError = useCallback((error: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       error,
-      status: 'error'
+      status: 'error',
     }));
   }, []);
 
@@ -112,27 +126,27 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
   const speechRecognition = useSpeechRecognition({
     selectedLanguage: props?.selectedLanguage,
     onResult: handleSpeechResult,
-    onError: handleSpeechError
+    onError: handleSpeechError,
   });
 
   // Update state based on speech recognition
   useEffect(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       isSupported: speechRecognition.isSupported,
-      isListening: speechRecognition.isListening
+      isListening: speechRecognition.isListening,
     }));
   }, [speechRecognition.isSupported, speechRecognition.isListening]);
 
   // Start listening to voice
   const startListening = useCallback(async () => {
-    setState(prev => ({ ...prev, status: 'listening', error: undefined }));
+    setState((prev) => ({ ...prev, status: 'listening', error: undefined }));
     await speechRecognition.startListening();
   }, [speechRecognition]);
 
   const stopListening = useCallback(() => {
     speechRecognition.stopListening();
-    setState(prev => ({ ...prev, isListening: false, status: 'idle' }));
+    setState((prev) => ({ ...prev, isListening: false, status: 'idle' }));
   }, [speechRecognition]);
 
   const reset = useCallback(() => {
@@ -141,7 +155,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
       isListening: false,
       isConnected: false,
       isSupported: speechRecognition.isSupported,
-      status: 'idle'
+      status: 'idle',
     });
   }, [stopListening, speechRecognition.isSupported]);
 
@@ -155,7 +169,7 @@ export function useVoiceNavigation(props?: UseVoiceNavigationProps): [VoiceNavig
     stopListening,
     sendTextCommand,
     executeCommand: executeCommandEnhanced,
-    reset
+    reset,
   };
 
   return [state, actions];

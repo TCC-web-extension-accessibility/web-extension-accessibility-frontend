@@ -6,6 +6,14 @@ import {
 } from '../accessibility-utils';
 
 export const useDisableAnimations = () => {
+  if (import.meta.env.VITE_FEATURE_DISABLEANIMATIONS !== 'true') {
+    return {
+      disabledAnimations: false,
+      toggleDisabledAnimations: () => {},
+      isEnabled: false,
+    };
+  }
+
   const DISABLED_ANIMATIONS_STORAGE_KEY = 'accessibility-disabled-animations';
   const [disabledAnimations, setDisabledAnimations] = useState(() =>
     getStorageValue(DISABLED_ANIMATIONS_STORAGE_KEY, false)
@@ -55,5 +63,6 @@ export const useDisableAnimations = () => {
   return {
     disabledAnimations,
     toggleDisabledAnimations,
+    isEnabled: true,
   };
 };

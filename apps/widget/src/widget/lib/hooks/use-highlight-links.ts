@@ -22,6 +22,13 @@ const createStyleTag = (): HTMLStyleElement => {
 };
 
 export const useHighlightLinks = () => {
+  if (import.meta.env.VITE_FEATURE_HIGHLIGHTLINKS !== 'true') {
+    return {
+      highlightLinks: false,
+      toggleHighlightLinks: () => {},
+      isEnabled: false,
+    };
+  }
   const HIGHLIGHT_LINKS_STORAGE_KEY = 'accessibility-highlight-links';
   const [highlightLinks, setHighlightLinks] = useState(() =>
     getStorageValue(HIGHLIGHT_LINKS_STORAGE_KEY, false)
@@ -56,5 +63,6 @@ export const useHighlightLinks = () => {
   return {
     highlightLinks,
     toggleHighlightLinks,
+    isEnabled: true,
   };
 };

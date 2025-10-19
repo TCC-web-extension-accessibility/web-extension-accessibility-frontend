@@ -1,11 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { ColorFilterType } from '../types/color-filter.types'; 
+import { useCallback, useEffect, useState } from 'react';
 import { applyColorFilter as applyFilterService } from '../services/filterService';
+import type { ColorFilterType } from '../types/color-filter.types';
 
 const LOCAL_STORAGE_KEY = 'accessibility_filter';
 
 export function useColorFilter() {
-  const [activeFilter, setActiveFilter] = useState<ColorFilterType>('no-filter');
+  if (import.meta.env.VITE_FEATURE_COLORFILTER !== 'true') {
+    return {
+      activeFilter: 'no-filter',
+      applyFilter: () => {},
+      resetFilter: () => {},
+      isEnabled: false,
+    };
+  }
+
+  const [activeFilter, setActiveFilter] =
+    useState<ColorFilterType>('no-filter');
 
   useEffect(() => {
     applyFilterService(activeFilter);
@@ -17,7 +27,9 @@ export function useColorFilter() {
   }, [activeFilter]);
 
   useEffect(() => {
-    const savedFilter = localStorage.getItem(LOCAL_STORAGE_KEY) as ColorFilterType | null;
+    const savedFilter = localStorage.getItem(
+      LOCAL_STORAGE_KEY
+    ) as ColorFilterType | null;
     if (savedFilter) {
       setActiveFilter(savedFilter);
     }
@@ -35,5 +47,6 @@ export function useColorFilter() {
     activeFilter,
     applyFilter,
     resetFilter,
+    isEnabled: true,
   };
 }

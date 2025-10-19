@@ -2,18 +2,20 @@ import { GearIcon, PersonArmsSpreadIcon, XIcon } from '@phosphor-icons/react';
 import { Button } from '@web-extension-accessibility-frontend/ui';
 import { useContext, useEffect, useState } from 'react';
 import { WidgetContext } from '../lib/context';
-import { useContrast } from '../lib/hooks/use-contrast';
-import { useDisableAnimations } from '../lib/hooks/use-disable-animations';
-import { useFontFamily } from '../lib/hooks/use-font-family';
-import { useFontSize } from '../lib/hooks/use-font-size';
-import { useHideImages } from '../lib/hooks/use-hide-images';
-import { useHighlightLinks } from '../lib/hooks/use-highlight-links';
-import { useLetterSpacing } from '../lib/hooks/use-letter-spacing';
-import { useLineHeight } from '../lib/hooks/use-line-height';
-import { useReadingGuide } from '../lib/hooks/use-reading-guide';
-import { useSaturation } from '../lib/hooks/use-saturation';
-import { useSelectLanguage } from '../lib/hooks/use-select-language';
-import { useColorFilter } from '../lib/hooks/use-color-filter';
+import {
+  useColorFilter,
+  useContrast,
+  useDisableAnimations,
+  useFontFamily,
+  useFontSize,
+  useHideImages,
+  useHighlightLinks,
+  useLetterSpacing,
+  useLineHeight,
+  useReadingGuide,
+  useSaturation,
+  useSelectLanguage,
+} from '../lib/hooks';
 import { translateWidgetIfNeeded } from '../lib/translator';
 import { AccessibilityProfilesAccordion } from './AccessibilityProfilesAccordion';
 import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
@@ -138,61 +140,45 @@ export function Widget() {
           <div className="border-t border-gray-300 mx-5" />
 
           <div className={`flex-1 min-h-0 overflow-y-auto p-2 space-y-4`}>
-            <LanguageSelectorAccordion
-              languages={language.languages}
-              selectedLanguage={language.selectedLanguage}
-              onLanguageChange={language.selectLanguage}
-              isLoading={language.isLoading}
-              ariaLabel="Idioma"
-            />
+            {import.meta.env.VITE_FEATURE_LANGUAGE_SELECTOR === 'true' && (
+              <LanguageSelectorAccordion
+                languages={language.languages}
+                selectedLanguage={language.selectedLanguage}
+                onLanguageChange={language.selectLanguage}
+                isLoading={language.isLoading}
+                ariaLabel="Idioma"
+              />
+            )}
 
-            <AccessibilityProfilesAccordion
-              resetAllSettings={resetAllSettings}
-              increaseFontSize={fontSize.increaseFontSize}
-              toggleDisabledAnimations={
-                disableAnimations.toggleDisabledAnimations
-              }
-              changeFontFamily={fontFamily.changeFontFamily}
-              changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
-              ariaLabel="Perfis de acessibilidade"
-            />
+            {import.meta.env.VITE_FEATURE_ACCESSIBILITY_PROFILES === 'true' && (
+              <AccessibilityProfilesAccordion
+                resetAllSettings={resetAllSettings}
+                increaseFontSize={fontSize.increaseFontSize}
+                toggleDisabledAnimations={
+                  disableAnimations.toggleDisabledAnimations
+                }
+                changeFontFamily={fontFamily.changeFontFamily}
+                changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
+                ariaLabel="Perfis de acessibilidade"
+              />
+            )}
 
             <WidgetControls
-              increaseFontSize={fontSize.increaseFontSize}
-              changeFontFamily={fontFamily.changeFontFamily}
-              currentFontSizeStep={fontSize.currentStep}
-              maxFontSizeStep={fontSize.maxFontStep}
-              currentFontFamilyStep={fontFamily.currentStep}
-              maxFontFamilyStep={fontFamily.maxFontStep}
-              increaseLineHeight={lineHeight.increaseLineHeight}
-              currentLineHeightStep={lineHeight.currentStep}
-              maxLineHeightStep={lineHeight.maxLineHeightStep}
-              increaseLetterSpacing={letterSpacing.increaseLetterSpacing}
-              currentLetterSpacingStep={letterSpacing.currentStep}
-              maxLetterSpacingStep={letterSpacing.maxLetterSpacingStep}
-              toggleDisabledAnimations={
-                disableAnimations.toggleDisabledAnimations
-              }
-              disabledAnimations={disableAnimations.disabledAnimations}
-              hideImages={hideImages.hideImages}
-              toggleHideImages={hideImages.toggleHideImages}
-              highlightLinks={highlightLinks.highlightLinks}
-              toggleHighlightLinks={highlightLinks.toggleHighlightLinks}
-              readingGuideMode={readingGuide.readingGuideMode}
-              changeReadingGuideMode={readingGuide.cycleReadingGuideMode}
-              maxReadingGuideMode={readingGuide.maxReadingGuideMode}
-              currentReadingGuideModeStep={readingGuide.currentStep}
-              increaseContrast={contrast.increaseContrast}
-              currentContrastStep={contrast.currentStep}
-              maxContrastStep={contrast.maxContrastStep}
-              increaseSaturation={saturation.increaseSaturation}
-              currentSaturationStep={saturation.currentStep}
-              maxSaturationStep={saturation.maxSaturationStep}
+              fontSize={fontSize}
+              fontFamily={fontFamily}
+              lineHeight={lineHeight}
+              letterSpacing={letterSpacing}
+              disableAnimations={disableAnimations}
+              hideImages={hideImages}
+              highlightLinks={highlightLinks}
+              readingGuide={readingGuide}
+              contrast={contrast}
+              saturation={saturation}
+              colorFilter={colorFilter}
               onActivateVoiceNavigation={() => {
                 setShowVoiceNavigation(true);
               }}
               voiceNavigationEnabled={showVoiceNavigation}
-              applyFilter={colorFilter.applyFilter}
             />
           </div>
         </div>
