@@ -1,0 +1,64 @@
+{
+    "sections": [
+        {
+            "id": "wcag-principles",
+            "title": "Princípios da WCAG 2.2",
+            "icon": "BookOpenIcon",
+            "color": "primary",
+            "description": "Os 4 princípios fundamentais da acessibilidade web baseados no Guia WCAG",
+            "filename": "wcag-principles.md"
+        },
+        {
+            "id": "semantic-html",
+            "title": "HTML Semântico",
+            "icon": "BookOpenIcon",
+            "color": "secondary",
+            "description": "Práticas para uso adequado de elementos HTML semânticos (WCAG 1.3.1, 4.1.1)",
+            "filename": "semantic-html.md"
+        },
+        {
+            "id": "keyboard-navigation",
+            "title": "Navegação por Teclado",
+            "icon": "KeyboardIcon",
+            "color": "success",
+            "description": "Garantia de acessibilidade via navegação por teclado",
+            "filename": "keyboard-navigation.md"
+        },
+        {
+            "id": "visual-design",
+            "title": "Design Visual Acessível",
+            "icon": "PaletteIcon",
+            "color": "warn",
+            "description": "Práticas de design visual para todos os usuários",
+            "filename": "visual-design.md"
+        },
+        {
+            "id": "forms-inputs",
+            "title": "Formulários e Inputs",
+            "icon": "TextAaIcon",
+            "color": "grey",
+            "description": "Criação de formulários acessíveis e inclusivos",
+            "filename": "forms-inputs.md"
+        },
+        {
+            "id": "images-media",
+            "title": "Imagens e Mídia",
+            "icon": "EyeIcon",
+            "color": "primary",
+            "description": "Alternativas textuais para conteúdo visual e de mídia",
+            "filename": "images-media.md"
+        },
+        {
+            "id": "aria-accessibility",
+            "title": "ARIA e Tecnologias Assistivas",
+            "icon": "MegaphoneIcon",
+            "color": "danger",
+            "description": "Uso apropriado de ARIA para componentes complexos",
+            "filename": "aria-accessibility.md"
+        }
+    ],
+    "additionalResources": {
+        "title": "Recursos Adicionais",
+        "filename": "additional-resources.md"
+    }
+}

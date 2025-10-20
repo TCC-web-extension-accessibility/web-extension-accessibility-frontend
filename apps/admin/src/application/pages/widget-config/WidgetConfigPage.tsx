@@ -17,18 +17,18 @@ import { DeploymentStatusBanner } from './DeploymentStatusBanner';
 
 const WIDGET_CONTROL_LABELS: Record<string, string> = {
   contrast: 'Contraste',
-  reader: 'Leitor de Tela',
-  font_size: 'Tamanho da Fonte',
-  font_family: 'Família da Fonte',
-  line_height: 'Altura da Linha',
-  letter_spacing: 'Espaçamento das Letras',
-  disable_animations: 'Desabilitar Animações',
-  hide_images: 'Ocultar Imagens',
-  reading_guide: 'Guia de Leitura',
-  voice_navigation: 'Navegação por Voz',
-  highlight_links: 'Destacar Links',
+  reader: 'Leitor de tela',
+  font_size: 'Tamanho da fonte',
+  font_family: 'Estilo de fonte',
+  line_height: 'Altura da linha',
+  letter_spacing: 'Espaçamento das letras',
+  disable_animations: 'Pausar animações',
+  hide_images: 'Ocultar imagens',
+  reading_guide: 'Guia de leitura',
+  voice_navigation: 'Navegação por voz',
+  highlight_links: 'Destacar links',
   saturation: 'Saturação',
-  color_filter: 'Filtro de Cores',
+  color_filter: 'Filtro de cores',
 } as const;
 
 const WIDGET_CONTROL_DESCRIPTIONS: Record<string, string> = {
@@ -52,7 +52,7 @@ const WIDGET_CONTROL_DESCRIPTIONS: Record<string, string> = {
   highlight_links:
     'Destaca todos os links na página para facilitar a identificação',
   saturation: 'Ajusta a saturação de cores para reduzir o cansaço visual',
-  color_filter: 'Aplica filtros de cor para auxiliar pessoas com daltonismo',
+  color_filter: 'Aplica filtros de cor',
 } as const;
 
 const formatLabel = (key: string): string => {

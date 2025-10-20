@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  BookOpenIcon,
   ChartLineIcon,
   ChatIcon,
   GearIcon,
@@ -30,6 +31,7 @@ export function Sidebar() {
     { name: 'Home', icon: HouseIcon, href: '/home' },
     { name: 'Relatórios', icon: ChartLineIcon, href: '/relatorios' },
     { name: 'Feedbacks', icon: ChatIcon, href: '/feedbacks' },
+    { name: 'Boas Práticas', icon: BookOpenIcon, href: '/boas-praticas' },
   ];
 
   const handleLogout = () => {
