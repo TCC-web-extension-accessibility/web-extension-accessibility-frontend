@@ -7,6 +7,7 @@ export * from './use-hide-images';
 export * from './use-highlight-links';
 export * from './use-letter-spacing';
 export * from './use-line-height';
+export * from './use-reader';
 export * from './use-reading-guide';
 export * from './use-saturation';
 export * from './use-select-language';

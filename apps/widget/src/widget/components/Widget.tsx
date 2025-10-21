@@ -12,6 +12,7 @@ import {
   useHighlightLinks,
   useLetterSpacing,
   useLineHeight,
+  useReader,
   useReadingGuide,
   useSaturation,
   useSelectLanguage,
@@ -22,6 +23,7 @@ import { LanguageSelectorAccordion } from './LanguageSelectorAccordion';
 import { VoiceNavigationPanel } from './VoiceNavigationPanel';
 import { WidgetControls } from './WidgetControls';
 import { WidgetSettings } from './WidgetSettings';
+import { AudioProgressBar } from './AudioProgressBar';
 
 export function Widget() {
   const { isOpen, setIsOpen } = useContext(WidgetContext);
@@ -42,10 +44,21 @@ export function Widget() {
   const contrast = useContrast();
   const saturation = useSaturation();
   const colorFilter = useColorFilter();
+  const { readerState, readerActions } = useReader({
+    selectedLanguage: language.selectedLanguage ?? 'en',
+  });
 
   const nameOfTheSelectedLanguage =
     language.languages.find((lang) => lang.code === language.selectedLanguage)
       ?.name || 'English';
+
+  // Determinar o texto do botão Leitor baseado no estado
+  const getReaderButtonText = () => {
+    if (readerState.isLoading) return 'Analisando';
+    if (readerState.isPlaying) return 'Falando';
+    if (readerState.isPaused) return 'Pausado';
+    return 'Leitor';
+  };
 
   // Function to reset all accessibility settings to default
   const resetAllSettings = () => {
@@ -107,6 +120,17 @@ export function Widget() {
 
   return (
     <>
+      {readerState.barVisible && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <AudioProgressBar
+            isPlaying={readerState.isPlaying}
+            progress={readerState.progress}
+            onPlayPause={readerActions.playPause}
+            onStop={readerActions.stop}
+          />
+        </div>
+      )}
+
       {!isVisible && (
         <Button
           className="rounded-full p-5 fixed cursor-pointer bottom-10 right-10"
@@ -179,6 +203,11 @@ export function Widget() {
                 setShowVoiceNavigation(true);
               }}
               voiceNavigationEnabled={showVoiceNavigation}
+              reader={{
+                readerState,
+                readerActions,
+                readerText: getReaderButtonText(),
+              }}
             />
           </div>
         </div>

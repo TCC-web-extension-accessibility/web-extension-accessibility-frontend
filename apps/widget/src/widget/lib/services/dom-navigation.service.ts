@@ -52,8 +52,72 @@ export class DomNavigationService {
   // Gets page content for reading
   getPageContent(): string {
     const mainContent = document.querySelector('main') || document.body;
-    const text = mainContent.textContent || '';
-    return text;
+
+    const contentClone = mainContent.cloneNode(true) as HTMLElement;
+    const tagsToRemove = ['script', 'style', 'noscript', 'iframe', 'svg', 'canvas'];
+    tagsToRemove.forEach(tag => {
+      contentClone.querySelectorAll(tag).forEach(el => el.remove());
+    });
+
+    const elementTexts: string[] = [];
+    function extractTexts(node: Element) {
+      // Se for um elemento sem filhos, ou se for uma tag <a>, pega o texto/aria-label/alt/title
+      if (!node.children.length || node.tagName.toLowerCase() === 'a') {
+        let text = (node.textContent || '').trim();
+        if (!text) {
+          text = node.getAttribute('aria-label') ||
+             node.getAttribute('alt') ||
+             node.getAttribute('title') ||
+             '';
+          text = text.trim();
+        }
+        if (text) {
+          elementTexts.push(text);
+        }
+        return;
+      }
+
+      // Se for um elemento com filhos, pega o texto direto (não dos filhos)
+      const childNodes = Array.from(node.childNodes);
+      let directText = '';
+      childNodes.forEach(child => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          directText += (child.textContent || '').trim();
+        }
+      });
+      if (directText.trim()) {
+        elementTexts.push(directText.trim());
+      } else {
+        // Verificar se tem algum filho que seja span ou h1-h6 com texto
+        let hasSpanOrHeadingWithText = false;
+        for (const child of node.children) {
+          if (['span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(child.tagName.toLowerCase())) {
+            const childText = (child.textContent || '').trim();
+            if (childText) {
+              hasSpanOrHeadingWithText = true;
+              break;
+            }
+          }
+        }
+        if (!hasSpanOrHeadingWithText) {
+          // Senão, pega aria-label/alt/title
+          const attrText = node.getAttribute('aria-label') ||
+                           node.getAttribute('alt') ||
+                           node.getAttribute('title') ||
+                           '';
+          if (attrText.trim()) {
+            elementTexts.push(attrText.trim());
+          }
+        }
+      }
+
+      // Recursivamente processa os filhos
+      Array.from(node.children).forEach(child => extractTexts(child));
+    }
+
+    extractTexts(contentClone);
+
+    return elementTexts.join('. ');
   }
 
   // Applies zoom to the page
