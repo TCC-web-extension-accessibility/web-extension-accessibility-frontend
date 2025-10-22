@@ -6,7 +6,14 @@ export const FOCUSABLE_SELECTORS = [
   'select',
   '[tabindex]:not([tabindex="-1"]):not([disabled])',
   '[role="button"]',
-  '[role="link"]'
+  '[role="link"]',
+  '[role="checkbox"]',
+  '[role="radio"]',
+  '[role="switch"]',
+  '[contenteditable="true"]',
+  '[class*="cursor-pointer"]',
+  '[draggable="true"]',
+  '[onclick]',
 ] as const;
 
 export const ELEMENT_SEARCH_SELECTORS = [
