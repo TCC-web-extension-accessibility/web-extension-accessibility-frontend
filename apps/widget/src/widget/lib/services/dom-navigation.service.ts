@@ -33,7 +33,7 @@ export class DomNavigationService {
 
   // Clicks on an element identified by target string
   clickElement(target: string): HTMLElement | null {
-    const element = this.elementFinder.findElementByTarget(target) as HTMLElement | null;
+    const element = this.elementFinder.findClickableElementByTarget(target) as HTMLElement | null;
     if (element) {
       element.click();
     }

@@ -35,13 +35,106 @@ export class ElementFinderService {
     return null;
   }
 
+  findClickableElementByTarget(target: string): Element | null {
+    const normalizedTarget = normalizeText(target);
+    const focusableElements = this.getFocusableElements();
+
+    // Verificar cada elemento clicável um por um
+    for (const element of focusableElements) {
+      // 1. Verificar por ID
+      if (this.checkAttribute(element, 'id', target, normalizedTarget)) {
+        return element;
+      }
+
+      // 2. Verificar por name
+      if (this.checkAttribute(element, 'name', target, normalizedTarget)) {
+        return element;
+      }
+
+      // 3. Verificar por aria-label
+      if (this.checkAttribute(element, 'aria-label', target, normalizedTarget)) {
+        return element;
+      }
+
+      // 3.5. Verificar por title
+      if (this.checkAttribute(element, 'title', target, normalizedTarget)) {
+        return element;
+      }
+
+      // 4. Verificar texto do elemento clicável (ignorando elementos clicáveis filhos)
+      if (this.checkClickableElementText(element, target, normalizedTarget)) {
+        return element;
+      }
+
+      // 5. Verificar elementos clicáveis filhos (se houver)
+      const childClickableElements = element.querySelectorAll(FOCUSABLE_SELECTORS.join(','));
+      if (childClickableElements.length > 0) {
+        for (const childElement of childClickableElements) {
+          // Verificar ID do filho
+          if (this.checkAttribute(childElement, 'id', target, normalizedTarget)) {
+            return childElement;
+          }
+
+          // Verificar name do filho
+          if (this.checkAttribute(childElement, 'name', target, normalizedTarget)) {
+            return childElement;
+          }
+
+          // Verificar aria-label do filho
+          if (this.checkAttribute(childElement, 'aria-label', target, normalizedTarget)) {
+            return childElement;
+          }
+
+          // Verificar title do filho
+          if (this.checkAttribute(childElement, 'title', target, normalizedTarget)) {
+            return childElement;
+          }
+
+          // Verificar texto do filho
+          if (this.checkClickableElementText(childElement as HTMLElement, target, normalizedTarget)) {
+            return childElement;
+          }
+        }
+      }
+
+      // 6. Verificar por index (se o target for numérico)
+      const indexMatch = target.match(/^(\d+)$/);
+      if (indexMatch) {
+        const targetIndex = parseInt(indexMatch[1]) - 1; // Converter para 0-based
+        if (targetIndex >= 0 && targetIndex < focusableElements.length) {
+          const indexElement = focusableElements[targetIndex];
+          return indexElement;
+        }
+      }
+    }
+
+    return null;
+  }
+
   getFocusableElements(): HTMLElement[] {
-    const elementsAll = [
+      const elementsAll = [
       ...Array.from(document.querySelectorAll(FOCUSABLE_SELECTORS.join(','))),
       ...Array.from(this.WIDGET?.querySelectorAll(FOCUSABLE_SELECTORS.join(',')) || []),
     ];
 
-    return elementsAll.filter(el => {
+    // Adicionar elementos com cursor pointer via CSS computado
+    const allElements = Array.from(document.querySelectorAll('*'));
+    const widgetElements = this.WIDGET ? Array.from(this.WIDGET.querySelectorAll('*')) : [];
+
+    const cursorPointerElements = [...allElements, ...widgetElements]
+      .filter(el => {
+        const htmlEl = el as HTMLElement;
+        try {
+          const computedStyle = window.getComputedStyle(htmlEl);
+          return computedStyle.cursor === 'pointer' && !elementsAll.includes(htmlEl);
+        } catch {
+          return false;
+        }
+      }) as HTMLElement[];
+
+    const combinedElements = [...elementsAll, ...cursorPointerElements];
+
+    return combinedElements.filter(el => {
       const htmlEl = el as HTMLElement;
       return !htmlEl.hasAttribute('disabled') && htmlEl.offsetParent !== null;
     }) as HTMLElement[];
@@ -132,6 +225,36 @@ export class ElementFinderService {
 
     // Normalized match
     return normalizedElementText.includes(normalizedTarget);
+  }
+
+  private checkClickableElementText(element: HTMLElement, target: string, normalizedTarget: string): boolean {
+    // Para elementos clicáveis, verificar apenas o texto direto do elemento,
+    // ignorando elementos clicáveis filhos
+    const ownText = this.getElementOwnText(element);
+    if (!ownText) return false;
+
+    const normalizedOwnText = normalizeText(ownText);
+
+    // Exact match
+    if (ownText.toLowerCase().includes(target.toLowerCase())) {
+      return true;
+    }
+
+    // Normalized match
+    return normalizedOwnText.includes(normalizedTarget);
+  }
+
+  private getElementOwnText(element: HTMLElement): string {
+    // Criar uma cópia do elemento para remover filhos clicáveis
+    const clone = element.cloneNode(true) as HTMLElement;
+
+    // Remover todos os elementos clicáveis filhos
+    const clickableSelectors = FOCUSABLE_SELECTORS.join(',');
+    const clickableChildren = clone.querySelectorAll(clickableSelectors);
+    clickableChildren.forEach(child => child.remove());
+
+    // Retornar o texto restante
+    return clone.textContent?.trim() || '';
   }
 
   private checkAssociatedLabel(element: Element, target: string, normalizedTarget: string): boolean {
