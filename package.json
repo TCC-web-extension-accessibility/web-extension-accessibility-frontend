@@ -9,6 +9,7 @@
     "serve:widget:test-html": "pnpm --filter widget serve:test-html",
     "dev:admin": "pnpm --filter admin dev",
     "build:admin": "pnpm --filter admin build",
+    "start:admin": "pnpm --filter admin start",
     "lint": "eslint .",
     "test": "vitest",
     "generate:api-client": "npx @openapitools/openapi-generator-cli generate"

@@ -82,7 +82,7 @@ export function AccessibilityProfilesAccordion({
           <ToggleGroupItem
             value="Baixa visão"
             aria-label="Baixa visão"
-            onClick={() => handleProfileClick(() => increaseFontSize(150))}
+            onClick={() => handleProfileClick(() => increaseFontSize(105))}
           >
             <AccessibilityProfileLabel
               name="Baixa visão"
