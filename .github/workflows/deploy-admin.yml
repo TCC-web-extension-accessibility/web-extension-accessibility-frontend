@@ -82,7 +82,7 @@ jobs:
           working-directory: apps/admin
           vercel-args: '--prod'
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://0.0.0.0:8000
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.BACKEND_API_URL }}
           NEXT_PUBLIC_WIDGET_URL: https://accessibility-widget.pages.dev/widget.js
 
       - name: Deploy to Vercel (Preview)
@@ -94,7 +94,7 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: apps/admin
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://0.0.0.0:8000
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.BACKEND_API_URL }}
           NEXT_PUBLIC_WIDGET_URL: https://accessibility-widget-dev.pages.dev/widget.js
 
       # - name: Output deployment info
