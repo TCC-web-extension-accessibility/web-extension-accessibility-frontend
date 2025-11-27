@@ -76,7 +76,7 @@ jobs:
           ENV="${{ needs.determine-environment.outputs.environment }}"
 
           # Fetch config from API
-          CONFIG_JSON=$(curl -s -H "X-API-Key: ${{ secrets.CONFIG_API_KEY }}" \
+          CONFIG_JSON=$(curl -k -s -H "X-API-Key: ${{ secrets.CONFIG_API_KEY }}" \
             "${{ secrets.BACKEND_API_URL }}/public/widget/config")
 
           if [ $? -ne 0 ]; then
